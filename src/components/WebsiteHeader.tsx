@@ -5,7 +5,8 @@ const WebsiteHeader: React.FC = () => {
         <header className="website-header">
             <div className="logo">
                 {/* Hier könnte das Logo oder der Titel der Website stehen */}
-                Website Name
+                <h1>LetteHub</h1>
+                <div className="logo-divider"></div>
             </div>
             <nav className="navigation">
                 <ul>

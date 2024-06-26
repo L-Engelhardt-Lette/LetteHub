@@ -1,3 +1,64 @@
-*{
-    color: aqua;
-}
+.website-header {
+    display: flex; // Flexbox für das horizontale Layout
+    align-items: center; // Zentriert vertikal ausrichten
+    
+    .logo {
+      display: flex; // Flexbox für das horizontale Layout
+      align-items: center; // Zentriert vertikal ausrichten
+      
+      h1 {
+        color: white; // Textfarbe für das Logo
+        margin-right: 10px; // Abstand zwischen Logo und Strich
+      }
+      
+      .logo-divider {
+        width: 2px; // Breite des vertikalen Strichs
+        height: 30px; // Höhe des vertikalen Strichs
+        background-color: white; // Farbe des vertikalen Strichs
+        margin-right: 10px; // Abstand zwischen Strich und Navigation
+      }
+    }
+    
+    .navigation {
+      ul {
+        list-style: none; // Keine Aufzählungspunkte anzeigen
+        padding: 0;
+        margin: 0;
+        display: flex; // Flexbox für das horizontale Layout
+        align-items: center; // Zentriert vertikal ausrichten
+        
+        li {
+          margin-left: 20px; // Abstand zwischen den Navigationspunkten
+          
+          &:first-child {
+            margin-left: 0; // Kein Abstand für das erste Element
+          }
+          
+          a {
+            position: relative;
+            color: white; // Textfarbe für die Links
+            text-decoration: none; // Keine Unterstreichung standardmäßig
+            padding-bottom: 3px; // Platz für die Unterstreichung reservieren
+            transition: padding-bottom 0.3s ease; // Übergangseffekt für die Unterstreichung
+            
+            &::after {
+              content: '';
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              width: 0; // Anfangszustand (unsichtbar)
+              height: 2px; // Höhe der Unterstreichung
+              background-color: white; // Farbe der Unterstreichung
+              transition: width 0.3s ease; // Animation für die Breite des Unterstrichs
+              transform-origin: left;
+            }
+            
+            &:hover::after, &:focus::after {
+              width: 100%; // Unterstrich vollständig anzeigen
+            }
+          }
+        }
+      }
+    }
+  }
+  
