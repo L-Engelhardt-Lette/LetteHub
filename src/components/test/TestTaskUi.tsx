@@ -10,9 +10,11 @@ import "../../scss/test/TestTaskUi.scss";
 
 // Interfaces (For type safety)
 interface Task {
-  name: string;
+  task_name: string;
+  projectID: string;
   persons: string[]; // Array of person names
-  progress: number; // Percentage (e.g., 50 for 50%)
+  status: number; // Percentage (e.g., 50 for 50%)
+  startDate: string;
   finishDate: string; // In a suitable format
   description: string;
 }
