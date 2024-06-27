@@ -13,6 +13,7 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;
   public name!: string;
+  public vorname!: string;
   public email!: string;
   public password!: string;
 
