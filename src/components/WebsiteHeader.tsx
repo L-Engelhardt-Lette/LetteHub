@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../scss/Components/WebsiteHeader.scss";
+import DarkLightModeSwitch from "./DarkLightModeSwitch";
 
 const WebsiteHeader: React.FC = () => {
   return (
@@ -29,6 +30,7 @@ const WebsiteHeader: React.FC = () => {
           </li>
         </ul>
       </nav>
+      <DarkLightModeSwitch></DarkLightModeSwitch>
     </header>
   );
 };
