@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../scss/WebsiteHeader.scss";
+import "../scss/Components/WebsiteHeader.scss";
 
 const WebsiteHeader: React.FC = () => {
   return (
