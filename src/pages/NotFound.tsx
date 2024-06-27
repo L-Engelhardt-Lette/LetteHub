@@ -1,7 +1,7 @@
 // src/NotFound.tsx
 
-import React from 'react';
-import '../scss/pages/NotFound.scss';
+import React from "react";
+import "../scss/pages/NotFound.scss";
 
 const NotFound: React.FC = () => {
   return (
@@ -10,6 +10,6 @@ const NotFound: React.FC = () => {
       <p>Not Found</p>
     </div>
   );
-}
+};
 
 export default NotFound;

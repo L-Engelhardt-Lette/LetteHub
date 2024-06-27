@@ -6,7 +6,11 @@ const WebsiteHeader: React.FC = () => {
   return (
     <header className="website-header">
       <div className="logo">
-        <h1>LetteHub</h1>
+        <h1>
+          <Link to="/" id="HeaderTitle">
+            LetteHub
+          </Link>
+        </h1>
         <div className="logo-divider"></div>
       </div>
       <nav className="navigation">
