@@ -29,7 +29,7 @@ const WebsiteHeader: React.FC = () => {
           </li>
         </ul>
       </nav>
-      <DarkLightModeSwitch></DarkLightModeSwitch>
+      <DarkLightModeSwitch />
     </header>
   );
 };
