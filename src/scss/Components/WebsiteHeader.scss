@@ -1,8 +1,12 @@
 @import "../Colors.scss";
+@import "../Fonts.scss";
 
 .website-header {
   display: flex; // Flexbox für das horizontale Layout
   align-items: center; // Zentriert vertikal ausrichten
+  justify-content: space-between; // Zentriert horizontal ausrichten
+  padding: 0 1rem; // Padding links und rechts
+  border-bottom: 2px solid $primary;
 
   .logo {
     display: flex; // Flexbox für das horizontale Layout
@@ -11,13 +15,14 @@
     h1 {
       color: $primary; // Textfarbe für das Logo
       margin-right: 10px; // Abstand zwischen Logo und Strich
+      text-decoration: none;
+      margin: 0;
     }
-
-    .logo-divider {
-      width: 2px; // Breite des vertikalen Strichs
-      height: 30px; // Höhe des vertikalen Strichs
-      background-color: $primary; // Farbe des vertikalen Strichs
-      margin-right: 10px; // Abstand zwischen Strich und Navigation
+    h1 #HeaderTitle {
+      text-decoration: none;
+      color: $primary;
+      font-family: UnageoBold;
+      font-size: 1.5em;
     }
   }
 
@@ -31,7 +36,6 @@
 
       li {
         margin-left: 20px; // Abstand zwischen den Navigationspunkten
-
         &:first-child {
           margin-left: 0; // Kein Abstand für das erste Element
         }
@@ -42,6 +46,8 @@
           text-decoration: none; // Keine Unterstreichung standardmäßig
           padding-bottom: 3px; // Platz für die Unterstreichung reservieren
           transition: padding-bottom 0.3s ease; // Übergangseffekt für die Unterstreichung
+          font-family: UnageoRegular;
+          font-size: large;
 
           &::after {
             content: "";
