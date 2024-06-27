@@ -42,7 +42,7 @@
 
         a {
           position: relative;
-          color: white; // Textfarbe für die Links
+          color: $foreground-light;
           text-decoration: none; // Keine Unterstreichung standardmäßig
           padding-bottom: 3px; // Platz für die Unterstreichung reservieren
           transition: padding-bottom 0.3s ease; // Übergangseffekt für die Unterstreichung
