@@ -1,7 +1,9 @@
 import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import sequelize from './utils/database';
 import userRoutes from './routes/userRoutes';
+import projectRoutes from './routes/projectRoutes'
 
 dotenv.config();
 
@@ -18,7 +20,11 @@ sequelize.authenticate()
 // Sync DB models
 sequelize.sync({ alter: true });
 
+app.use(cors());
+app.use(express.json());
+
 app.use('/api/users', userRoutes);
+app.use('/api/projects', projectRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('API is running...');
