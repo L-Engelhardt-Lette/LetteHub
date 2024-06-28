@@ -1,5 +1,3 @@
-// src/Signup.tsx
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../scss/pages/LoginAndCreateUser.scss";
@@ -52,10 +50,17 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="signup">
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
+    <div className="login">
+      {" "}
+      {/* Changed className to "login" for consistency */}
+      <form onSubmit={handleSubmit} className="form">
+        {" "}
+        {/* Added className "form" */}
+        <h1 className="form-title">Sign Up</h1>{" "}
+        {/* Added className "form-title" */}
+        <div className="input-container">
+          {" "}
+          {/* Added className "input-container" */}
           <label htmlFor="name">Name:</label>
           <input
             type="text"
@@ -66,7 +71,9 @@ const Signup: React.FC = () => {
           />
           {errors.name && <p className="error">{errors.name}</p>}
         </div>
-        <div>
+        <div className="input-container">
+          {" "}
+          {/* Added className "input-container" */}
           <label htmlFor="email">Email:</label>
           <input
             type="email"
@@ -75,8 +82,11 @@ const Signup: React.FC = () => {
             value={formData.email}
             onChange={handleChange}
           />
+          {errors.email && <p className="error">{errors.email}</p>}
         </div>
-        <div>
+        <div className="input-container">
+          {" "}
+          {/* Added className "input-container" */}
           <label htmlFor="password">Password:</label>
           <input
             type="password"
@@ -85,8 +95,11 @@ const Signup: React.FC = () => {
             value={formData.password}
             onChange={handleChange}
           />
+          {errors.password && <p className="error">{errors.password}</p>}
         </div>
-        <div>
+        <div className="input-container">
+          {" "}
+          {/* Added className "input-container" */}
           <label htmlFor="repassword">Re-enter Password:</label>
           <input
             type="password"
@@ -97,12 +110,16 @@ const Signup: React.FC = () => {
           />
           {errors.repassword && <p className="error">{errors.repassword}</p>}
         </div>
-        {/* ... (Repeat similar input fields for email, password, and repassword) ... */}
-        <button type="submit">Sign Up</button>
+        <button type="submit" className="submit">
+          Sign Up
+        </button>{" "}
+        {/* Added className "submit" */}
+        <p className="signup-link">
+          {" "}
+          {/* Changed className to "signup-link" */}
+          Already have an account? <Link to="/login">Login here</Link>.
+        </p>
       </form>
-      <p className="new-account-notice">
-        Already have an account? <Link to="/login">Login here</Link>.
-      </p>
     </div>
   );
 };

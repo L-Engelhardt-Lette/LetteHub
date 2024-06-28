@@ -51,9 +51,12 @@
 
     button {
       outline: none;
-      border: 1px solid #e5e7eb;
+      border: 1px solid $copy-lighter;
       margin: 8px 0;
       font-family: UnageoRegular;
+      &:hover {
+        background-color: $primary-light;
+      }
     }
 
     .submit {
