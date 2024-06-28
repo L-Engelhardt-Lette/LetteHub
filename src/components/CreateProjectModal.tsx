@@ -72,12 +72,6 @@ const Project: React.FC = () => {
           </button>
         </div>
       </div>
-
-      <CreateProjectModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onCreateProject={handleCreateProject}
-      />
     </div>
   );
 };
