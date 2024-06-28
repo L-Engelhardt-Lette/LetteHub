@@ -41,35 +41,39 @@ const Login: React.FC = () => {
 
   return (
     <div className="login">
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          {errors.email && <p className="error">{errors.email}</p>}
+      <div className="centered-horizontally-div">
+        <div className="centered-vertically-div">
+          <h1>Login</h1>
+          <form onSubmit={handleSubmit} className="form">
+            <div>
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              {errors.email && <p className="error">{errors.email}</p>}
+            </div>
+            <div>
+              <label htmlFor="password">Password:</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              {errors.password && <p className="error">{errors.password}</p>}
+            </div>
+            <button type="submit">Login</button>
+          </form>
+          <p className="new-account-notice">
+            Don't have an account? <Link to="/signup">Create one here</Link>.
+          </p>
         </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          {errors.password && <p className="error">{errors.password}</p>}
-        </div>
-        <button type="submit">Login</button>
-      </form>
-      <p className="new-account-notice">
-        Don't have an account? <Link to="/signup">Create one here</Link>.
-      </p>
+      </div>
     </div>
   );
 };

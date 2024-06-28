@@ -10,6 +10,7 @@ const WebsiteHeader: React.FC = () => {
   const handleLoginClick = () => {
     navigate("/login");
   };
+
   return (
     <header className="website-header">
       <div className="logo">
