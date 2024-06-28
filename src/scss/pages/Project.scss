@@ -1,83 +1,118 @@
 .project {
+  padding: 20px;
+  max-width: 1400px; /* Erhöhte Breite für das Projekt */
+  margin: 0 auto;
+
+  .title {
+    font-size: 2rem;
+    margin-bottom: 20px;
     text-align: center;
+  }
+
+  .grid-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Größere Spaltenbreite */
+  }
+
+  .grid-item {
     padding: 20px;
-  
-    .title {
-      font-size: 2rem;
-      margin-bottom: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background-color: #e6e6e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    position: relative;
+
+    &:hover {
+      transform: translateY(-5px);
     }
-  
-    .grid-container {
+
+    &-title {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      text-align: center; /* Zentriert den Text im Titel */
+    }
+
+    &-content {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #007bff; /* Blauton für das Feld */
+      color: #d3d3d3;
+      text-align: center;
+      height: 300px; /* Quadratische Höhe */
       display: flex;
-      justify-content: center; // Zentriert die Grid-Container horizontal
-    }
-  
-    .grid {
-      display: grid;
-      gap: 20px; // Vergrößerter Abstand zwischen den Feldern
+      flex-direction: column;
       justify-content: center;
-  
-      .grid-item {
-        padding: 50px; // Erhöhter Innenabstand
-        border: 2px solid white;
-        border-radius: 25px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box; // Damit Padding und Border in der Gesamtgröße enthalten sind
-  
-        .inner-grid-item {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-  
-        .grid-item-content {
-          width: 120px; // Breite erhöht
-          height: 120px; // Höhe erhöht
-          background-color: #eee;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 1px solid #ccc;
-          border-radius: 15px; // Abgerundete Ecken
-        }
-  
-        .grid-item-title {
-          margin-top: 15px; // Abstand zwischen Titel und Inhalt erhöht
-          font-size: 1.2rem; // Schriftgröße erhöht
-        }
+      align-items: center;
+      position: relative;
+      overflow: hidden; /* Verhindert, dass das Bild über den Rahmen hinausragt */
+
+      img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Bild skalieren und zuschneiden */
+        z-index: -1; /* Hinter das Hintergrundbild legen */
       }
-  
-      .add-button {
-        font-size: 1.2rem; // Schriftgröße des Buttons reduziert
-        padding: 10px 20px; // Größe des Buttons reduziert
-        border: 2px solid white;
-        border-radius: 20px;
-        cursor: pointer;
-        background-color: transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 80px; // Höhe des Buttons reduziert
-        width: 80px; // Breite des Buttons reduziert
-        box-sizing: border-box;
-        transition: background-color 0.3s ease; // Smooth hover transition
-  
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.2);
-        }
-      }
-  
-      .no-projects {
-        margin-top: 20px;
-        p {
-          font-size: 1.2rem;
-          font-style: italic;
-        }
+    }
+
+    &-action-button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #28a745; /* Grün für Aktionsschaltflächen */
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #218838;
       }
     }
   }
-  
+
+  .add-project-button {
+    font-size: 1.8rem; /* etwas kleinere Schriftgröße */
+    width: 50px; /* Breite des Buttons */
+    height: 50px; /* Höhe des Buttons */
+    border: none;
+    border-radius: 50%;
+    background-color: transparent; /* transparenter Hintergrund */
+    color: #007bff; /* Blaufarbe für den Button */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Schatten für einen leichten 3D-Effekt */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background-color: #f0f0f0; /* Hintergrundfarbe beim Hover */
+      color: #0056b3; /* dunklere Blaufarbe */
+      transform: translateY(-2px); /* Anhebungseffekt */
+    }
+  }
+
+  .no-projects {
+    margin-top: 20px;
+    text-align: center;
+    color: #777;
+
+    p {
+      font-style: italic;
+    }
+  }
+}

@@ -17,10 +17,7 @@ const Project: React.FC = () => {
 
   const handleCreateProject = (name: string) => {
     setItems([...items, name]);
-  };
-
-  const getGridTemplateColumns = () => {
-    return "repeat(3, min-content)";
+    setIsModalOpen(false); // Close modal after creating project
   };
 
   return (
@@ -30,17 +27,13 @@ const Project: React.FC = () => {
           ? items.length > 1
             ? "My Projects"
             : "My Project"
-          : "Create your project"}
+          : "Create your first project"}
       </h1>
       <div className="grid-container">
-        <div className="grid" style={{ gridTemplateColumns: getGridTemplateColumns() }}>
-        <div
-          className="grid"
-          style={{ gridTemplateColumns: getGridTemplateColumns() }}
-        >
+        <div className="grid">
           {items.length === 0 && (
             <div className="no-projects">
-              
+             
             </div>
           )}
           {items.map((item, index) => (
@@ -50,13 +43,20 @@ const Project: React.FC = () => {
                 <div className="grid-item-title">
                   <strong>{item}</strong>
                 </div>
+                <button
+                  className="grid-item-action-button"
+                  onClick={() => console.log(`Button clicked for project: ${item}`)}
+                  title="Action button"
+                >
+                  Action
+                </button>
               </div>
             </div>
           ))}
           <button
-            className="grid-item add-button"
+            className="add-project-button"
             onClick={handleOpenModal}
-            title="Create project"
+            title="Create new project"
           >
             +
           </button>
@@ -67,7 +67,6 @@ const Project: React.FC = () => {
         onClose={handleCloseModal}
         onCreateProject={handleCreateProject}
       />
-    </div>
     </div>
   );
 };
