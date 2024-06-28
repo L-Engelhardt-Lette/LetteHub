@@ -1,13 +1,7 @@
 // Project.tsx
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import CreateProjectModal from './CreateProjectModal.tsx';
 import '../scss/pages/Project.scss';
-=======
-import React, { useState } from "react";
-//import CreateProjectModal from './CreateProjectModal';
-import "../scss/pages/Project.scss";
->>>>>>> fa8cd1f732c38ec6f335cbc2bb88088c4e6d5425
 
 const Project: React.FC = () => {
   const [items, setItems] = useState<string[]>([]);
