@@ -1,18 +1,14 @@
 @import url("./Colors.scss");
 @import url("./Fonts.scss");
 
-
-/* App.scss */
-
-/* Light mode styles */
+html,
 body {
-    background-color: #ffffff;
-    color: #000000;
-  }
-  
-  /* Dark mode styles */
-  body.dark-mode {
-    background-color: #000000;
-    color: #ffffff;
-  }
-  
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+* {
+  box-sizing: border-box; /* Ensure padding and border do not affect element width */
+}
