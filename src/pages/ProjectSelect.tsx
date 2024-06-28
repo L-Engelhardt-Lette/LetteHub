@@ -1,6 +1,6 @@
 // Project.tsx
 import React, { useState } from 'react';
-import CreateProjectModal from './CreateProjectModal.tsx';
+import CreateProjectModal from '../components/CreateProjectModal.tsx';
 import '../scss/pages/Project.scss';
 
 const Project: React.FC = () => {
@@ -40,7 +40,7 @@ const Project: React.FC = () => {
         >
           {items.length === 0 && (
             <div className="no-projects">
-              <p>Create your project</p>
+              
             </div>
           )}
           {items.map((item, index) => (
