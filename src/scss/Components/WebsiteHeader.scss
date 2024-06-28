@@ -1,63 +1,71 @@
 @import "../Colors.scss";
+@import "../Fonts.scss";
 
 .website-header {
-  display: flex; // Flexbox für das horizontale Layout
-  align-items: center; // Zentriert vertikal ausrichten
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  border-bottom: 2px solid var(--primary-color); // Use the primary color variable
 
   .logo {
-    display: flex; // Flexbox für das horizontale Layout
-    align-items: center; // Zentriert vertikal ausrichten
+    display: flex;
+    align-items: center;
 
     h1 {
-      color: $primary; // Textfarbe für das Logo
-      margin-right: 10px; // Abstand zwischen Logo und Strich
+      color: var(--primary-color); // Use the primary color variable
+      margin-right: 10px;
+      text-decoration: none;
+      margin: 0;
     }
 
-    .logo-divider {
-      width: 2px; // Breite des vertikalen Strichs
-      height: 30px; // Höhe des vertikalen Strichs
-      background-color: $primary; // Farbe des vertikalen Strichs
-      margin-right: 10px; // Abstand zwischen Strich und Navigation
+    h1 #HeaderTitle {
+      text-decoration: none;
+      color: var(--primary-color); // Use the primary color variable
+      font-family: UnageoBold;
+      font-size: 1.5em;
     }
   }
 
   .navigation {
     ul {
-      list-style: none; // Keine Aufzählungspunkte anzeigen
+      list-style: none;
       padding: 0;
       margin: 0;
-      display: flex; // Flexbox für das horizontale Layout
-      align-items: center; // Zentriert vertikal ausrichten
+      display: flex;
+      align-items: center;
 
       li {
-        margin-left: 20px; // Abstand zwischen den Navigationspunkten
+        margin-left: 20px;
 
         &:first-child {
-          margin-left: 0; // Kein Abstand für das erste Element
+          margin-left: 0;
         }
 
         a {
           position: relative;
-          color: white; // Textfarbe für die Links
-          text-decoration: none; // Keine Unterstreichung standardmäßig
-          padding-bottom: 3px; // Platz für die Unterstreichung reservieren
-          transition: padding-bottom 0.3s ease; // Übergangseffekt für die Unterstreichung
+          color: var(--foreground-color); // Use the foreground color variable
+          text-decoration: none;
+          padding-bottom: 3px;
+          transition: padding-bottom 0.3s ease;
+          font-family: UnageoRegular;
+          font-size: large;
 
           &::after {
             content: "";
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 0; // Anfangszustand (unsichtbar)
-            height: 2px; // Höhe der Unterstreichung
-            background-color: white; // Farbe der Unterstreichung
-            transition: width 0.3s ease; // Animation für die Breite des Unterstrichs
+            width: 0;
+            height: 2px;
+            background-color: var(--background-color); // Use the background color variable for the underline
+            transition: width 0.3s ease;
             transform-origin: left;
           }
 
           &:hover::after,
           &:focus::after {
-            width: 100%; // Unterstrich vollständig anzeigen
+            width: 100%;
           }
         }
       }

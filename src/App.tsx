@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./css/App.css";
-import WebsiteHeader from "./components/WebsiteHeader.tsx"; // Passe den Pfad entsprechend deiner Ordnerstruktur an
-import TestTaskUi from "./components/test/TestTaskUi.tsx";
+import "./scss/App.scss";
+import WebsiteHeader from "./components/WebsiteHeader";
+import TestTaskUi from "./components/test/TestTaskUi";
 
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
@@ -30,6 +30,7 @@ function App() {
 
   return (
     <>
+      <WebsiteHeader />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
@@ -37,16 +38,12 @@ function App() {
           <Route path="contact" element={<ContactPage />} />
         </Route>
       </Routes>
-      <WebsiteHeader />
       <div>
         <h1>Task Overview</h1>
-
         {tasks.map((task, index) => (
           <TestTaskUi key={index} task={task} />
         ))}
       </div>
-
-      {/* Hier kannst du andere Inhalte deiner App hinzufügen */}
     </>
   );
 }

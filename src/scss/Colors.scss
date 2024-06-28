@@ -1,3 +1,4 @@
+// Your original color variables (these remain unchanged)
 $primary: #0e76a8;
 $primary-content: #bce5f9;
 $primary-dark: #0a5579;
@@ -23,5 +24,55 @@ $success: #0ea80e;
 $warning: #a8a80e;
 $error: #a80e0e;
 $success-content: #bcf9bc;
-$warning-content: #000000;
+$warning-content: #000000;  // Ensure warning content is visible in dark mode
 $error-content: #f9bcbc;
+
+// CSS Variables for dynamic theming
+:root {
+  --primary-color: #{$primary};
+  --primary-content-color: #{$primary-content};
+  --primary-dark-color: #{$primary-dark};
+  --primary-light-color: #{$primary-light};
+  
+  --secondary-color: #{$secondary};
+  --secondary-content-color: #{$secondary-content};
+  --secondary-dark-color: #{$secondary-dark};
+  --secondary-light-color: #{$secondary-light};
+  
+  --background-color: #{$background-light};
+  --foreground-color: #{$foreground-light};
+  --border-color: #{$border-light};
+
+  --copy-color: #{$copy};
+  --copy-light-color: #{$copy-light};
+  --copy-lighter-color: #{$copy-lighter};
+
+  --success-color: #{$success};
+  --warning-color: #{$warning};
+  --error-color: #{$error};
+}
+
+// Dark mode overrides
+.dark-mode {
+  --primary-color: #{$primary-dark};
+  --primary-content-color: #{$primary-content}; 
+  --primary-dark-color: #{$primary};
+  --primary-light-color: #{$primary-light};
+  
+  --secondary-color: #{$secondary-dark};
+  --secondary-content-color: #{$secondary-content};
+  --secondary-dark-color: #{$secondary};
+  --secondary-light-color: #{$secondary-light};
+  
+  --background-color: #{$background-dark};
+  --foreground-color: #{$foreground-dark};
+  --border-color: #{$border-dark};
+
+  --copy-color: #{$copy-light};
+  --copy-light-color: #{$copy-lighter};
+  --copy-lighter-color: #{$copy};
+
+  --success-color: #{$success-content};
+  --warning-color: #{$warning-content}; 
+  --error-color: #{$error-content};
+}

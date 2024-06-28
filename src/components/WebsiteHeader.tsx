@@ -12,7 +12,6 @@ const WebsiteHeader: React.FC = () => {
             LetteHub
           </Link>
         </h1>
-        <div className="logo-divider"></div>
       </div>
       <nav className="navigation">
         <ul>
@@ -30,7 +29,7 @@ const WebsiteHeader: React.FC = () => {
           </li>
         </ul>
       </nav>
-      <DarkLightModeSwitch></DarkLightModeSwitch>
+      <DarkLightModeSwitch />
     </header>
   );
 };

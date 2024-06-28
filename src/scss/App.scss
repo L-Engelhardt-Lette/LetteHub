@@ -1,2 +1,18 @@
 @import url("./Colors.scss");
 @import url("./Fonts.scss");
+
+
+/* App.scss */
+
+/* Light mode styles */
+body {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  /* Dark mode styles */
+  body.dark-mode {
+    background-color: #000000;
+    color: #ffffff;
+  }
+  
