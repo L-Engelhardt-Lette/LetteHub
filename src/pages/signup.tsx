@@ -28,7 +28,12 @@ const Signup: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationErrors: typeof errors = {};
+    const validationErrors: typeof errors = {
+      name: "",
+      email: "",
+      password: "",
+      repassword: "",
+    };
     if (!formData.name.trim()) validationErrors.name = "Name is required";
     if (!formData.email.trim()) validationErrors.email = "Email is required";
     if (!formData.password.trim())
