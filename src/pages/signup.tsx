@@ -100,7 +100,7 @@ const Signup: React.FC = () => {
         <div className="input-container">
           {" "}
           {/* Added className "input-container" */}
-          <label htmlFor="repassword">Re-enter Password:</label>
+          <label htmlFor="repassword">Re-enter Password: </label>
           <input
             type="password"
             id="repassword"
