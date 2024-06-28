@@ -41,39 +41,38 @@ const Login: React.FC = () => {
 
   return (
     <div className="login">
-      <div className="centered-horizontally-div">
-        <div className="centered-vertically-div">
-          <h1>Login</h1>
-          <form onSubmit={handleSubmit} className="form">
-            <div>
-              <label htmlFor="email">Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-              {errors.email && <p className="error">{errors.email}</p>}
-            </div>
-            <div>
-              <label htmlFor="password">Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {errors.password && <p className="error">{errors.password}</p>}
-            </div>
-            <button type="submit">Login</button>
-          </form>
-          <p className="new-account-notice">
-            Don't have an account? <Link to="/signup">Create one here</Link>.
-          </p>
+      <form onSubmit={handleSubmit} className="form">
+        <h1 className="form-title">Login</h1>
+        <div className="input-container">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          {errors.email && <p className="error">{errors.email}</p>}
         </div>
-      </div>
+        <div className="input-container">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {errors.password && <p className="error">{errors.password}</p>}
+        </div>
+        <button type="submit" className="submit">
+          Login
+        </button>
+        <p className="signup-link">
+          No account?
+          <Link to="/signup">Sign up</Link>
+        </p>
+      </form>
     </div>
   );
 };
