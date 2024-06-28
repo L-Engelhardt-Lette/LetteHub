@@ -1,76 +1,69 @@
-// CreateProjectModal.tsx
-import React, { useState, useEffect } from 'react';
-import '../scss/pages/CreateProjectModal.scss';
+// Project.tsx
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import CreateProjectModal from '../components/CreateProjectModal';
+import '../scss/pages/Project.scss';
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-  onCreateProject: (name: string) => void;
-}
+const Project: React.FC = () => {
+  const [items, setItems] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const history = useHistory();
 
-const CreateProjectModal: React.FC<Props> = ({ isOpen, onClose, onCreateProject }) => {
-  const [projectName, setProjectName] = useState('');
-  const [error, setError] = useState<string>('');
-
-  useEffect(() => {
-    if (!isOpen) {
-      // Reset input and error when modal is closed
-      setProjectName('');
-      setError('');
-    }
-  }, [isOpen]);
-
-  const handleCreateProject = () => {
-    if (projectName.trim() === '') {
-      setError('Project name cannot be empty');
-      return;
-    }
-
-    onCreateProject(projectName);
-    setProjectName('');
-    setError('');
-    onClose();
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setProjectName(e.target.value);
-    if (error && e.target.value.trim() !== '') {
-      setError('');
-    }
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
-  const handleCancel = () => {
-    setProjectName(''); // Clear input field on cancel
-    setError('');
-    onClose();
+  const handleCreateProject = (name: string) => {
+    setItems([...items, name]);
   };
 
-  if (!isOpen) return null;
+  const handleProjectClick = (name: string) => {
+    history.push(`/project/${encodeURIComponent(name)}`);
+  };
+
+  const getGridTemplateColumns = () => {
+    return 'repeat(3, min-content)';
+  };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <div className="modal-content">
-          <h2>Enter Project Name</h2>
-          <input
-            type="text"
-            placeholder="Project Name"
-            value={projectName}
-            onChange={handleInputChange}
-          />
-          {error && <p className="error-message">{error}</p>}
-          <div className="button-container">
-            <button className="create-button" onClick={handleCreateProject}>
-              Create Project
-            </button>
-            <button className="cancel-button" onClick={handleCancel}>
-              Cancel
-            </button>
-          </div>
+    <div className="project">
+      <h1 className="title">{items.length > 0 ? (items.length > 1 ? "My Projects" : "My Project") : "Create your project"}</h1>
+      <div className="grid-container">
+        <div className="grid" style={{ gridTemplateColumns: getGridTemplateColumns() }}>
+          {items.length === 0 && (
+            <div className="no-projects">
+              {/* Hier könnte eine Nachricht angezeigt werden, wenn keine Projekte vorhanden sind */}
+            </div>
+          )}
+          {items.map((item, index) => (
+            <div key={index} className="grid-item" onClick={() => handleProjectClick(item)}>
+              <div className="inner-grid-item">
+                <div className="grid-item-content">Field {index + 1}</div>
+                <div className="grid-item-title"><strong>{item}</strong></div>
+              </div>
+            </div>
+          ))}
+          <button
+            className="grid-item add-button"
+            onClick={handleOpenModal}
+            title="Create project" // Tooltip für den Button
+          >
+            +
+          </button>
         </div>
       </div>
+      <CreateProjectModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onCreateProject={handleCreateProject}
+      />
     </div>
   );
 };
 
-export default CreateProjectModal;
+export default Project;
