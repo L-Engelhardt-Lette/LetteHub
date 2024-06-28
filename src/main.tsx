@@ -1,11 +1,21 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import AppRoutes from "./routes/AppRoutes";
 import "./css/index.css";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <AppRoutes />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+// Get the root container
+const container = document.getElementById("root");
+
+if (container) {
+  // Create a root
+  const root = createRoot(container);
+
+  // Initial render
+  root.render(
+    <React.StrictMode>
+      <AppRoutes />
+    </React.StrictMode>
+  );
+} else {
+  console.error("Failed to find the root element");
+}
