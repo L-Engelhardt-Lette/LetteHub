@@ -58,7 +58,9 @@
             left: 0;
             width: 0;
             height: 2px;
-            background-color: var(--background-color); // Use the background color variable for the underline
+            background-color: var(
+              --background-color
+            ); // Use the background color variable for the underline
             transition: width 0.3s ease;
             transform-origin: left;
           }
@@ -70,5 +72,21 @@
         }
       }
     }
+  }
+  #HeaderRightContent {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    .Content {
+      align-items: center;
+      align-content: center;
+      padding: 15px 5px;
+    }
+  }
+  .user-icon-button {
+    background: none; // Remove default button background
+    border: none; // Remove default border
+    padding: 0; // Remove default padding
+    cursor: pointer; // Add pointer cursor to indicate it's clickable
   }
 }

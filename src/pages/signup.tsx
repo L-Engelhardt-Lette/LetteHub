@@ -1,16 +1,23 @@
+// src/Signup.tsx
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../scss/pages/LoginAndCreateUser.scss";
 
-const Login: React.FC = () => {
+const Signup: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
+    repassword: "", // Changed confirmPassword to repassword
   });
+
   const [errors, setErrors] = useState({
+    name: "",
     email: "",
     password: "",
+    repassword: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,28 +28,39 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationErrors: typeof errors = {
-      email: "",
-      password: "",
-    };
+    const validationErrors: typeof errors = {};
+    if (!formData.name.trim()) validationErrors.name = "Name is required";
     if (!formData.email.trim()) validationErrors.email = "Email is required";
     if (!formData.password.trim())
       validationErrors.password = "Password is required";
+    if (formData.password !== formData.repassword)
+      validationErrors.repassword = "Passwords do not match"; // Validation check
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    // TODO: Send login request to your backend API here.
+    // TODO: Send signup request to your backend API here.
 
-    navigate("/"); // Navigate to home on successful login.
+    navigate("/login");
   };
 
   return (
-    <div className="login">
-      <h1>Login</h1>
+    <div className="signup">
+      <h1>Sign Up</h1>
       <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+          />
+          {errors.name && <p className="error">{errors.name}</p>}
+        </div>
         <div>
           <label htmlFor="email">Email:</label>
           <input
@@ -52,7 +70,6 @@ const Login: React.FC = () => {
             value={formData.email}
             onChange={handleChange}
           />
-          {errors.email && <p className="error">{errors.email}</p>}
         </div>
         <div>
           <label htmlFor="password">Password:</label>
@@ -63,15 +80,26 @@ const Login: React.FC = () => {
             value={formData.password}
             onChange={handleChange}
           />
-          {errors.password && <p className="error">{errors.password}</p>}
         </div>
-        <button type="submit">Login</button>
+        <div>
+          <label htmlFor="repassword">Re-enter Password:</label>
+          <input
+            type="password"
+            id="repassword"
+            name="repassword"
+            value={formData.repassword}
+            onChange={handleChange}
+          />
+          {errors.repassword && <p className="error">{errors.repassword}</p>}
+        </div>
+        {/* ... (Repeat similar input fields for email, password, and repassword) ... */}
+        <button type="submit">Sign Up</button>
       </form>
       <p className="new-account-notice">
-        Don't have an account? <Link to="/signup">Create one here</Link>.
+        Already have an account? <Link to="/login">Login here</Link>.
       </p>
     </div>
   );
 };
 
-export default Login;
+export default Signup;

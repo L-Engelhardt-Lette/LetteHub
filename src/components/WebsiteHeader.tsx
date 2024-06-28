@@ -1,9 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../scss/Components/WebsiteHeader.scss";
 import DarkLightModeSwitch from "./DarkLightModeSwitch";
+import HeaderUserIcon from "./HeaderUserIcon";
 
 const WebsiteHeader: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
   return (
     <header className="website-header">
       <div className="logo">
@@ -32,7 +38,16 @@ const WebsiteHeader: React.FC = () => {
           </li>
         </ul>
       </nav>
-      <DarkLightModeSwitch />
+      <div id="HeaderRightContent">
+        <div className="Content">
+          <button onClick={handleLoginClick} className="user-icon-button">
+            <HeaderUserIcon />
+          </button>
+        </div>
+        <div className="Content">
+          <DarkLightModeSwitch />
+        </div>
+      </div>
     </header>
   );
 };

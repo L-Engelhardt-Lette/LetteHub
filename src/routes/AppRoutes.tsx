@@ -5,6 +5,8 @@ import About from "../pages/About";
 import Contact from "../pages/Contact";
 import Services from "../pages/Service";
 import ProjectSelect from "../pages/ProjectSelect";
+import Login from "../pages/Login";
+import Signup from "../pages/signup";
 import NotFound from "../pages/NotFound";
 import WebsiteHeader from "../components/WebsiteHeader"; // Import the header
 
@@ -17,6 +19,8 @@ const AppRoutes = () => (
       <Route path="/services" element={<Services />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/projectSelect" element={<ProjectSelect />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </Router>
