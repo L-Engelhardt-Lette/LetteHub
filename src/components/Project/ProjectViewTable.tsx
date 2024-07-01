@@ -8,6 +8,7 @@ import React, {
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaFire } from "react-icons/fa";
+import { SketchPicker } from "react-color";
 
 export const CustomKanban = () => {
   return (
@@ -19,37 +20,39 @@ export const CustomKanban = () => {
 
 const Board = () => {
   const [cards, setCards] = useState(DEFAULT_CARDS);
+  const [columns, setColumns] = useState([
+    { title: "Backlog", headingColor: "text-neutral-500", column: "backlog" },
+    { title: "TODO", headingColor: "text-yellow-200", column: "todo" },
+    { title: "In progress", headingColor: "text-blue-200", column: "doing" },
+    { title: "Complete", headingColor: "text-emerald-200", column: "done" },
+  ]);
 
   return (
     <div className="flex h-full w-full gap-3 overflow-scroll p-12">
-      <Column
-        title="Backlog"
-        column="backlog"
-        headingColor="text-neutral-500"
-        cards={cards}
-        setCards={setCards}
-      />
-      <Column
-        title="TODO"
-        column="todo"
-        headingColor="text-yellow-200"
-        cards={cards}
-        setCards={setCards}
-      />
-      <Column
-        title="In progress"
-        column="doing"
-        headingColor="text-blue-200"
-        cards={cards}
-        setCards={setCards}
-      />
-      <Column
-        title="Complete"
-        column="done"
-        headingColor="text-emerald-200"
-        cards={cards}
-        setCards={setCards}
-      />
+      {columns.map((col) => (
+        <Column
+          key={col.column}
+          title={col.title}
+          headingColor={col.headingColor}
+          cards={cards}
+          column={col.column as ColumnType} // Ensure correct type
+          setCards={setCards}
+          updateColumnTitle={(newTitle) => {
+            setColumns(
+              columns.map((c) =>
+                c.column === col.column ? { ...c, title: newTitle } : c
+              )
+            );
+          }}
+          updateColumnColor={(newColor) => {
+            setColumns(
+              columns.map((c) =>
+                c.column === col.column ? { ...c, headingColor: newColor } : c
+              )
+            );
+          }}
+        />
+      ))}
       <BurnBarrel setCards={setCards} />
     </div>
   );
@@ -61,6 +64,8 @@ type ColumnProps = {
   cards: CardType[];
   column: ColumnType;
   setCards: Dispatch<SetStateAction<CardType[]>>;
+  updateColumnTitle: (newTitle: string) => void;
+  updateColumnColor: (newColor: string) => void;
 };
 
 const Column = ({
@@ -69,8 +74,26 @@ const Column = ({
   cards,
   column,
   setCards,
+  updateColumnTitle,
+  updateColumnColor,
 }: ColumnProps) => {
   const [active, setActive] = useState(false);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [newTitle, setNewTitle] = useState(title);
+  const [showColorPicker, setShowColorPicker] = useState(false);
+
+  const handleTitleChange = () => {
+    setEditingTitle(true);
+  };
+
+  const saveTitleChange = () => {
+    setEditingTitle(false);
+    updateColumnTitle(newTitle);
+  };
+
+  const handleColorChange = (color: { hex: string }) => {
+    updateColumnColor(color.hex);
+  };
 
   const handleDragStart = (e: DragEvent, card: CardType) => {
     e.dataTransfer.setData("cardId", card.id);
@@ -110,7 +133,6 @@ const Column = ({
       setCards(copy);
     }
   };
-
   const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
     highlightIndicator(e);
@@ -159,7 +181,6 @@ const Column = ({
 
     return el;
   };
-
   const getIndicators = () => {
     return Array.from(
       document.querySelectorAll(
@@ -178,10 +199,33 @@ const Column = ({
   return (
     <div className="w-56 shrink-0">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className={`font-medium ${headingColor}`}>{title}</h3>
-        <span className="rounded text-sm text-neutral-400">
-          {filteredCards.length}
-        </span>
+        {editingTitle ? (
+          <input
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            onBlur={saveTitleChange}
+            autoFocus
+            className="text-black" // Add this line to change text color to black
+          />
+        ) : (
+          <h3
+            className={`font-medium ${headingColor} cursor-pointer`}
+            onClick={handleTitleChange}
+          >
+            {title}
+          </h3>
+        )}
+        <div>
+          <button onClick={() => setShowColorPicker(!showColorPicker)}>
+            Color
+          </button>
+          {showColorPicker && (
+            <SketchPicker
+              color={headingColor}
+              onChangeComplete={handleColorChange}
+            />
+          )}
+        </div>
       </div>
       <div
         onDrop={handleDragEnd}
