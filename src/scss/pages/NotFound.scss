@@ -1,22 +1,40 @@
 /* src/NotFound.scss */
+@import "../Colors.scss";
+@import "../Fonts.scss";
 
 .not-found {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
-    font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 100px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+
+  #container {
+    height: max-content;
+
+    #title-container {
+      display: inline-flex;
+      align-items: center;
+      h1 {
+        font-size: 6em;
+        margin: 0 auto;
+        #zero {
+          font-size: 1em;
+          color: $primary;
+          padding: 0px;
+          margin: 0px;
+        }
+      }
+      #icon {
+        font-size: 5em;
+        padding: 0.5em;
+      }
+    }
+    h2 {
+    }
+    p {
+    }
   }
-  
-  .not-found h1 {
-    font-size: 6em;
-    margin: 0;
-  }
-  
-  .not-found p {
-    font-size: 2em;
-    margin: 0;
-  }
-  
+}
