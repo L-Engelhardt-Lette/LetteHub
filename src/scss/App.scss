@@ -1,5 +1,8 @@
 @import url("./Colors.scss");
 @import url("./Fonts.scss");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 html,
 body {

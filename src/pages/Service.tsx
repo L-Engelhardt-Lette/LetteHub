@@ -1,11 +1,11 @@
 import React from "react";
 import Layout from "../components/test/Layout";
-import ProjectDisplayTable from "../components/Project/ProjectViewTable";
+import { CustomKanban } from "../components/Project/ProjectViewTable";
 
 const Services = () => {
   return (
     <Layout>
-      <ProjectDisplayTable />
+      <CustomKanban />
     </Layout>
   );
 };
