@@ -2,6 +2,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import '../scss/pages/ProjectDetail.scss';
+import { CustomKanban } from '../components/Project/ProjectViewTable';
 
 // Mock data as an example. Replace this with your actual data source or API call.
 const projects = [
@@ -45,6 +46,7 @@ const ProjectDetail: React.FC = () => {
           <li key={participant}>{participant}</li>
         ))}
       </ul>
+      <CustomKanban />
     </div>
   );
 };

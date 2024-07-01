@@ -4,26 +4,37 @@ import '../scss/Components/CreateProjectModal.scss';
 interface CreateProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateProject: (name: string) => void;
+  onCreateProject: (name: string, startDate: string, endDate: string) => void;
 }
 
 const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose, onCreateProject }) => {
   const [projectName, setProjectName] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [error, setError] = useState<string>('');
 
   const handleCreate = () => {
-    if (projectName.trim()) {
-      onCreateProject(projectName);
+    if (projectName.trim() && startDate.trim() && endDate.trim()) {
+      onCreateProject(projectName, startDate, endDate);
       setProjectName('');
+      setStartDate('');
+      setEndDate('');
       onClose();
     } else {
-      setError('Project name cannot be empty');
+      setError('Please fill out all fields');
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setProjectName(e.target.value);
-    if (error && e.target.value.trim() !== '') {
+    const { name, value } = e.target;
+    if (name === 'projectName') {
+      setProjectName(value);
+    } else if (name === 'startDate') {
+      setStartDate(value);
+    } else if (name === 'endDate') {
+      setEndDate(value);
+    }
+    if (error && value.trim() !== '') {
       setError('');
     }
   };
@@ -36,9 +47,24 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
         <h2>Create Project</h2>
         <input
           type="text"
+          name="projectName"
           value={projectName}
           onChange={handleInputChange}
           placeholder="Project Name"
+        />
+        <input
+          type="date"
+          name="startDate"
+          value={startDate}
+          onChange={handleInputChange}
+          placeholder="Start Date"
+        />
+        <input
+          type="date"
+          name="endDate"
+          value={endDate}
+          onChange={handleInputChange}
+          placeholder="End Date"
         />
         {error && <p className="error-message">{error}</p>}
         <div className="button-container">
