@@ -1,11 +1,26 @@
-// Project.tsx
+// src/pages/ProjectSelect.tsx
 import React, { useState } from 'react';
-import CreateProjectModal from './CreateProjectModal.tsx';
-import '../scss/pages/Project.scss';
+import { useNavigate } from 'react-router-dom';
+import CreateProjectModal from '../components/CreateProjectModal';
+import '../scss/pages/ProjectSelect.scss';
 
-const Project: React.FC = () => {
-  const [items, setItems] = useState<string[]>([]);
+// Mock data as an example. Replace this with your actual data source or API call.
+const projects = [
+  {
+    id: '1',
+    name: 'Project Alpha',
+  },
+  {
+    id: '2',
+    name: 'Project Beta',
+  },
+  // Weitere Projekte hier hinzufügen
+];
+
+const ProjectSelect: React.FC = () => {
+  const [items, setItems] = useState(projects);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -16,8 +31,12 @@ const Project: React.FC = () => {
   };
 
   const handleCreateProject = (name: string) => {
-    setItems([...items, name]);
-    setIsModalOpen(false); // Close modal after creating project
+    const newProject = {
+      id: (items.length + 1).toString(),
+      name,
+    };
+    setItems([...items, newProject]);
+    setIsModalOpen(false);
   };
 
   return (
@@ -33,7 +52,7 @@ const Project: React.FC = () => {
         <div className="grid">
           {items.length === 0 && (
             <div className="no-projects">
-             
+              <p>No projects found.</p>
             </div>
           )}
           {items.map((item, index) => (
@@ -41,14 +60,14 @@ const Project: React.FC = () => {
               <div className="inner-grid-item">
                 <div className="grid-item-content">Field {index + 1}</div>
                 <div className="grid-item-title">
-                  <strong>{item}</strong>
+                  <strong>{item.name}</strong>
                 </div>
                 <button
                   className="grid-item-action-button"
-                  onClick={() => console.log(`Button clicked for project: ${item}`)}
+                  onClick={() => navigate(`/project/${item.id}`)}
                   title="Action button"
                 >
-                  Action
+                  View Details
                 </button>
               </div>
             </div>
@@ -71,4 +90,4 @@ const Project: React.FC = () => {
   );
 };
 
-export default Project;
+export default ProjectSelect;
