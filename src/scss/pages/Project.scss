@@ -5,13 +5,15 @@
 
   .title {
     font-size: 2rem;
-    margin-bottom: 20px;
+    margin-top: 100px; /* Erhöhter Abstand zum oberen Rand */
+    margin-bottom: 60px; /* Erhöhter Abstand zum Grid */
     text-align: center;
   }
 
   .grid-container {
     display: flex;
     justify-content: center;
+    align-items: flex-start; /* Vertikal oben ausrichten */
   }
 
   .grid {
@@ -27,7 +29,6 @@
     background-color: #e6e6e6;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
-    position: relative;
 
     &:hover {
       transform: translateY(-5px);
@@ -51,17 +52,12 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      position: relative;
-      overflow: hidden; /* Verhindert, dass das Bild über den Rahmen hinausragt */
 
       img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        max-width: 100%; /* Maximale Breite für das Bild */
+        max-height: 100%; /* Maximale Höhe für das Bild */
+        border-radius: 5px;
         object-fit: cover; /* Bild skalieren und zuschneiden */
-        z-index: -1; /* Hinter das Hintergrundbild legen */
       }
     }
 
@@ -107,7 +103,7 @@
   }
 
   .no-projects {
-    margin-top: 20px;
+    margin-top: 40px; /* Erhöhter Abstand vom Grid */
     text-align: center;
     color: #777;
 
