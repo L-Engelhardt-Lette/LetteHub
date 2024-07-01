@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../scss/pages/LoginAndCreateUser.scss";
+import axios from "axios";
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
+    vorname: "",
     email: "",
     password: "",
-    repassword: "", // Changed confirmPassword to repassword
+    repassword: "",
   });
 
   const [errors, setErrors] = useState({
     name: "",
+    vorname: "",
     email: "",
     password: "",
     repassword: "",
@@ -28,39 +31,43 @@ const Signup: React.FC = () => {
 
     const validationErrors: typeof errors = {
       name: "",
+      vorname: "",
       email: "",
       password: "",
       repassword: "",
     };
     if (!formData.name.trim()) validationErrors.name = "Name is required";
+    if (!formData.vorname.trim()) validationErrors.vorname = "Vorname is required";
     if (!formData.email.trim()) validationErrors.email = "Email is required";
     if (!formData.password.trim())
       validationErrors.password = "Password is required";
     if (formData.password !== formData.repassword)
-      validationErrors.repassword = "Passwords do not match"; // Validation check
+      validationErrors.repassword = "Passwords do not match";
 
-    if (Object.keys(validationErrors).length > 0) {
+    if (Object.keys(validationErrors).some(key => validationErrors[key])) {
       setErrors(validationErrors);
       return;
     }
 
-    // TODO: Send signup request to your backend API here.
+    try {
+      await axios.post("http://localhost:5000/register", {
+        name: formData.name,
+        vorname: formData.vorname,
+        email: formData.email,
+        password: formData.password,
+      });
 
-    navigate("/login");
+      navigate("/login");
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
   };
 
   return (
     <div className="login">
-      {" "}
-      {/* Changed className to "login" for consistency */}
       <form onSubmit={handleSubmit} className="form">
-        {" "}
-        {/* Added className "form" */}
-        <h1 className="form-title">Sign Up</h1>{" "}
-        {/* Added className "form-title" */}
+        <h1 className="form-title">Sign Up</h1>
         <div className="input-container">
-          {" "}
-          {/* Added className "input-container" */}
           <label htmlFor="name">Name:</label>
           <input
             type="text"
@@ -72,8 +79,17 @@ const Signup: React.FC = () => {
           {errors.name && <p className="error">{errors.name}</p>}
         </div>
         <div className="input-container">
-          {" "}
-          {/* Added className "input-container" */}
+          <label htmlFor="vorname">Vorname:</label>
+          <input
+            type="text"
+            id="vorname"
+            name="vorname"
+            value={formData.vorname}
+            onChange={handleChange}
+          />
+          {errors.vorname && <p className="error">{errors.vorname}</p>}
+        </div>
+        <div className="input-container">
           <label htmlFor="email">Email:</label>
           <input
             type="email"
@@ -85,8 +101,6 @@ const Signup: React.FC = () => {
           {errors.email && <p className="error">{errors.email}</p>}
         </div>
         <div className="input-container">
-          {" "}
-          {/* Added className "input-container" */}
           <label htmlFor="password">Password:</label>
           <input
             type="password"
@@ -98,9 +112,7 @@ const Signup: React.FC = () => {
           {errors.password && <p className="error">{errors.password}</p>}
         </div>
         <div className="input-container">
-          {" "}
-          {/* Added className "input-container" */}
-          <label htmlFor="repassword">Re-enter Password: </label>
+          <label htmlFor="repassword">Re-enter Password:</label>
           <input
             type="password"
             id="repassword"
@@ -110,13 +122,8 @@ const Signup: React.FC = () => {
           />
           {errors.repassword && <p className="error">{errors.repassword}</p>}
         </div>
-        <button type="submit" className="submit">
-          Sign Up
-        </button>{" "}
-        {/* Added className "submit" */}
+        <button type="submit" className="submit">Sign Up</button>
         <p className="signup-link">
-          {" "}
-          {/* Changed className to "signup-link" */}
           Already have an account? <Link to="/login">Login here</Link>.
         </p>
       </form>
