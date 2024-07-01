@@ -1,6 +1,6 @@
 // Project.tsx
 import React, { useState } from 'react';
-import CreateProjectModal from './CreateProjectModal';
+import CreateProjectModal from './CreateProjectModal.tsx';
 import '../scss/pages/Project.scss';
 
 const Project: React.FC = () => {
@@ -17,22 +17,23 @@ const Project: React.FC = () => {
 
   const handleCreateProject = (name: string) => {
     setItems([...items, name]);
-  };
-
-  const getGridTemplateColumns = () => {
-    return 'repeat(3, min-content)';
+    setIsModalOpen(false); // Close modal after creating project
   };
 
   return (
     <div className="project">
       <h1 className="title">
-        {items.length > 0 ? (items.length > 1 ? 'My Projects' : 'My Project') : 'Create your project'}
+        {items.length > 0
+          ? items.length > 1
+            ? "My Projects"
+            : "My Project"
+          : "Create your first project"}
       </h1>
       <div className="grid-container">
-        <div className="grid" style={{ gridTemplateColumns: getGridTemplateColumns() }}>
+        <div className="grid">
           {items.length === 0 && (
             <div className="no-projects">
-              <p>Create your project</p>
+             
             </div>
           )}
           {items.map((item, index) => (
@@ -42,15 +43,30 @@ const Project: React.FC = () => {
                 <div className="grid-item-title">
                   <strong>{item}</strong>
                 </div>
+                <button
+                  className="grid-item-action-button"
+                  onClick={() => console.log(`Button clicked for project: ${item}`)}
+                  title="Action button"
+                >
+                  Action
+                </button>
               </div>
             </div>
           ))}
-          <button className="grid-item add-button" onClick={handleOpenModal} title="Create project">
+          <button
+            className="add-project-button"
+            onClick={handleOpenModal}
+            title="Create new project"
+          >
             +
           </button>
         </div>
       </div>
-      <CreateProjectModal isOpen={isModalOpen} onClose={handleCloseModal} onCreateProject={handleCreateProject} />
+      <CreateProjectModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onCreateProject={handleCreateProject}
+      />
     </div>
   );
 };
