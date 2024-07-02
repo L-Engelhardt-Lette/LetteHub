@@ -20,11 +20,13 @@ $copy: #1a2a32;
 $copy-light: #467186;
 $copy-lighter: #6899b0;
 
+$delete: #c71010;
+
 $success: #0ea80e;
 $warning: #a8a80e;
 $error: #a80e0e;
 $success-content: #bcf9bc;
-$warning-content: #000000;  // Ensure warning content is visible in dark mode
+$warning-content: #000000; // Ensure warning content is visible in dark mode
 $error-content: #f9bcbc;
 
 // CSS Variables for dynamic theming
@@ -33,12 +35,12 @@ $error-content: #f9bcbc;
   --primary-content-color: #{$primary-content};
   --primary-dark-color: #{$primary-dark};
   --primary-light-color: #{$primary-light};
-  
+
   --secondary-color: #{$secondary};
   --secondary-content-color: #{$secondary-content};
   --secondary-dark-color: #{$secondary-dark};
   --secondary-light-color: #{$secondary-light};
-  
+
   --background-color: #{$background-light};
   --foreground-color: #{$foreground-light};
   --border-color: #{$border-light};
@@ -55,15 +57,15 @@ $error-content: #f9bcbc;
 // Dark mode overrides
 .dark-mode {
   --primary-color: #{$primary-dark};
-  --primary-content-color: #{$primary-content}; 
+  --primary-content-color: #{$primary-content};
   --primary-dark-color: #{$primary};
   --primary-light-color: #{$primary-light};
-  
+
   --secondary-color: #{$secondary-dark};
   --secondary-content-color: #{$secondary-content};
   --secondary-dark-color: #{$secondary};
   --secondary-light-color: #{$secondary-light};
-  
+
   --background-color: #{$background-dark};
   --foreground-color: #{$foreground-dark};
   --border-color: #{$border-dark};
@@ -73,6 +75,6 @@ $error-content: #f9bcbc;
   --copy-lighter-color: #{$copy};
 
   --success-color: #{$success-content};
-  --warning-color: #{$warning-content}; 
+  --warning-color: #{$warning-content};
   --error-color: #{$error-content};
 }

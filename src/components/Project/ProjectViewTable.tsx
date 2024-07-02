@@ -9,6 +9,8 @@ import { FiPlus, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaFire } from "react-icons/fa";
 import { SketchPicker } from "react-color";
+import ColorChangeButton from "./ColorChangeButton";
+import TooltipButtonDelete from "./DeleteButton";
 
 export const CustomKanban = () => {
   return (
@@ -220,9 +222,10 @@ const Column = ({
           </h3>
         )}
         <div>
-          <button onClick={() => setShowColorPicker(!showColorPicker)}>
-            Color
-          </button>
+          <div className="flex space-x-2">
+            <ColorChangeButton />
+            <TooltipButtonDelete />
+          </div>
           {showColorPicker && (
             <SketchPicker
               color={headingColor}
