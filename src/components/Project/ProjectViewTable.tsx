@@ -30,16 +30,34 @@ const Board = () => {
     { title: "Complete", headingColor: "text-emerald-200", column: "done" },
   ]);
 
+  const addColumn = () => {
+    const newColumnIndex = columns.length + 1;
+    setColumns([
+      ...columns,
+      {
+        title: `Column ${newColumnIndex}`,
+        headingColor: "text-neutral-500",
+        column: `column${newColumnIndex}`,
+      },
+    ]);
+  };
+
+  const deleteColumn = (index: number) => {
+    setColumns(columns.filter((_, colIndex) => colIndex !== index));
+  };
+
   return (
     <div className="flex h-full w-full gap-3 overflow-scroll p-12">
-      {columns.map((col) => (
+      {columns.map((col, index) => (
         <Column
           key={col.column}
+          index={index}
           title={col.title}
           headingColor={col.headingColor}
           cards={cards}
           column={col.column as ColumnType} // Ensure correct type
           setCards={setCards}
+          deleteColumn={deleteColumn}
           updateColumnTitle={(newTitle) => {
             setColumns(
               columns.map((c) =>
@@ -57,7 +75,9 @@ const Board = () => {
         />
       ))}
       <div>
-        <ColumnAddButton />
+        <button onClick={addColumn}>
+          <ColumnAddButton />
+        </button>
         <BurnBarrel setCards={setCards} />
       </div>
     </div>
@@ -65,21 +85,25 @@ const Board = () => {
 };
 
 type ColumnProps = {
+  index: number;
   title: string;
   headingColor: string;
   cards: CardType[];
   column: ColumnType;
   setCards: Dispatch<SetStateAction<CardType[]>>;
+  deleteColumn: (index: number) => void;
   updateColumnTitle: (newTitle: string) => void;
   updateColumnColor: (newColor: string) => void;
 };
 
 const Column = ({
+  index,
   title,
   headingColor,
   cards,
   column,
   setCards,
+  deleteColumn,
   updateColumnTitle,
   updateColumnColor,
 }: ColumnProps) => {
@@ -191,6 +215,7 @@ const Column = ({
 
     return el;
   };
+
   const getIndicators = () => {
     return Array.from(
       document.querySelectorAll(
@@ -228,7 +253,9 @@ const Column = ({
         <div>
           <div className="flex space-x-2">
             <ColorChangeButton />
-            <TooltipButtonDelete />
+            <button onClick={() => deleteColumn(index)}>
+              <TooltipButtonDelete />
+            </button>
           </div>
           {showColorPicker && (
             <SketchPicker
@@ -434,3 +461,5 @@ const DEFAULT_CARDS: CardType[] = [
     column: "done",
   },
 ];
+
+export default CustomKanban;
