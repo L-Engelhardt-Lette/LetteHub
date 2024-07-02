@@ -1,8 +1,15 @@
 import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize(process.env.MYSQL_DATABASE as string, process.env.MYSQL_USER as string, process.env.MYSQL_PASSWORD, {
-  host: process.env.MYSQL_HOST,
-  dialect: 'mysql',
+export const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: 'mysql' // oder 'postgres', 'sqlite', 'mariadb', je nach verwendeter Datenbank
 });
 
-export default sequelize;
+export const connectDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+};
