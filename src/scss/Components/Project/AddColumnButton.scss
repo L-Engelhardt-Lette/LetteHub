@@ -1,8 +1,8 @@
 @import "../../Colors.scss";
 @import "../../Fonts.scss";
 
-.TooltipButtonContainer {
-  background-color: $primary;
+.TooltipButtonContainerAdd {
+  background-color: #3bc42c;
   border-radius: 0.375em;
   font-family: MonaspaceNeonRegular;
 
@@ -23,11 +23,11 @@
 
     &:hover {
       color: #f3f4f6; /* neutral-100 */
-      background: rgb(69, 195, 255);
+      background: rgb(88, 255, 69);
       background: linear-gradient(
         156deg,
-        rgba(69, 195, 255, 1) 0%,
-        rgba(14, 118, 168, 1) 100%
+        rgba(88, 255, 69, 1) 0%,
+        rgba(39, 143, 15, 1) 100%
       );
     }
 

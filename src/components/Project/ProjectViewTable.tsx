@@ -11,6 +11,7 @@ import { FaFire } from "react-icons/fa";
 import { SketchPicker } from "react-color";
 import ColorChangeButton from "./ColorChangeButton";
 import TooltipButtonDelete from "./DeleteButton";
+import ColumnAddButton from "./AddColumnButton";
 
 export const CustomKanban = () => {
   return (
@@ -55,7 +56,10 @@ const Board = () => {
           }}
         />
       ))}
-      <BurnBarrel setCards={setCards} />
+      <div>
+        <ColumnAddButton />
+        <BurnBarrel setCards={setCards} />
+      </div>
     </div>
   );
 };
