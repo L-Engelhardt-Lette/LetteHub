@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AuthRequest } from '../types/express';
 
-export const protect = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const protect = (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('Authorization')?.split(' ')[1];
 
   if (!token) {
@@ -11,7 +10,7 @@ export const protect = (req: AuthRequest, res: Response, next: NextFunction) => 
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
-    req.user = decoded.id;
+    req.user = decoded.id;  // Add this line to TypeScript's request type
     next();
   } catch (error) {
     res.status(401).json({ message: 'Token is not valid' });

@@ -3,8 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
 
-export const registerUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+export const register = async (req: Request, res: Response) => {
+  const { username, email, password } = req.body;
 
   try {
     const userExists = await User.findOne({ where: { email } });
@@ -13,17 +13,16 @@ export const registerUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
+      username,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
-      expiresIn: '1h'
+      expiresIn: '1h',
     });
 
     res.status(201).json({ token });
@@ -32,7 +31,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-export const loginUser = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
@@ -49,10 +48,10 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
-      expiresIn: '1h'
+      expiresIn: '1h',
     });
 
-    res.json({ token });
+    res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
