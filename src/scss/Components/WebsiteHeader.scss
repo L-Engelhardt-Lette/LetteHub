@@ -70,11 +70,13 @@
             ); // Use the background color variable for the underline
             transition: width 0.3s ease;
             transform-origin: left;
+            
           }
 
           &:hover::after,
           &:focus::after {
             width: 100%;
+            background-color: #0e76a8;
           }
         }
       }
