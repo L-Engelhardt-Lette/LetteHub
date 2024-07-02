@@ -131,8 +131,12 @@ const Column = ({
       }
 
       setCards(copy);
+
+      // Log the dropped task
+      console.log("Dropped task:", cardToTransfer); //TODO:Backend Implement
     }
   };
+
   const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
     highlightIndicator(e);
