@@ -12,6 +12,7 @@ import { SketchPicker } from "react-color";
 import ColorChangeButton from "./ColorChangeButton";
 import TooltipButtonDelete from "./DeleteButton";
 import ColumnAddButton from "./AddColumnButton";
+import TaskPopUp from "./TaskPopup";
 
 export const CustomKanban = () => {
   return (
@@ -30,6 +31,9 @@ const Board = () => {
     { title: "Complete", headingColor: "text-emerald-200", column: "done" },
   ]);
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<CardType | null>(null);
+
   const addColumn = () => {
     const newColumnIndex = columns.length + 1;
     setColumns([
@@ -44,6 +48,11 @@ const Board = () => {
 
   const deleteColumn = (index: number) => {
     setColumns(columns.filter((_, colIndex) => colIndex !== index));
+  };
+
+  const handleDoubleClick = (card: CardType) => {
+    setSelectedTask(card);
+    setIsOpen(true);
   };
 
   return (
@@ -72,6 +81,7 @@ const Board = () => {
               )
             );
           }}
+          onCardDoubleClick={handleDoubleClick} // Pass double-click handler
         />
       ))}
       <div>
@@ -80,6 +90,15 @@ const Board = () => {
         </button>
         <BurnBarrel setCards={setCards} />
       </div>
+      {selectedTask && (
+        <TaskPopUp
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          task={selectedTask}
+          onFinish={() => console.log("Finish Task", selectedTask)}
+          onDelete={() => console.log("Delete Task", selectedTask)}
+        />
+      )}
     </div>
   );
 };
@@ -94,6 +113,7 @@ type ColumnProps = {
   deleteColumn: (index: number) => void;
   updateColumnTitle: (newTitle: string) => void;
   updateColumnColor: (newColor: string) => void;
+  onCardDoubleClick: (card: CardType) => void; // Add double-click handler prop
 };
 
 const Column = ({
@@ -106,6 +126,7 @@ const Column = ({
   deleteColumn,
   updateColumnTitle,
   updateColumnColor,
+  onCardDoubleClick, // Add double-click handler prop
 }: ColumnProps) => {
   const [active, setActive] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
@@ -274,7 +295,14 @@ const Column = ({
         }`}
       >
         {filteredCards.map((c) => {
-          return <Card key={c.id} {...c} handleDragStart={handleDragStart} />;
+          return (
+            <Card
+              key={c.id}
+              {...c}
+              handleDragStart={handleDragStart}
+              handleDoubleClick={onCardDoubleClick} // Pass double-click handler
+            />
+          );
         })}
         <DropIndicator beforeId={null} column={column} />
         <AddCard column={column} setCards={setCards} />
@@ -284,21 +312,35 @@ const Column = ({
 };
 
 type CardProps = CardType & {
-  handleDragStart: Function;
+  handleDragStart: (e: React.DragEvent<HTMLDivElement>, card: CardType) => void;
+  handleDoubleClick: (card: CardType) => void; // Modify double-click handler
 };
 
-const Card = ({ title, id, column, handleDragStart }: CardProps) => {
+const Card = ({
+  title,
+  id,
+  column,
+  handleDragStart,
+  handleDoubleClick,
+}: CardProps) => {
   return (
     <>
       <DropIndicator beforeId={id} column={column} />
       <motion.div
         layout
         layoutId={id}
-        draggable="true"
-        onDragStart={(e) => handleDragStart(e, { title, id, column })}
-        className="cursor-grab rounded border border-neutral-700 bg-neutral-800 p-3 active:cursor-grabbing"
+        draggable="true" //TODO: Vielleicht fix aber bis jetzt noch kein problem
+        onDragStart={(e) => handleDragStart(e, { title, id, column })} //Error Bei dem E keine ahnung warum
+        onDoubleClick={(a) => handleDoubleClick({ title, id, column })} // Modify double-click handler
+        className="relative cursor-grab rounded border border-neutral-700 bg-neutral-800 p-3 active:cursor-grabbing group overflow-hidden"
       >
-        <p className="text-sm text-neutral-100">{title}</p>
+        <div className="transition duration-300 ease-in-out group-hover:blur-sm">
+          <p className="text-sm text-neutral-100">{title}</p>
+        </div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
+          <p className="text-xs text-white">Drag to move</p>
+          <p className="text-xs text-white">Double Click to Open</p>
+        </div>
       </motion.div>
     </>
   );
