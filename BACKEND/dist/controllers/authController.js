@@ -23,6 +23,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(201).json({ message: "User registered successfully" });
     }
     catch (error) {
+        console.error("Error during registration:", error);
         res.status(500).json({ error: "User registration failed" });
     }
 });
@@ -42,6 +43,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json({ message: "Login successful" });
     }
     catch (error) {
+        console.error("Error during login:", error);
         res.status(500).json({ error: "Login failed" });
     }
 });

@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mysql2_1 = __importDefault(require("mysql2"));
 const pool = mysql2_1.default.createPool({
     host: "localhost",
-    user: "root", // or your MySQL username
-    password: "", // or your MySQL password
-    database: "project_db",
+    user: "root",
+    password: "",
+    database: "lettehubdb",
 });
 exports.default = pool.promise();
