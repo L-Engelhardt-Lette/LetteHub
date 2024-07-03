@@ -14,6 +14,20 @@ import TooltipButtonDelete from "./DeleteButton";
 import ColumnAddButton from "./AddColumnButton";
 import TaskPopUp from "./TaskPopup";
 
+const taskTemplate = {
+  task_name: "Sample Task",
+  projectID: "1",
+  task_id: "1",
+  project_id: 1,
+  description: "This is a sample task description.",
+  name: "Sample Task",
+  persons: ["Alice", "Bob"],
+  status: 50,
+  progress: 75,
+  startDate: "2024-07-01",
+  finishDate: "2024-07-15",
+};
+
 export const CustomKanban = () => {
   return (
     <div className="h-screen w-full bg-neutral-900 text-neutral-50">
@@ -32,7 +46,7 @@ const Board = () => {
   ]);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<CardType | null>(null);
+  const [selectedTask, setSelectedTask] = useState(taskTemplate);
 
   const addColumn = () => {
     const newColumnIndex = columns.length + 1;
@@ -51,7 +65,12 @@ const Board = () => {
   };
 
   const handleDoubleClick = (card: CardType) => {
-    setSelectedTask(card);
+    setSelectedTask({
+      ...taskTemplate,
+      task_name: card.title,
+      task_id: card.id,
+      column: card.column,
+    });
     setIsOpen(true);
   };
 
@@ -90,14 +109,8 @@ const Board = () => {
         </button>
         <BurnBarrel setCards={setCards} />
       </div>
-      {selectedTask && (
-        <TaskPopUp
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          task={selectedTask}
-          onFinish={() => console.log("Finish Task", selectedTask)}
-          onDelete={() => console.log("Delete Task", selectedTask)}
-        />
+      {isOpen && (
+        <TaskPopUp isOpen={isOpen} setIsOpen={setIsOpen} task={selectedTask} />
       )}
     </div>
   );
