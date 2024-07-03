@@ -14,18 +14,30 @@ import TooltipButtonDelete from "./DeleteButton";
 import ColumnAddButton from "./AddColumnButton";
 import TaskPopUp from "./TaskPopup";
 
-const taskTemplate = {
-  task_name: "Sample Task",
-  projectID: "1",
-  task_id: "1",
-  project_id: 1,
-  description: "This is a sample task description.",
-  name: "Sample Task",
-  persons: ["Alice", "Bob"],
-  status: 50,
-  progress: 75,
-  startDate: "2024-07-01",
-  finishDate: "2024-07-15",
+// Define the TaskType
+type ColumnType = "backlog" | "todo" | "doing" | "done";
+
+type TaskType = {
+  task_name: string;
+  projectID: string;
+  task_id: number;
+  project_id: number;
+  description: string;
+  name: string;
+  persons: string[];
+  status: number;
+  progress: number;
+  startDate: string;
+  finishDate: string;
+  column: ColumnType;
+};
+
+const generateUniqueId = (existingIds: Set<string>): string => {
+  let id;
+  do {
+    id = Math.random().toString();
+  } while (existingIds.has(id));
+  return id;
 };
 
 export const CustomKanban = () => {
@@ -37,7 +49,7 @@ export const CustomKanban = () => {
 };
 
 const Board = () => {
-  const [cards, setCards] = useState(DEFAULT_CARDS);
+  const [cards, setCards] = useState<TaskType[]>(DEFAULT_CARDS);
   const [columns, setColumns] = useState([
     { title: "Backlog", headingColor: "text-neutral-500", column: "backlog" },
     { title: "TODO", headingColor: "text-yellow-200", column: "todo" },
@@ -46,7 +58,7 @@ const Board = () => {
   ]);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(taskTemplate);
+  const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
 
   const addColumn = () => {
     const newColumnIndex = columns.length + 1;
@@ -55,7 +67,7 @@ const Board = () => {
       {
         title: `Column ${newColumnIndex}`,
         headingColor: "text-neutral-500",
-        column: `column${newColumnIndex}`,
+        column: `column${newColumnIndex}` as ColumnType,
       },
     ]);
   };
@@ -64,14 +76,17 @@ const Board = () => {
     setColumns(columns.filter((_, colIndex) => colIndex !== index));
   };
 
-  const handleDoubleClick = (card: CardType) => {
-    setSelectedTask({
-      ...taskTemplate,
-      task_name: card.title,
-      task_id: card.id,
-      column: card.column,
-    });
+  const handleDoubleClick = (card: TaskType) => {
+    setSelectedTask(card);
     setIsOpen(true);
+  };
+
+  const updateTask = (updatedTask: TaskType) => {
+    setCards((prevCards) =>
+      prevCards.map((card) =>
+        card.task_id === updatedTask.task_id ? updatedTask : card
+      )
+    );
   };
 
   return (
@@ -83,7 +98,7 @@ const Board = () => {
           title={col.title}
           headingColor={col.headingColor}
           cards={cards}
-          column={col.column as ColumnType} // Ensure correct type
+          column={col.column}
           setCards={setCards}
           deleteColumn={deleteColumn}
           updateColumnTitle={(newTitle) => {
@@ -109,8 +124,13 @@ const Board = () => {
         </button>
         <BurnBarrel setCards={setCards} />
       </div>
-      {isOpen && (
-        <TaskPopUp isOpen={isOpen} setIsOpen={setIsOpen} task={selectedTask} />
+      {isOpen && selectedTask && (
+        <TaskPopUp
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          task={selectedTask}
+          updateTask={updateTask}
+        />
       )}
     </div>
   );
@@ -120,13 +140,13 @@ type ColumnProps = {
   index: number;
   title: string;
   headingColor: string;
-  cards: CardType[];
+  cards: TaskType[];
   column: ColumnType;
-  setCards: Dispatch<SetStateAction<CardType[]>>;
+  setCards: Dispatch<SetStateAction<TaskType[]>>;
   deleteColumn: (index: number) => void;
   updateColumnTitle: (newTitle: string) => void;
   updateColumnColor: (newColor: string) => void;
-  onCardDoubleClick: (card: CardType) => void; // Add double-click handler prop
+  onCardDoubleClick: (card: TaskType) => void; // Add double-click handler prop
 };
 
 const Column = ({
@@ -159,11 +179,11 @@ const Column = ({
     updateColumnColor(color.hex);
   };
 
-  const handleDragStart = (e: DragEvent, card: CardType) => {
-    e.dataTransfer.setData("cardId", card.id);
+  const handleDragStart = (e: DragEvent<HTMLDivElement>, card: TaskType) => {
+    e.dataTransfer.setData("cardId", card.task_id.toString());
   };
 
-  const handleDragEnd = (e: DragEvent) => {
+  const handleDragEnd = (e: DragEvent<HTMLDivElement>) => {
     const cardId = e.dataTransfer.getData("cardId");
 
     setActive(false);
@@ -177,18 +197,20 @@ const Column = ({
     if (before !== cardId) {
       let copy = [...cards];
 
-      let cardToTransfer = copy.find((c) => c.id === cardId);
+      let cardToTransfer = copy.find((c) => c.task_id === parseInt(cardId));
       if (!cardToTransfer) return;
       cardToTransfer = { ...cardToTransfer, column };
 
-      copy = copy.filter((c) => c.id !== cardId);
+      copy = copy.filter((c) => c.task_id !== parseInt(cardId));
 
       const moveToBack = before === "-1";
 
       if (moveToBack) {
         copy.push(cardToTransfer);
       } else {
-        const insertAtIndex = copy.findIndex((el) => el.id === before);
+        const insertAtIndex = copy.findIndex(
+          (el) => el.task_id === parseInt(before)
+        );
         if (insertAtIndex === undefined) return;
 
         copy.splice(insertAtIndex, 0, cardToTransfer);
@@ -197,11 +219,12 @@ const Column = ({
       setCards(copy);
 
       // Log the dropped task
-      console.log("Dropped task:", cardToTransfer); //TODO:Backend Implement
+      console.log("Dropped task:", cardToTransfer); // Display all task info in the console
     }
   };
 
-  const handleDragOver = (e: DragEvent) => {
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    // Ensure type is correct
     e.preventDefault();
     highlightIndicator(e);
 
@@ -216,7 +239,8 @@ const Column = ({
     });
   };
 
-  const highlightIndicator = (e: DragEvent) => {
+  const highlightIndicator = (e: DragEvent<HTMLDivElement>) => {
+    // Ensure type is correct
     const indicators = getIndicators();
 
     clearHighlights(indicators);
@@ -226,7 +250,11 @@ const Column = ({
     el.element.style.opacity = "1";
   };
 
-  const getNearestIndicator = (e: DragEvent, indicators: HTMLElement[]) => {
+  const getNearestIndicator = (
+    e: DragEvent<HTMLDivElement>,
+    indicators: HTMLElement[]
+  ) => {
+    // Ensure type is correct
     const DISTANCE_OFFSET = 50;
 
     const el = indicators.reduce(
@@ -310,7 +338,7 @@ const Column = ({
         {filteredCards.map((c) => {
           return (
             <Card
-              key={c.id}
+              key={c.task_id}
               {...c}
               handleDragStart={handleDragStart}
               handleDoubleClick={onCardDoubleClick} // Pass double-click handler
@@ -318,37 +346,38 @@ const Column = ({
           );
         })}
         <DropIndicator beforeId={null} column={column} />
-        <AddCard column={column} setCards={setCards} />
+        <AddCard column={column} setCards={setCards} cards={cards} /> // Pass
+        cards prop
       </div>
     </div>
   );
 };
 
-type CardProps = CardType & {
-  handleDragStart: (e: React.DragEvent<HTMLDivElement>, card: CardType) => void;
-  handleDoubleClick: (card: CardType) => void; // Modify double-click handler
+type CardProps = TaskType & {
+  handleDragStart: (e: React.DragEvent<HTMLDivElement>, card: TaskType) => void;
+  handleDoubleClick: (card: TaskType) => void; // Modify double-click handler
 };
 
 const Card = ({
-  title,
-  id,
+  task_name,
+  task_id,
   column,
   handleDragStart,
   handleDoubleClick,
 }: CardProps) => {
   return (
     <>
-      <DropIndicator beforeId={id} column={column} />
+      <DropIndicator beforeId={task_id.toString()} column={column} />
       <motion.div
         layout
-        layoutId={id}
-        draggable="true" //TODO: Vielleicht fix aber bis jetzt noch kein problem
-        onDragStart={(e) => handleDragStart(e, { title, id, column })} //Error Bei dem E keine ahnung warum
-        onDoubleClick={(a) => handleDoubleClick({ title, id, column })} // Modify double-click handler
+        layoutId={task_id.toString()}
+        draggable="true"
+        onDragStart={(e) => handleDragStart(e, { task_name, task_id, column })}
+        onDoubleClick={(a) => handleDoubleClick({ task_name, task_id, column })}
         className="relative cursor-grab rounded border border-neutral-700 bg-neutral-800 p-3 active:cursor-grabbing group overflow-hidden"
       >
         <div className="transition duration-300 ease-in-out group-hover:blur-sm">
-          <p className="text-sm text-neutral-100">{title}</p>
+          <p className="text-sm text-neutral-100">{task_name}</p>
         </div>
         <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
           <p className="text-xs text-white">Drag to move</p>
@@ -377,11 +406,11 @@ const DropIndicator = ({ beforeId, column }: DropIndicatorProps) => {
 const BurnBarrel = ({
   setCards,
 }: {
-  setCards: Dispatch<SetStateAction<CardType[]>>;
+  setCards: Dispatch<SetStateAction<TaskType[]>>;
 }) => {
   const [active, setActive] = useState(false);
 
-  const handleDragOver = (e: DragEvent) => {
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setActive(true);
   };
@@ -390,10 +419,10 @@ const BurnBarrel = ({
     setActive(false);
   };
 
-  const handleDragEnd = (e: DragEvent) => {
+  const handleDragEnd = (e: DragEvent<HTMLDivElement>) => {
     const cardId = e.dataTransfer.getData("cardId");
 
-    setCards((pv) => pv.filter((c) => c.id !== cardId));
+    setCards((pv) => pv.filter((c) => c.task_id !== parseInt(cardId)));
 
     setActive(false);
   };
@@ -416,10 +445,12 @@ const BurnBarrel = ({
 
 type AddCardProps = {
   column: ColumnType;
-  setCards: Dispatch<SetStateAction<CardType[]>>;
+  setCards: Dispatch<SetStateAction<TaskType[]>>;
+  cards: TaskType[]; // Add cards prop
 };
 
-const AddCard = ({ column, setCards }: AddCardProps) => {
+const AddCard = ({ column, setCards, cards }: AddCardProps) => {
+  // Add cards to props
   const [text, setText] = useState("");
   const [adding, setAdding] = useState(false);
 
@@ -428,10 +459,20 @@ const AddCard = ({ column, setCards }: AddCardProps) => {
 
     if (!text.trim().length) return;
 
-    const newCard = {
+    const existingIds = new Set(cards.map((card) => card.task_id.toString()));
+    const newCard: TaskType = {
+      task_name: text.trim(),
+      projectID: "1",
+      task_id: parseInt(generateUniqueId(existingIds)),
+      project_id: 1,
+      description: "New task description",
+      name: text.trim(),
+      persons: [],
+      status: 0,
+      progress: 0,
+      startDate: new Date().toISOString().split("T")[0],
+      finishDate: new Date().toISOString().split("T")[0],
       column,
-      title: text.trim(),
-      id: Math.random().toString(),
     };
 
     setCards((pv) => [...pv, newCard]);
@@ -479,40 +520,149 @@ const AddCard = ({ column, setCards }: AddCardProps) => {
   );
 };
 
-type ColumnType = "backlog" | "todo" | "doing" | "done";
-
-type CardType = {
-  title: string;
-  id: string;
-  column: ColumnType;
-};
-
-const DEFAULT_CARDS: CardType[] = [
+const DEFAULT_CARDS: TaskType[] = [
   // BACKLOG
-  { title: "Look into render bug in dashboard", id: "1", column: "backlog" },
-  { title: "SOX compliance checklist", id: "2", column: "backlog" },
-  { title: "[SPIKE] Migrate to Azure", id: "3", column: "backlog" },
-  { title: "Document Notifications service", id: "4", column: "backlog" },
+  {
+    task_name: "Look into render bug in dashboard",
+    projectID: "1",
+    task_id: 1,
+    project_id: 1,
+    description: "Fix rendering bug",
+    name: "Render Bug",
+    persons: ["Alice"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-01",
+    finishDate: "2024-07-07",
+    column: "backlog",
+  },
+  {
+    task_name: "SOX compliance checklist",
+    projectID: "2",
+    task_id: 2,
+    project_id: 2,
+    description: "Complete SOX compliance",
+    name: "SOX Compliance",
+    persons: ["Bob"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-02",
+    finishDate: "2024-07-10",
+    column: "backlog",
+  },
+  {
+    task_name: "[SPIKE] Migrate to Azure",
+    projectID: "3",
+    task_id: 3,
+    project_id: 3,
+    description: "Investigate Azure migration",
+    name: "Azure Migration",
+    persons: ["Alice", "Bob"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-03",
+    finishDate: "2024-07-15",
+    column: "backlog",
+  },
+  {
+    task_name: "Document Notifications service",
+    projectID: "4",
+    task_id: 4,
+    project_id: 4,
+    description: "Write documentation for Notifications",
+    name: "Notifications Docs",
+    persons: ["Alice"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-04",
+    finishDate: "2024-07-20",
+    column: "backlog",
+  },
   // TODO
   {
-    title: "Research DB options for new microservice",
-    id: "5",
+    task_name: "Research DB options for new microservice",
+    projectID: "5",
+    task_id: 5,
+    project_id: 5,
+    description: "Research database options",
+    name: "DB Research",
+    persons: ["Bob"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-05",
+    finishDate: "2024-07-25",
     column: "todo",
   },
-  { title: "Postmortem for outage", id: "6", column: "todo" },
-  { title: "Sync with product on Q3 roadmap", id: "7", column: "todo" },
-
+  {
+    task_name: "Postmortem for outage",
+    projectID: "6",
+    task_id: 6,
+    project_id: 6,
+    description: "Conduct postmortem for outage",
+    name: "Outage Postmortem",
+    persons: ["Alice", "Bob"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-06",
+    finishDate: "2024-07-30",
+    column: "todo",
+  },
+  {
+    task_name: "Sync with product on Q3 roadmap",
+    projectID: "7",
+    task_id: 7,
+    project_id: 7,
+    description: "Align with product team",
+    name: "Q3 Roadmap",
+    persons: ["Alice"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-07",
+    finishDate: "2024-08-05",
+    column: "todo",
+  },
   // DOING
   {
-    title: "Refactor context providers to use Zustand",
-    id: "8",
+    task_name: "Refactor context providers to use Zustand",
+    projectID: "8",
+    task_id: 8,
+    project_id: 8,
+    description: "Refactor providers",
+    name: "Zustand Refactor",
+    persons: ["Bob"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-08",
+    finishDate: "2024-08-10",
     column: "doing",
   },
-  { title: "Add logging to daily CRON", id: "9", column: "doing" },
+  {
+    task_name: "Add logging to daily CRON",
+    projectID: "9",
+    task_id: 9,
+    project_id: 9,
+    description: "Add logging",
+    name: "CRON Logging",
+    persons: ["Alice"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-09",
+    finishDate: "2024-08-15",
+    column: "doing",
+  },
   // DONE
   {
-    title: "Set up DD dashboards for Lambda listener",
-    id: "10",
+    task_name: "Set up DD dashboards for Lambda listener",
+    projectID: "10",
+    task_id: 10,
+    project_id: 10,
+    description: "Set up dashboards",
+    name: "DD Dashboards",
+    persons: ["Alice", "Bob"],
+    status: 0,
+    progress: 0,
+    startDate: "2024-07-10",
+    finishDate: "2024-08-20",
     column: "done",
   },
 ];
