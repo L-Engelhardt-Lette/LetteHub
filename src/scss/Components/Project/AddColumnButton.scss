@@ -22,7 +22,7 @@
     z-index: 9999999999;
 
     &:hover {
-      color: #f3f4f6; /* neutral-100 */
+      color: $foreground-dark; /* neutral-100 */
       background: rgb(88, 255, 69);
       background: linear-gradient(
         156deg,
