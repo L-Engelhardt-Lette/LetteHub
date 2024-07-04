@@ -11,6 +11,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/signup";
 import NotFound from "../pages/NotFound";
 import WebsiteHeader from "../components/WebsiteHeader"; // Import the header
+import User from "../pages/User";
 
 const AppRoutes = () => (
   <Router>
@@ -21,9 +22,11 @@ const AppRoutes = () => (
       <Route path="/services" element={<Services />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/projectSelect" element={<ProjectSelect />} />
-      <Route path="/project/:projectId" element={<ProjectDetail />} /> {/* Route für ProjectDetail */}
+      <Route path="/project/:projectId" element={<ProjectDetail />} />{" "}
+      {/* Route für ProjectDetail */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/user" element={<User />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </Router>
