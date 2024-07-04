@@ -32,15 +32,15 @@
     display: flex;
 
     .progress-loader {
-      transform: translate(-50%, -50%);
+      transform: translate(calc(-50% + 80px), calc(-50% + 6.5px)); /* 20px nach rechts */
       width: 150px;
       background: rgba(34, 34, 34, 0.253);
       height: 10px;
       border-radius: 7px;
-      
-      
-      
     }
+    
+    
+    
     
     .progress {
       width: 1px;
@@ -71,11 +71,13 @@
   }
   .edit-button {
     margin-left: auto; /* Nach rechts schieben */
-    padding: 12px 24px; /* Erhöhte Padding-Werte für größere Buttons */
+   
+    
+    padding: 10px 20px; /* Erhöhte Padding-Werte für größere Buttons */
     background-color: #0e76a8; /* Blaue Hintergrundfarbe */
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     cursor: pointer;
     display: flex;
     align-items: center; /* Icons vertikal zentrieren */
@@ -102,7 +104,9 @@
 
     .save-button,
     .cancel-button {
-      padding: 14px 28px; /* Größere Padding-Werte für die Buttons */
+      border-radius: 10px;
+      padding: 10px 20px; /* Etwas kleineres Verhältnis als ursprünglich */
+ /* Größere Padding-Werte für die Buttons */
       font-size: 16px; /* Schriftgröße erhöhen */
       display: flex; /* Flexbox für nebeneinander liegende Buttons */
       align-items: center; /* Icons vertikal zentrieren */
