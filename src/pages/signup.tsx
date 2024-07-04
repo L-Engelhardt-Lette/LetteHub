@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../scss/pages/LoginAndCreateUser.scss";
-import axios from "axios";
+import { useNotification } from "../context/NotificationContext";
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
+  const { addNotification } = useNotification();
   const [formData, setFormData] = useState({
     name: "",
-    vorname: "",
     email: "",
     password: "",
     repassword: "",
@@ -15,7 +15,6 @@ const Signup: React.FC = () => {
 
   const [errors, setErrors] = useState({
     name: "",
-    vorname: "",
     email: "",
     password: "",
     repassword: "",
@@ -31,35 +30,44 @@ const Signup: React.FC = () => {
 
     const validationErrors: typeof errors = {
       name: "",
-      vorname: "",
       email: "",
       password: "",
       repassword: "",
     };
     if (!formData.name.trim()) validationErrors.name = "Name is required";
-    if (!formData.vorname.trim()) validationErrors.vorname = "Vorname is required";
     if (!formData.email.trim()) validationErrors.email = "Email is required";
     if (!formData.password.trim())
       validationErrors.password = "Password is required";
     if (formData.password !== formData.repassword)
       validationErrors.repassword = "Passwords do not match";
 
-    if (Object.keys(validationErrors).some(key => validationErrors[key])) {
+    if (Object.keys(validationErrors).some((key) => validationErrors[key])) {
       setErrors(validationErrors);
       return;
     }
 
     try {
-      await axios.post("http://localhost:5000/register", {
-        name: formData.name,
-        vorname: formData.vorname,
-        email: formData.email,
-        password: formData.password,
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
 
+      if (!response.ok) {
+        throw new Error("User registration failed");
+      }
+
+      addNotification("User registered successfully!");
       navigate("/login");
     } catch (error) {
       console.error("Error registering user:", error);
+      addNotification("Error registering user");
     }
   };
 
@@ -77,17 +85,6 @@ const Signup: React.FC = () => {
             onChange={handleChange}
           />
           {errors.name && <p className="error">{errors.name}</p>}
-        </div>
-        <div className="input-container">
-          <label htmlFor="vorname">Vorname:</label>
-          <input
-            type="text"
-            id="vorname"
-            name="vorname"
-            value={formData.vorname}
-            onChange={handleChange}
-          />
-          {errors.vorname && <p className="error">{errors.vorname}</p>}
         </div>
         <div className="input-container">
           <label htmlFor="email">Email:</label>
@@ -122,7 +119,9 @@ const Signup: React.FC = () => {
           />
           {errors.repassword && <p className="error">{errors.repassword}</p>}
         </div>
-        <button type="submit" className="submit">Sign Up</button>
+        <button type="submit" className="submit">
+          Sign Up
+        </button>
         <p className="signup-link">
           Already have an account? <Link to="/login">Login here</Link>.
         </p>
