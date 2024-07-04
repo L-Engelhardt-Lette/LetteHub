@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../scss/pages/LoginAndCreateUser.scss";
+import { useNotification } from "../context/NotificationContext";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { addNotification } = useNotification();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -12,6 +14,7 @@ const Login: React.FC = () => {
     email: "",
     password: "",
   });
+  const [loginError, setLoginError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -29,14 +32,36 @@ const Login: React.FC = () => {
     if (!formData.password.trim())
       validationErrors.password = "Password is required";
 
-    if (Object.keys(validationErrors).length > 0) {
+    if (Object.keys(validationErrors).some((key) => validationErrors[key])) {
       setErrors(validationErrors);
       return;
     }
 
-    // TODO: Send login request to your backend API here.
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-    navigate("/"); // Navigate to home on successful login.
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Login failed");
+      }
+
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+
+      addNotification("Login successful!");
+      navigate("/user"); // Navigate to the user page on successful login
+    } catch (error: any) {
+      setLoginError(error.message || "Error logging in");
+    }
   };
 
   return (
@@ -65,6 +90,7 @@ const Login: React.FC = () => {
           />
           {errors.password && <p className="error">{errors.password}</p>}
         </div>
+        {loginError && <p className="error">{loginError}</p>}
         <button type="submit" className="submit">
           Login
         </button>
