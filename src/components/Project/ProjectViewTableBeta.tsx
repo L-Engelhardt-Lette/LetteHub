@@ -14,10 +14,9 @@ import TooltipButtonDelete from "./DeleteButton";
 import ColumnAddButton from "./AddColumnButton";
 import TaskPopUp from "./TaskPopup";
 
-// Define the TaskType
 type ColumnType = "backlog" | "todo" | "doing" | "done" | `column${number}`;
 
-type TaskType = {
+type Task = {
   task_name: string;
   projectID: string;
   task_id: number;
@@ -31,6 +30,8 @@ type TaskType = {
   finishDate: string;
   column: ColumnType;
 };
+
+type TaskType = Task;
 
 export const CustomKanban = () => {
   return (
@@ -67,10 +68,9 @@ const Board = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
 
-  // Fetch tasks from the server
   useEffect(() => {
     axios
-      .get("/api/tasks")
+      .get("http://localhost:5000/api/tasks")
       .then((response) => {
         if (Array.isArray(response.data)) {
           setCards(response.data);
@@ -107,7 +107,10 @@ const Board = () => {
 
   const updateTask = (updatedTask: TaskType) => {
     axios
-      .put(`/api/tasks/${updatedTask.task_id}`, updatedTask)
+      .put(
+        `http://localhost:5000/api/tasks/${updatedTask.task_id}`,
+        updatedTask
+      )
       .then(() => {
         setCards((prevCards) =>
           prevCards.map((card) =>
@@ -117,6 +120,30 @@ const Board = () => {
       })
       .catch((error) => {
         console.error("Error updating task:", error);
+      });
+  };
+
+  const addTask = (newTask: TaskType) => {
+    axios
+      .post("http://localhost:5000/api/tasks", newTask)
+      .then((response) => {
+        setCards((prevCards) => [...prevCards, response.data]);
+      })
+      .catch((error) => {
+        console.error("Error adding task:", error);
+      });
+  };
+
+  const deleteTask = (taskId: number) => {
+    axios
+      .delete(`http://localhost:5000/api/tasks/${taskId}`)
+      .then(() => {
+        setCards((prevCards) =>
+          prevCards.filter((card) => card.task_id !== taskId)
+        );
+      })
+      .catch((error) => {
+        console.error("Error deleting task:", error);
       });
   };
 
@@ -140,6 +167,8 @@ const Board = () => {
             );
           }}
           onCardDoubleClick={handleDoubleClick}
+          addTask={addTask}
+          deleteTask={deleteTask}
         />
       ))}
       <div>
@@ -170,6 +199,8 @@ type ColumnProps = {
   deleteColumn: (index: number) => void;
   updateColumnTitle: (newTitle: string) => void;
   onCardDoubleClick: (card: TaskType) => void;
+  addTask: (task: TaskType) => void;
+  deleteTask: (taskId: number) => void;
 };
 
 const Column = ({
@@ -182,6 +213,8 @@ const Column = ({
   deleteColumn,
   updateColumnTitle,
   onCardDoubleClick,
+  addTask,
+  deleteTask,
 }: ColumnProps) => {
   const [active, setActive] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
@@ -353,7 +386,12 @@ const Column = ({
           );
         })}
         <DropIndicator beforeId={null} column={column} />
-        <AddCard column={column} setCards={setCards} cards={cards} />
+        <AddCard
+          column={column}
+          setCards={setCards}
+          cards={cards}
+          addTask={addTask}
+        />
       </div>
     </div>
   );
@@ -467,7 +505,7 @@ const BurnBarrel = ({
   const handleDragEnd = (e: DragEvent<HTMLDivElement>) => {
     const cardId = e.dataTransfer.getData("cardId");
 
-    axios.delete(`/api/tasks/${cardId}`).then(() => {
+    axios.delete(`http://localhost:5000/api/tasks/${cardId}`).then(() => {
       setCards((pv) => pv.filter((c) => c.task_id !== parseInt(cardId)));
     });
 
@@ -494,9 +532,10 @@ type AddCardProps = {
   column: ColumnType;
   setCards: Dispatch<SetStateAction<TaskType[]>>;
   cards: TaskType[];
+  addTask: (task: TaskType) => void;
 };
 
-const AddCard = ({ column, setCards, cards }: AddCardProps) => {
+const AddCard = ({ column, setCards, cards, addTask }: AddCardProps) => {
   const [text, setText] = useState("");
   const [adding, setAdding] = useState(false);
 
@@ -520,10 +559,8 @@ const AddCard = ({ column, setCards, cards }: AddCardProps) => {
       column,
     };
 
-    axios.post("/api/tasks", newCard).then((response) => {
-      setCards((pv) => [...pv, response.data]);
-      setAdding(false);
-    });
+    addTask(newCard);
+    setAdding(false);
   };
 
   return (
