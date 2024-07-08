@@ -70,7 +70,6 @@ const Board = () => {
       column: "done" as ColumnType,
     },
   ]);
-
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
 
