@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../scss/pages/LoginAndCreateUser.scss";
-import { useNotification } from "../context/NotificationContext";
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
-  const { addNotification } = useNotification();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -63,11 +62,9 @@ const Signup: React.FC = () => {
         throw new Error("User registration failed");
       }
 
-      addNotification("User registered successfully!");
       navigate("/login");
     } catch (error) {
       console.error("Error registering user:", error);
-      addNotification("Error registering user");
     }
   };
 

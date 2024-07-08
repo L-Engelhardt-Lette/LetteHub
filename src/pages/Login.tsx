@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../scss/pages/LoginAndCreateUser.scss";
-import { useNotification } from "../context/NotificationContext";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { addNotification } = useNotification();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -57,7 +56,6 @@ const Login: React.FC = () => {
       const data = await response.json();
       localStorage.setItem("token", data.token);
 
-      addNotification("Login successful!");
       navigate("/user"); // Navigate to the user page on successful login
     } catch (error: any) {
       setLoginError(error.message || "Error logging in");
