@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createTask, getTasksByProjectId } from  '../controllers/taskController'
+import { createTask, getTasksByProjectId } from '../api/taskService';
 
 export const createTaskController = async (req: Request, res: Response) => {
     try {
@@ -20,5 +20,3 @@ export const getTasksController = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
-export { createTask, getTasksByProjectId };
-
