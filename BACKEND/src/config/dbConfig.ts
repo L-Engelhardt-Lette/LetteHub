@@ -1,10 +1,10 @@
-import mysql from "mysql2";
+import mysql from 'mysql2/promise';
 
-const pool = mysql.createPool({
-  host: "localhost",
-  user: "root", // or your MySQL username
-  password: "", // or your MySQL password
-  database: "lettehubdb",
+const db = mysql.createPool({
+    host: 'localhost',
+    user: '',
+    password: '',
+    database: 'project_management',
 });
 
-export default pool.promise();
+export default db;

@@ -28,11 +28,21 @@ interface Task {
 interface TestTaskUiProps {
   task: Task;
   handleChange: (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index?: number
   ) => void;
+  personList: string[]; // List of all possible persons
+  handlePersonSelect: (e: ChangeEvent<HTMLSelectElement>) => void;
+  handlePersonRemove: (index: number) => void;
 }
 
-const TestTaskUi: React.FC<TestTaskUiProps> = ({ task, handleChange }) => {
+const TestTaskUi: React.FC<TestTaskUiProps> = ({
+  task,
+  handleChange,
+  personList,
+  handlePersonSelect,
+  handlePersonRemove,
+}) => {
   // Determine the icon based on the number of people (with null check)
   const PersonIcon =
     task.persons && task.persons.length > 1 ? GoPeople : GoPerson;
@@ -45,7 +55,7 @@ const TestTaskUi: React.FC<TestTaskUiProps> = ({ task, handleChange }) => {
           id="taskName"
           name="name"
           value={task.name}
-          onChange={handleChange}
+          onChange={(e) => handleChange(e)}
         />
         <TaskFinishButton onclick={"FINISH"} />
         <TaskDeleteButton onclick={"DELETE"} />
@@ -59,9 +69,29 @@ const TestTaskUi: React.FC<TestTaskUiProps> = ({ task, handleChange }) => {
           <PersonIcon />
           <ul>
             {task.persons.map((person, index) => (
-              <li key={index}>{person}</li>
+              <li key={index}>
+                <input
+                  type="text"
+                  name="persons"
+                  value={person}
+                  onChange={(e) => handleChange(e, index)}
+                />
+                <button type="button" onClick={() => handlePersonRemove(index)}>
+                  Remove
+                </button>
+              </li>
             ))}
           </ul>
+          <select onChange={handlePersonSelect} value="">
+            <option value="" disabled>
+              Select a person
+            </option>
+            {personList.map((person, index) => (
+              <option key={index} value={person}>
+                {person}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -71,7 +101,7 @@ const TestTaskUi: React.FC<TestTaskUiProps> = ({ task, handleChange }) => {
           type="number"
           name="progress"
           value={task.progress}
-          onChange={handleChange}
+          onChange={(e) => handleChange(e)}
           className="progressBar"
           style={{ width: `${task.progress}%` }}
         />
@@ -83,7 +113,7 @@ const TestTaskUi: React.FC<TestTaskUiProps> = ({ task, handleChange }) => {
           type="date"
           name="finishDate"
           value={task.finishDate}
-          onChange={handleChange}
+          onChange={(e) => handleChange(e)}
         />
       </div>
 
@@ -92,7 +122,7 @@ const TestTaskUi: React.FC<TestTaskUiProps> = ({ task, handleChange }) => {
         <textarea
           name="description"
           value={task.description}
-          onChange={handleChange}
+          onChange={(e) => handleChange(e)}
         />
       </div>
     </div>
@@ -111,14 +141,42 @@ const TaskPopUp = ({
   updateTask: (updatedTask: Task) => void;
 }) => {
   const [editableTask, setEditableTask] = useState<Task>(task);
+  const personList = ["Person 1", "Person 2", "Person 3"]; // Replace with your actual list
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index?: number
   ) => {
     const { name, value } = e.target;
+
+    if (name === "persons" && index !== undefined) {
+      const newPersons = [...editableTask.persons];
+      newPersons[index] = value;
+      setEditableTask((prevTask) => ({
+        ...prevTask,
+        persons: newPersons,
+      }));
+    } else {
+      setEditableTask((prevTask) => ({
+        ...prevTask,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handlePersonSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
     setEditableTask((prevTask) => ({
       ...prevTask,
-      [name]: value,
+      persons: [...prevTask.persons, value],
+    }));
+  };
+
+  const handlePersonRemove = (index: number) => {
+    const newPersons = editableTask.persons.filter((_, i) => i !== index);
+    setEditableTask((prevTask) => ({
+      ...prevTask,
+      persons: newPersons,
     }));
   };
 
@@ -142,9 +200,15 @@ const TaskPopUp = ({
             animate={{ scale: 1, rotate: "0deg" }}
             exit={{ scale: 0, rotate: "0deg" }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-black p-6 rounded-lg w-full max-w-lg shadow-xl cursor-default relative overflow-hidden"
+            className="bg-black p-6 rounded-lg w-full max-w-2xl shadow-xl cursor-default relative overflow-hidden"
           >
-            <TestTaskUi task={editableTask} handleChange={handleChange} />
+            <TestTaskUi
+              task={editableTask}
+              handleChange={handleChange}
+              personList={personList}
+              handlePersonSelect={handlePersonSelect}
+              handlePersonRemove={handlePersonRemove}
+            />
             <button
               onClick={handleSave}
               className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"

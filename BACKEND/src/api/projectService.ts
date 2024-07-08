@@ -1,40 +1,25 @@
 const baseUrl = "http://localhost:5000/api";
+import db from '../config/dbConfig';
 
 interface Project {
-  title: string;
-  startdate: string;
-  enddate: string;
-  personworkinon: string[];
-  description: string;
+    userId: number;
+    projectName: string;
+    projectData: string;
 }
 
 export const createProject = async (project: Project) => {
-  const response = await fetch(`${baseUrl}/projects/create`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(project),
-  });
-
-  if (!response.ok) {
-    throw new Error("Project creation failed");
-  }
-
-  return await response.json();
+    const [result] = await db.execute(
+        'INSERT INTO projects (user_id, project_name, project_data) VALUES (?, ?, ?)',
+        [project.userId, project.projectName, project.projectData]
+    );
+    return result;
 };
 
-export const getProjects = async () => {
-  const response = await fetch(`${baseUrl}/projects`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to retrieve projects");
-  }
-
-  return await response.json();
+export const getProjectsByUserId = async (userId: number) => {
+    const [rows] = await db.execute(
+        'SELECT * FROM projects WHERE user_id = ?',
+        [userId]
+    );
+    return rows;
 };
+
