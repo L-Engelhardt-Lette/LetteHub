@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import Layout from "../components/test/Layout";
 import CommitStats from "../components/about/CommitStats";
 import DoubleScrollingLogos from "../components/DoubleScrollingLogos";
+import CodeExample from "../components/about/CodeExamples";
+
 import "../scss/pages/About.scss";
 
 const profiles = [
@@ -68,7 +70,7 @@ const AboutSection = () => (
 function AboutPage() {
   return (
     <Layout>
-      <div className="snap-y snap-mandatory overflow-y-scroll h-screen">
+      <div className="snap-y snap-proximity overflow-y-scroll h-screen">
         <motion.div
           className="snap-start h-screen bg-gray-100"
           initial={{ opacity: 0 }}
@@ -127,28 +129,7 @@ function AboutPage() {
           </div>
           <CommitStats />
         </motion.div>
-        <motion.div
-          className="snap-start h-screen bg-gray-400"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        >
-          <div className="p-5 md:p-20">
-            <h2 className="text-2xl md:text-4xl font-bold mb-5">Section 3</h2>
-            <p>
-              Vestibulum lacinia, elit nec condimentum varius, leo mauris
-              efficitur urna, in pharetra metus tortor sed ex. In hac habitasse
-              platea dictumst. Proin rutrum consequat malesuada. Fusce sodales
-              quam in felis volutpat, sit amet interdum neque condimentum.
-            </p>
-            <p>
-              Morbi vehicula felis et purus fermentum congue. Praesent semper
-              magna sit amet commodo lobortis. Cras pellentesque lacus a justo
-              ultricies, at ullamcorper arcu ultricies. Integer nec sagittis
-              risus, eu efficitur est.
-            </p>
-          </div>
-        </motion.div>
+        <CodeExample /> {/* Adding the Example component here */}
       </div>
     </Layout>
   );
