@@ -2,9 +2,11 @@ import React, {
   Dispatch,
   SetStateAction,
   useState,
+  useEffect,
   DragEvent,
   FormEvent,
 } from "react";
+import axios from "axios";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaFire } from "react-icons/fa";
@@ -12,10 +14,9 @@ import TooltipButtonDelete from "./DeleteButton";
 import ColumnAddButton from "./AddColumnButton";
 import TaskPopUp from "./TaskPopup";
 
-// Define the TaskType
 type ColumnType = "backlog" | "todo" | "doing" | "done" | `column${number}`;
 
-type TaskType = {
+type Task = {
   task_name: string;
   projectID: string;
   task_id: number;
@@ -30,13 +31,7 @@ type TaskType = {
   column: ColumnType;
 };
 
-const generateUniqueId = (existingIds: Set<string>): string => {
-  let id;
-  do {
-    id = Math.random().toString();
-  } while (existingIds.has(id));
-  return id;
-};
+type TaskType = Task;
 
 export const CustomKanban = () => {
   return (
@@ -47,7 +42,7 @@ export const CustomKanban = () => {
 };
 
 const Board = () => {
-  const [cards, setCards] = useState<TaskType[]>(DEFAULT_CARDS);
+  const [cards, setCards] = useState<TaskType[]>([]);
   const [columns, setColumns] = useState([
     {
       title: "Backlog",
@@ -73,6 +68,21 @@ const Board = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/tasks")
+      .then((response) => {
+        if (Array.isArray(response.data)) {
+          setCards(response.data);
+        } else {
+          console.error("Expected an array of tasks, but got:", response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching tasks:", error);
+      });
+  }, []);
+
   const addColumn = () => {
     const newColumnIndex = columns.length + 1;
     const newColumnKey = `column${newColumnIndex}` as ColumnType;
@@ -96,11 +106,45 @@ const Board = () => {
   };
 
   const updateTask = (updatedTask: TaskType) => {
-    setCards((prevCards) =>
-      prevCards.map((card) =>
-        card.task_id === updatedTask.task_id ? updatedTask : card
+    axios
+      .put(
+        `http://localhost:5000/api/tasks/${updatedTask.task_id}`,
+        updatedTask
       )
-    );
+      .then(() => {
+        setCards((prevCards) =>
+          prevCards.map((card) =>
+            card.task_id === updatedTask.task_id ? updatedTask : card
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error updating task:", error);
+      });
+  };
+
+  const addTask = (newTask: TaskType) => {
+    axios
+      .post("http://localhost:5000/api/tasks", newTask)
+      .then((response) => {
+        setCards((prevCards) => [...prevCards, response.data]);
+      })
+      .catch((error) => {
+        console.error("Error adding task:", error);
+      });
+  };
+
+  const deleteTask = (taskId: number) => {
+    axios
+      .delete(`http://localhost:5000/api/tasks/${taskId}`)
+      .then(() => {
+        setCards((prevCards) =>
+          prevCards.filter((card) => card.task_id !== taskId)
+        );
+      })
+      .catch((error) => {
+        console.error("Error deleting task:", error);
+      });
   };
 
   return (
@@ -122,7 +166,9 @@ const Board = () => {
               )
             );
           }}
-          onCardDoubleClick={handleDoubleClick} // Pass double-click handler
+          onCardDoubleClick={handleDoubleClick}
+          addTask={addTask}
+          deleteTask={deleteTask}
         />
       ))}
       <div>
@@ -152,7 +198,9 @@ type ColumnProps = {
   setCards: Dispatch<SetStateAction<TaskType[]>>;
   deleteColumn: (index: number) => void;
   updateColumnTitle: (newTitle: string) => void;
-  onCardDoubleClick: (card: TaskType) => void; // Add double-click handler prop
+  onCardDoubleClick: (card: TaskType) => void;
+  addTask: (task: TaskType) => void;
+  deleteTask: (taskId: number) => void;
 };
 
 const Column = ({
@@ -164,7 +212,9 @@ const Column = ({
   setCards,
   deleteColumn,
   updateColumnTitle,
-  onCardDoubleClick, // Add double-click handler prop
+  onCardDoubleClick,
+  addTask,
+  deleteTask,
 }: ColumnProps) => {
   const [active, setActive] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
@@ -224,7 +274,6 @@ const Column = ({
   };
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-    // Ensure type is correct
     e.preventDefault();
     highlightIndicator(e);
 
@@ -240,7 +289,6 @@ const Column = ({
   };
 
   const highlightIndicator = (e: DragEvent<HTMLDivElement>) => {
-    // Ensure type is correct
     const indicators = getIndicators();
 
     clearHighlights(indicators);
@@ -254,7 +302,6 @@ const Column = ({
     e: DragEvent<HTMLDivElement>,
     indicators: HTMLElement[]
   ) => {
-    // Ensure type is correct
     const DISTANCE_OFFSET = 50;
 
     const el = indicators.reduce(
@@ -302,7 +349,7 @@ const Column = ({
             onChange={(e) => setNewTitle(e.target.value)}
             onBlur={saveTitleChange}
             autoFocus
-            className="text-black" // Add this line to change text color to black
+            className="text-black"
           />
         ) : (
           <h3
@@ -334,13 +381,17 @@ const Column = ({
               key={c.task_id}
               {...c}
               handleDragStart={handleDragStart}
-              handleDoubleClick={onCardDoubleClick} // Pass double-click handler
+              handleDoubleClick={onCardDoubleClick}
             />
           );
         })}
         <DropIndicator beforeId={null} column={column} />
-        <AddCard column={column} setCards={setCards} cards={cards} />{" "}
-        {/* Pass cards prop */}
+        <AddCard
+          column={column}
+          setCards={setCards}
+          cards={cards}
+          addTask={addTask}
+        />
       </div>
     </div>
   );
@@ -348,7 +399,7 @@ const Column = ({
 
 type CardProps = TaskType & {
   handleDragStart: (e: React.DragEvent<HTMLDivElement>, card: TaskType) => void;
-  handleDoubleClick: (card: TaskType) => void; // Modify double-click handler
+  handleDoubleClick: (card: TaskType) => void;
 };
 
 const Card = ({
@@ -454,7 +505,9 @@ const BurnBarrel = ({
   const handleDragEnd = (e: DragEvent<HTMLDivElement>) => {
     const cardId = e.dataTransfer.getData("cardId");
 
-    setCards((pv) => pv.filter((c) => c.task_id !== parseInt(cardId)));
+    axios.delete(`http://localhost:5000/api/tasks/${cardId}`).then(() => {
+      setCards((pv) => pv.filter((c) => c.task_id !== parseInt(cardId)));
+    });
 
     setActive(false);
   };
@@ -478,11 +531,11 @@ const BurnBarrel = ({
 type AddCardProps = {
   column: ColumnType;
   setCards: Dispatch<SetStateAction<TaskType[]>>;
-  cards: TaskType[]; // Add cards prop
+  cards: TaskType[];
+  addTask: (task: TaskType) => void;
 };
 
-const AddCard = ({ column, setCards, cards }: AddCardProps) => {
-  // Add cards to props
+const AddCard = ({ column, setCards, cards, addTask }: AddCardProps) => {
   const [text, setText] = useState("");
   const [adding, setAdding] = useState(false);
 
@@ -491,11 +544,10 @@ const AddCard = ({ column, setCards, cards }: AddCardProps) => {
 
     if (!text.trim().length) return;
 
-    const existingIds = new Set(cards.map((card) => card.task_id.toString()));
     const newCard: TaskType = {
       task_name: text.trim(),
       projectID: "1",
-      task_id: parseInt(generateUniqueId(existingIds)),
+      task_id: Date.now(),
       project_id: 1,
       description: "New task description",
       name: text.trim(),
@@ -507,8 +559,7 @@ const AddCard = ({ column, setCards, cards }: AddCardProps) => {
       column,
     };
 
-    setCards((pv) => [...pv, newCard]);
-
+    addTask(newCard);
     setAdding(false);
   };
 
@@ -551,152 +602,5 @@ const AddCard = ({ column, setCards, cards }: AddCardProps) => {
     </>
   );
 };
-
-const DEFAULT_CARDS: TaskType[] = [
-  // BACKLOG
-  {
-    task_name: "Look into render bug in dashboard",
-    projectID: "1",
-    task_id: 1,
-    project_id: 1,
-    description: "Fix rendering bug",
-    name: "Render Bug",
-    persons: ["Alice"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-01",
-    finishDate: "2024-07-07",
-    column: "backlog",
-  },
-  {
-    task_name: "SOX compliance checklist",
-    projectID: "2",
-    task_id: 2,
-    project_id: 2,
-    description: "Complete SOX compliance",
-    name: "SOX Compliance",
-    persons: ["Bob"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-02",
-    finishDate: "2024-07-10",
-    column: "backlog",
-  },
-  {
-    task_name: "[SPIKE] Migrate to Azure",
-    projectID: "3",
-    task_id: 3,
-    project_id: 3,
-    description: "Investigate Azure migration",
-    name: "Azure Migration",
-    persons: ["Alice", "Bob"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-03",
-    finishDate: "2024-07-15",
-    column: "backlog",
-  },
-  {
-    task_name: "Document Notifications service",
-    projectID: "4",
-    task_id: 4,
-    project_id: 4,
-    description: "Write documentation for Notifications",
-    name: "Notifications Docs",
-    persons: ["Alice"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-04",
-    finishDate: "2024-07-20",
-    column: "backlog",
-  },
-  // TODO
-  {
-    task_name: "Research DB options for new microservice",
-    projectID: "5",
-    task_id: 5,
-    project_id: 5,
-    description: "Research database options",
-    name: "DB Research",
-    persons: ["Bob"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-05",
-    finishDate: "2024-07-25",
-    column: "todo",
-  },
-  {
-    task_name: "Postmortem for outage",
-    projectID: "6",
-    task_id: 6,
-    project_id: 6,
-    description: "Conduct postmortem for outage",
-    name: "Outage Postmortem",
-    persons: ["Alice", "Bob"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-06",
-    finishDate: "2024-07-30",
-    column: "todo",
-  },
-  {
-    task_name: "Sync with product on Q3 roadmap",
-    projectID: "7",
-    task_id: 7,
-    project_id: 7,
-    description: "Align with product team",
-    name: "Q3 Roadmap",
-    persons: ["Alice"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-07",
-    finishDate: "2024-08-05",
-    column: "todo",
-  },
-  // DOING
-  {
-    task_name: "Refactor context providers to use Zustand",
-    projectID: "8",
-    task_id: 8,
-    project_id: 8,
-    description: "Refactor providers",
-    name: "Zustand Refactor",
-    persons: ["Bob"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-08",
-    finishDate: "2024-08-10",
-    column: "doing",
-  },
-  {
-    task_name: "Add logging to daily CRON",
-    projectID: "9",
-    task_id: 9,
-    project_id: 9,
-    description: "Add logging",
-    name: "CRON Logging",
-    persons: ["Alice"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-09",
-    finishDate: "2024-08-15",
-    column: "doing",
-  },
-  // DONE
-  {
-    task_name: "Set up DD dashboards for Lambda listener",
-    projectID: "10",
-    task_id: 10,
-    project_id: 10,
-    description: "Set up dashboards",
-    name: "DD Dashboards",
-    persons: ["Alice", "Bob"],
-    status: 0,
-    progress: 0,
-    startDate: "2024-07-10",
-    finishDate: "2024-08-20",
-    column: "done",
-  },
-];
 
 export default CustomKanban;
