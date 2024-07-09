@@ -154,7 +154,7 @@ type FeatureType = {
 const features: FeatureType[] = [
   {
     id: 1,
-    callout: "Get noticed",
+    callout: "User Backend",
     title: "It's simple",
     description:
       "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
