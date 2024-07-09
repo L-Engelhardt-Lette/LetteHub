@@ -17,10 +17,6 @@ const Home = () => {
         <div className="section">
           <TextParallaxContentExample />
         </div>
-
-        <div className="section">
-          <DoubleScrollingLogos />
-        </div>
       </div>
     </Layout>
   );
