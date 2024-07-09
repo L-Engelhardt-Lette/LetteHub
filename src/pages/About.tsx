@@ -94,7 +94,7 @@ function AboutPage() {
               Technologien nutzt, um eine effiziente und benutzerfreundliche
               Plattform zu bieten. Wir setzen <strong>TypeScript</strong> und{" "}
               <strong>React</strong> für robuste und wiederverwendbare
-              UI-Komponenten ein. <strong>CSS3</strong> und{" "}
+              UI-Komponenten ein. <strong>SCSS</strong> und{" "}
               <strong>Tailwind CSS</strong> sorgen für schnelles und effizientes
               Styling. Die serverseitige Logik wird mit <strong>Node.js</strong>{" "}
               und <strong>Express</strong> umgesetzt, während{" "}
