@@ -1,21 +1,22 @@
-import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers.authorization?.split(" ")[1];
+interface JwtPayload {
+  id: number;
+}
+
+export const protect = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.header('Authorization')?.split(' ')[1];
+
   if (!token) {
-    return res.status(401).json({ error: "No token provided" });
+    return res.status(401).json({ message: 'No token, authorization denied' });
   }
 
   try {
-    const decoded = jwt.verify(token, "your_jwt_secret") as
-      | JwtPayload
-      | { id: string; name: string; email: string };
-    req.user = decoded;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+    req.user = { id: decoded.id };
     next();
   } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
+    res.status(401).json({ message: 'Token is not valid' });
   }
 };
-
-export default authMiddleware;

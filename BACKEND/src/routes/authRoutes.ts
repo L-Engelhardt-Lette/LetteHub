@@ -1,11 +1,9 @@
-import express from "express";
-import { register, login, getUserDetails } from "../controllers/authController";
-import authMiddleware from "../middleware/authMiddleware"; // Middleware to check authentication
+import { Router } from 'express';
+import { register, login } from '../controllers/authController';
 
-const router = express.Router();
+const router = Router();
 
-router.post("/register", register);
-router.post("/login", login);
-router.get("/user", authMiddleware, getUserDetails); // Add this route
+router.post('/register', register);
+router.post('/login', login);
 
 export default router;
