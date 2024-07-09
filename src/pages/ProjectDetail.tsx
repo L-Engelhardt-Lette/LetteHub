@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import "../scss/pages/ProjectDetail.scss";
-import { CustomKanban } from "../components/Project/ProjectViewTable";
+import { CustomKanban } from "../components/Project/ProjectViewTableBeta";
 import SearchComponent from "../components/Project/Deatils/UserSearchBar";
 import { GoX } from "react-icons/go";
 import { CiCircleCheck } from "react-icons/ci";

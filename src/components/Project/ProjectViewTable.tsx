@@ -8,14 +8,12 @@ import React, {
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaFire } from "react-icons/fa";
-import { SketchPicker } from "react-color";
-import ColorChangeButton from "./ColorChangeButton";
 import TooltipButtonDelete from "./DeleteButton";
 import ColumnAddButton from "./AddColumnButton";
 import TaskPopUp from "./TaskPopup";
 
 // Define the TaskType
-type ColumnType = "backlog" | "todo" | "doing" | "done";
+type ColumnType = "backlog" | "todo" | "doing" | "done" | `column${number}`;
 
 type TaskType = {
   task_name: string;
@@ -51,23 +49,39 @@ export const CustomKanban = () => {
 const Board = () => {
   const [cards, setCards] = useState<TaskType[]>(DEFAULT_CARDS);
   const [columns, setColumns] = useState([
-    { title: "Backlog", headingColor: "text-neutral-500", column: "backlog" },
-    { title: "TODO", headingColor: "text-yellow-200", column: "todo" },
-    { title: "In progress", headingColor: "text-blue-200", column: "doing" },
-    { title: "Complete", headingColor: "text-emerald-200", column: "done" },
+    {
+      title: "Backlog",
+      headingColor: "text-neutral-500",
+      column: "backlog" as ColumnType,
+    },
+    {
+      title: "TODO",
+      headingColor: "text-yellow-200",
+      column: "todo" as ColumnType,
+    },
+    {
+      title: "In progress",
+      headingColor: "text-blue-200",
+      column: "doing" as ColumnType,
+    },
+    {
+      title: "Complete",
+      headingColor: "text-emerald-200",
+      column: "done" as ColumnType,
+    },
   ]);
-
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
 
   const addColumn = () => {
     const newColumnIndex = columns.length + 1;
+    const newColumnKey = `column${newColumnIndex}` as ColumnType;
     setColumns([
       ...columns,
       {
         title: `Column ${newColumnIndex}`,
         headingColor: "text-neutral-500",
-        column: `column${newColumnIndex}` as ColumnType,
+        column: newColumnKey,
       },
     ]);
   };
@@ -108,13 +122,6 @@ const Board = () => {
               )
             );
           }}
-          updateColumnColor={(newColor) => {
-            setColumns(
-              columns.map((c) =>
-                c.column === col.column ? { ...c, headingColor: newColor } : c
-              )
-            );
-          }}
           onCardDoubleClick={handleDoubleClick} // Pass double-click handler
         />
       ))}
@@ -145,7 +152,6 @@ type ColumnProps = {
   setCards: Dispatch<SetStateAction<TaskType[]>>;
   deleteColumn: (index: number) => void;
   updateColumnTitle: (newTitle: string) => void;
-  updateColumnColor: (newColor: string) => void;
   onCardDoubleClick: (card: TaskType) => void; // Add double-click handler prop
 };
 
@@ -158,13 +164,11 @@ const Column = ({
   setCards,
   deleteColumn,
   updateColumnTitle,
-  updateColumnColor,
   onCardDoubleClick, // Add double-click handler prop
 }: ColumnProps) => {
   const [active, setActive] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
-  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const handleTitleChange = () => {
     setEditingTitle(true);
@@ -173,10 +177,6 @@ const Column = ({
   const saveTitleChange = () => {
     setEditingTitle(false);
     updateColumnTitle(newTitle);
-  };
-
-  const handleColorChange = (color: { hex: string }) => {
-    updateColumnColor(color.hex);
   };
 
   const handleDragStart = (e: DragEvent<HTMLDivElement>, card: TaskType) => {
@@ -314,17 +314,10 @@ const Column = ({
         )}
         <div>
           <div className="flex space-x-2">
-            <ColorChangeButton />
             <button onClick={() => deleteColumn(index)}>
               <TooltipButtonDelete />
             </button>
           </div>
-          {showColorPicker && (
-            <SketchPicker
-              color={headingColor}
-              onChangeComplete={handleColorChange}
-            />
-          )}
         </div>
       </div>
       <div
@@ -346,8 +339,8 @@ const Column = ({
           );
         })}
         <DropIndicator beforeId={null} column={column} />
-        <AddCard column={column} setCards={setCards} cards={cards} /> // Pass
-        cards prop
+        <AddCard column={column} setCards={setCards} cards={cards} />{" "}
+        {/* Pass cards prop */}
       </div>
     </div>
   );
@@ -362,6 +355,15 @@ const Card = ({
   task_name,
   task_id,
   column,
+  projectID,
+  project_id,
+  description,
+  name,
+  persons,
+  status,
+  progress,
+  startDate,
+  finishDate,
   handleDragStart,
   handleDoubleClick,
 }: CardProps) => {
@@ -372,8 +374,38 @@ const Card = ({
         layout
         layoutId={task_id.toString()}
         draggable="true"
-        onDragStart={(e) => handleDragStart(e, { task_name, task_id, column })}
-        onDoubleClick={(a) => handleDoubleClick({ task_name, task_id, column })}
+        onDragStart={(e) =>
+          handleDragStart(e, {
+            task_name,
+            task_id,
+            column,
+            projectID,
+            project_id,
+            description,
+            name,
+            persons,
+            status,
+            progress,
+            startDate,
+            finishDate,
+          })
+        }
+        onDoubleClick={() =>
+          handleDoubleClick({
+            task_name,
+            task_id,
+            column,
+            projectID,
+            project_id,
+            description,
+            name,
+            persons,
+            status,
+            progress,
+            startDate,
+            finishDate,
+          })
+        }
         className="relative cursor-grab rounded border border-neutral-700 bg-neutral-800 p-3 active:cursor-grabbing group overflow-hidden"
       >
         <div className="transition duration-300 ease-in-out group-hover:blur-sm">

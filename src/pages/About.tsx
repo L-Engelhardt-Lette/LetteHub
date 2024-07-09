@@ -2,6 +2,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import Layout from "../components/test/Layout";
 import CommitStats from "../components/about/CommitStats";
+import DoubleScrollingLogos from "../components/DoubleScrollingLogos";
+import CodeExample from "../components/about/CodeExamples";
+
 import "../scss/pages/About.scss";
 
 const profiles = [
@@ -67,7 +70,7 @@ const AboutSection = () => (
 function AboutPage() {
   return (
     <Layout>
-      <div className="snap-y snap-mandatory overflow-y-scroll h-screen">
+      <div className="snap-y snap-proximity overflow-y-scroll h-screen">
         <motion.div
           className="snap-start h-screen bg-gray-100"
           initial={{ opacity: 0 }}
@@ -99,54 +102,37 @@ function AboutPage() {
               sit amet orci sit amet malesuada.
             </p>
           </div>
+          <DoubleScrollingLogos />
         </motion.div>
         <motion.div
-          className="snap-start h-screen bg-gray-300"
+          className="snap-start h-screen bg-gray-300 flex items-center justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <div className="p-5 md:p-20">
-            <h2 className="text-2xl md:text-4xl font-bold mb-5">Section 2</h2>
+          <div className="p-5 md:p-20 text-center max-w-screen-md mx-auto">
+            <h2 className="text-2xl md:text-4xl font-bold mb-5">
+              LetteHub Projektübersicht
+            </h2>
             <p>
-              Duis tempus libero eget magna luctus, eu placerat sapien
-              efficitur. Proin id enim id libero accumsan sollicitudin nec in
-              orci. Nullam gravida dui eget ex pellentesque, non mattis ligula
-              aliquam. Donec sed sapien ipsum. Aliquam condimentum metus eu nisi
-              auctor, nec interdum arcu pulvinar.
+              Das LetteHub-Repository ist darauf ausgelegt, eine React-Anwendung
+              mit TypeScript und Vite einzurichten und eine optimierte
+              Entwicklungsumgebung mit Hot Module Replacement und
+              ESLint-Integration für verbesserte Codequalität bereitzustellen.
+              Dieses Setup ist ideal für die Erstellung skalierbarer und
+              wartbarer Anwendungen.
             </p>
             <p>
-              Curabitur tincidunt metus id sem ultricies, at auctor ligula
-              lacinia. Proin posuere urna sit amet enim ultricies, sed efficitur
-              libero scelerisque. Nullam vehicula eros non elit congue, vitae
-              interdum magna ultricies. Nam venenatis diam id justo maximus, ac
-              bibendum risus pretium.
+              Zu den Hauptmerkmalen gehören Konfigurationen für erweiterte
+              Typüberprüfung und schnelle Aktualisierungsmöglichkeiten. Die
+              Projektstruktur umfasst Verzeichnisse wie `BACKEND`, `public` und
+              `src` sowie wesentliche Konfigurationsdateien. Dieses Repository
+              dient als robuste Grundlage für moderne Webentwicklungsprojekte.
             </p>
-          </div>
-          <CommitStats />
-        </motion.div>
-        <motion.div
-          className="snap-start h-screen bg-gray-400"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        >
-          <div className="p-5 md:p-20">
-            <h2 className="text-2xl md:text-4xl font-bold mb-5">Section 3</h2>
-            <p>
-              Vestibulum lacinia, elit nec condimentum varius, leo mauris
-              efficitur urna, in pharetra metus tortor sed ex. In hac habitasse
-              platea dictumst. Proin rutrum consequat malesuada. Fusce sodales
-              quam in felis volutpat, sit amet interdum neque condimentum.
-            </p>
-            <p>
-              Morbi vehicula felis et purus fermentum congue. Praesent semper
-              magna sit amet commodo lobortis. Cras pellentesque lacus a justo
-              ultricies, at ullamcorper arcu ultricies. Integer nec sagittis
-              risus, eu efficitur est.
-            </p>
+            <CommitStats />
           </div>
         </motion.div>
+        <CodeExample /> {/* Adding the Example component here */}
       </div>
     </Layout>
   );
