@@ -105,29 +105,32 @@ function AboutPage() {
           <DoubleScrollingLogos />
         </motion.div>
         <motion.div
-          className="snap-start h-screen bg-gray-300"
+          className="snap-start h-screen bg-gray-300 flex items-center justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <div className="p-5 md:p-20">
-            <h2 className="text-2xl md:text-4xl font-bold mb-5">Section 2</h2>
+          <div className="p-5 md:p-20 text-center max-w-screen-md mx-auto">
+            <h2 className="text-2xl md:text-4xl font-bold mb-5">
+              LetteHub Projektübersicht
+            </h2>
             <p>
-              Duis tempus libero eget magna luctus, eu placerat sapien
-              efficitur. Proin id enim id libero accumsan sollicitudin nec in
-              orci. Nullam gravida dui eget ex pellentesque, non mattis ligula
-              aliquam. Donec sed sapien ipsum. Aliquam condimentum metus eu nisi
-              auctor, nec interdum arcu pulvinar.
+              Das LetteHub-Repository ist darauf ausgelegt, eine React-Anwendung
+              mit TypeScript und Vite einzurichten und eine optimierte
+              Entwicklungsumgebung mit Hot Module Replacement und
+              ESLint-Integration für verbesserte Codequalität bereitzustellen.
+              Dieses Setup ist ideal für die Erstellung skalierbarer und
+              wartbarer Anwendungen.
             </p>
             <p>
-              Curabitur tincidunt metus id sem ultricies, at auctor ligula
-              lacinia. Proin posuere urna sit amet enim ultricies, sed efficitur
-              libero scelerisque. Nullam vehicula eros non elit congue, vitae
-              interdum magna ultricies. Nam venenatis diam id justo maximus, ac
-              bibendum risus pretium.
+              Zu den Hauptmerkmalen gehören Konfigurationen für erweiterte
+              Typüberprüfung und schnelle Aktualisierungsmöglichkeiten. Die
+              Projektstruktur umfasst Verzeichnisse wie `BACKEND`, `public` und
+              `src` sowie wesentliche Konfigurationsdateien. Dieses Repository
+              dient als robuste Grundlage für moderne Webentwicklungsprojekte.
             </p>
+            <CommitStats />
           </div>
-          <CommitStats />
         </motion.div>
         <CodeExample /> {/* Adding the Example component here */}
       </div>
