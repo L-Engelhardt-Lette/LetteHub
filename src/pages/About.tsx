@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Layout from "../components/test/Layout";
 import CommitStats from "../components/about/CommitStats";
+import DoubleScrollingLogos from "../components/DoubleScrollingLogos";
 import "../scss/pages/About.scss";
 
 const profiles = [
@@ -99,6 +100,7 @@ function AboutPage() {
               sit amet orci sit amet malesuada.
             </p>
           </div>
+          <DoubleScrollingLogos />
         </motion.div>
         <motion.div
           className="snap-start h-screen bg-gray-300"
