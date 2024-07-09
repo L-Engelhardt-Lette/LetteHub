@@ -80,32 +80,41 @@ function AboutPage() {
           <AboutSection />
         </motion.div>
         <motion.div
-          className="snap-start h-screen bg-gray-200"
+          className="snap-start h-screen bg-gray-200 place-content-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <div className="p-5 md:p-20">
-            <h2 className="text-2xl md:text-4xl font-bold mb-5">Section 1</h2>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac
-              bibendum magna. Sed in felis ac nisi pretium consequat vel ac
-              nisi. Morbi at nisi et urna pulvinar sollicitudin. Vestibulum
-              elementum augue ut est fermentum, nec vestibulum lectus
-              pellentesque.
-            </p>
-            <p>
-              Proin non sapien nec ex gravida interdum ut non orci. Fusce id
-              eros a lorem vestibulum lacinia vel id enim. Morbi vel ultricies
-              libero. Nam efficitur a ex non auctor. Sed vestibulum diam eu
-              magna posuere, non lacinia sapien maximus. Vestibulum scelerisque
-              sit amet orci sit amet malesuada.
+          <div className="p-5 md:p-20 text-center max-w-screen-md mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-5">
+              Technologien und Ansätze
+            </h2>
+            <p className="text-lg">
+              Unser Projekt ist eine moderne Webanwendung, die verschiedene
+              Technologien nutzt, um eine effiziente und benutzerfreundliche
+              Plattform zu bieten. Wir setzen <strong>TypeScript</strong> und{" "}
+              <strong>React</strong> für robuste und wiederverwendbare
+              UI-Komponenten ein. <strong>CSS3</strong> und{" "}
+              <strong>Tailwind CSS</strong> sorgen für schnelles und effizientes
+              Styling. Die serverseitige Logik wird mit <strong>Node.js</strong>{" "}
+              und <strong>Express</strong> umgesetzt, während{" "}
+              <strong>MySQL</strong> zur Datenspeicherung dient.{" "}
+              <strong>Vite</strong> ermöglicht schnelle Builds, und{" "}
+              <strong>XAMPP</strong> dient als lokaler Entwicklungsserver.
+              Unsere Entwicklung erfolgt in <strong>VS Code</strong>, und{" "}
+              <strong>GitHub</strong> wird für die Zusammenarbeit genutzt. Zur
+              Dokumentation verwenden wir <strong>Markdown</strong>, und{" "}
+              <strong>JSON</strong> wird für den Datenaustausch verwendet.{" "}
+              <strong>Adobe Illustrator</strong> nutzen wir für Design-Assets,
+              und <strong>Scrum</strong> organisiert unsere
+              Entwicklungsprozesse. Diese Technologien ermöglichen uns, eine
+              robuste und ansprechende Webanwendung zu entwickeln.
             </p>
           </div>
           <DoubleScrollingLogos />
         </motion.div>
         <motion.div
-          className="snap-start h-screen bg-gray-300 flex items-center justify-center"
+          className="snap-start h-screen bg-gray-300 flex items-center place-content-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
