@@ -8,8 +8,6 @@ import React, {
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaFire } from "react-icons/fa";
-import { SketchPicker } from "react-color";
-import ColorChangeButton from "./ColorChangeButton";
 import TooltipButtonDelete from "./DeleteButton";
 import ColumnAddButton from "./AddColumnButton";
 import TaskPopUp from "./TaskPopup";
@@ -72,7 +70,6 @@ const Board = () => {
       column: "done" as ColumnType,
     },
   ]);
-
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
 
@@ -125,13 +122,6 @@ const Board = () => {
               )
             );
           }}
-          updateColumnColor={(newColor) => {
-            setColumns(
-              columns.map((c) =>
-                c.column === col.column ? { ...c, headingColor: newColor } : c
-              )
-            );
-          }}
           onCardDoubleClick={handleDoubleClick} // Pass double-click handler
         />
       ))}
@@ -162,7 +152,6 @@ type ColumnProps = {
   setCards: Dispatch<SetStateAction<TaskType[]>>;
   deleteColumn: (index: number) => void;
   updateColumnTitle: (newTitle: string) => void;
-  updateColumnColor: (newColor: string) => void;
   onCardDoubleClick: (card: TaskType) => void; // Add double-click handler prop
 };
 
@@ -175,13 +164,11 @@ const Column = ({
   setCards,
   deleteColumn,
   updateColumnTitle,
-  updateColumnColor,
   onCardDoubleClick, // Add double-click handler prop
 }: ColumnProps) => {
   const [active, setActive] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
-  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const handleTitleChange = () => {
     setEditingTitle(true);
@@ -190,10 +177,6 @@ const Column = ({
   const saveTitleChange = () => {
     setEditingTitle(false);
     updateColumnTitle(newTitle);
-  };
-
-  const handleColorChange = (color: { hex: string }) => {
-    updateColumnColor(color.hex);
   };
 
   const handleDragStart = (e: DragEvent<HTMLDivElement>, card: TaskType) => {
@@ -331,17 +314,10 @@ const Column = ({
         )}
         <div>
           <div className="flex space-x-2">
-            <ColorChangeButton />
             <button onClick={() => deleteColumn(index)}>
               <TooltipButtonDelete />
             </button>
           </div>
-          {showColorPicker && (
-            <SketchPicker
-              color={headingColor}
-              onChangeComplete={handleColorChange}
-            />
-          )}
         </div>
       </div>
       <div

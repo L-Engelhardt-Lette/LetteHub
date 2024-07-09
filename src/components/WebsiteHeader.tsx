@@ -35,7 +35,7 @@ const WebsiteHeader: React.FC = () => {
             <Link to="/projectSelect">Project</Link>
           </li>
           <li>
-            <Link to="/contact">Contact</Link>
+            <Link to="/impressum">Impressum</Link>
           </li>
         </ul>
       </nav>
@@ -45,9 +45,7 @@ const WebsiteHeader: React.FC = () => {
             <HeaderUserIcon />
           </button>
         </div>
-        <div className="Content">
-          <DarkLightModeSwitch />
-        </div>
+        <div className="Content">{/*<DarkLightModeSwitch /> */}</div>
       </div>
     </header>
   );
