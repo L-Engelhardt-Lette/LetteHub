@@ -1,20 +1,16 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import sequelize from './config/dbConfig';
-import userRoutes from './routes/authRoutes';
-import projectRoutes from './routes/projectRoutes';
-import taskRoutes from './routes/taskRoutes';
+import sequelize from './config/database';
+import userRoutes from '../BACKEND/src/routes/authRoutes';
+import projectRoutes from '../BACKEND/src/routes/projectRoutes';
+import taskRoutes from '../BACKEND/src/routes/taskRoutes';
 
 // Importing models to ensure they are registered with Sequelize
-import User from './models/User';
-import Project from './models/project';
-import Task from './models/Task';
+import User from '../BACKEND/src/models/User';
+import Project from '../BACKEND/src/models/Project';
+import Task from '../BACKEND/src/models/Task';
 
-dotenv.config({ path: './.env'});
-
-
-console.log('Database name:', process.env.DB_NAME);
-console.log('Database user:', process.env.DB_USER);
+dotenv.config();
 
 const app = express();
 
