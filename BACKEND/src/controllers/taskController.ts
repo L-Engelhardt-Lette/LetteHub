@@ -1,22 +1,22 @@
 import { Request, Response } from 'express';
-import { createTask, getTasksByProjectId } from '../api/taskService';
+import Task from '../models/Task';
 
-export const createTaskController = async (req: Request, res: Response) => {
+export const createTask = async (req: Request, res: Response) => {
     try {
-        const { projectId, taskName, taskData } = req.body;
-        const result = await createTask({ projectId, taskName, taskData });
-        res.status(201).json(result);
+        const { title, description, projectId } = req.body;
+        const newTask = await Task.create({ title, description, projectId });
+        res.status(201).json(newTask);
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ error: 'Task creation failed' });
     }
 };
 
-export const getTasksController = async (req: Request, res: Response) => {
+export const getTasksByProject = async (req: Request, res: Response) => {
     try {
         const { projectId } = req.params;
-        const tasks = await getTasksByProjectId(Number(projectId));
-        res.status(200).json(tasks);
+        const tasks = await Task.findAll({ where: { projectId } });
+        res.json(tasks);
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ error: 'Failed to fetch tasks' });
     }
 };

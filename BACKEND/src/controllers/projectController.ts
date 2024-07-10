@@ -1,22 +1,21 @@
 import { Request, Response } from 'express';
-import { createProject, getProjectsByUserId } from '../api/projectService';
+import Project from '../models/project';
 
-export const createProjectController = async (req: Request, res: Response) => {
+export const createProject = async (req: Request, res: Response) => {
     try {
-        const { userId, projectName, projectData } = req.body;
-        const result = await createProject({ userId, projectName, projectData });
-        res.status(201).json(result);
+        const { name, description } = req.body;
+        const newProject = await Project.create({ name, description });
+        res.status(201).json(newProject);
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ error: 'Project creation failed' });
     }
 };
 
-export const getProjectsController = async (req: Request, res: Response) => {
+export const getAllProjects = async (_req: Request, res: Response) => {
     try {
-        const { userId } = req.params;
-        const projects = await getProjectsByUserId(Number(userId));
-        res.status(200).json(projects);
+        const projects = await Project.findAll();
+        res.json(projects);
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ error: 'Failed to fetch projects' });
     }
 };
