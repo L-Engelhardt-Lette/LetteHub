@@ -12,39 +12,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.register = void 0;
+exports.loginUser = exports.registerUser = void 0;
+const User_1 = __importDefault(require("../models/User"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const dbConfig_1 = __importDefault(require("../config/dbConfig"));
-const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = req.body;
-    const hashedPassword = yield bcrypt_1.default.hash(password, 10);
     try {
-        const [result] = yield dbConfig_1.default.execute("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, hashedPassword]);
-        res.status(201).json({ message: "User registered successfully" });
+        const existingUser = yield User_1.default.findOne({ where: { email } });
+        if (existingUser) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
+        const newUser = yield User_1.default.create({
+            name,
+            email,
+            password: hashedPassword,
+        });
+        const token = jsonwebtoken_1.default.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.status(201).json({ token });
     }
     catch (error) {
-        console.error("Error during registration:", error);
-        res.status(500).json({ error: "User registration failed" });
+        res.status(500).json({ message: 'Server error', error });
     }
 });
-exports.register = register;
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.registerUser = registerUser;
+const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const [rows] = yield dbConfig_1.default.execute("SELECT * FROM users WHERE email = ?", [email]);
-        if (rows.length === 0) {
-            return res.status(400).json({ error: "Invalid email or password" });
+        const user = yield User_1.default.findOne({ where: { email } });
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
-        const user = rows[0];
-        const isValidPassword = yield bcrypt_1.default.compare(password, user.password);
-        if (!isValidPassword) {
-            return res.status(400).json({ error: "Invalid email or password" });
+        const isMatch = yield bcrypt_1.default.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
-        res.status(200).json({ message: "Login successful" });
+        const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.status(200).json({ token });
     }
     catch (error) {
-        console.error("Error during login:", error);
-        res.status(500).json({ error: "Login failed" });
+        res.status(500).json({ message: 'Server error', error });
     }
 });
-exports.login = login;
+exports.loginUser = loginUser;

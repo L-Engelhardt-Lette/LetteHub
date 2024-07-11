@@ -12,36 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTasks = exports.createTask = void 0;
-const dbConfig_1 = __importDefault(require("../config/dbConfig"));
+exports.getTasksByProject = exports.createTask = void 0;
+const Task_1 = __importDefault(require("../models/Task"));
 const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { task_name, project_id, description, persons, status, progress, startDate, finishDate, } = req.body;
     try {
-        const [result] = yield dbConfig_1.default.execute("INSERT INTO tasks (task_name, project_id, description, persons, status, progress, startDate, finishDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [
-            task_name,
-            project_id,
-            description,
-            JSON.stringify(persons),
-            status,
-            progress,
-            startDate,
-            finishDate,
-        ]);
-        res.status(201).json({ message: "Task created successfully" });
+        const { title, description, projectId } = req.body;
+        const newTask = yield Task_1.default.create({ title, description, projectId });
+        res.status(201).json(newTask);
     }
     catch (error) {
-        res.status(500).json({ error: "Task creation failed" });
+        res.status(500).json({ error: 'Task creation failed' });
     }
 });
 exports.createTask = createTask;
-const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { project_id } = req.params;
+const getTasksByProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const [rows] = yield dbConfig_1.default.execute("SELECT * FROM tasks WHERE project_id = ?", [project_id]);
-        res.status(200).json(rows);
+        const { projectId } = req.params;
+        const tasks = yield Task_1.default.findAll({ where: { projectId } });
+        res.json(tasks);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve tasks" });
+        res.status(500).json({ error: 'Failed to fetch tasks' });
     }
 });
-exports.getTasks = getTasks;
+exports.getTasksByProject = getTasksByProject;

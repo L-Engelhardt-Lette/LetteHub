@@ -1,11 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
+const express_1 = require("express");
 const projectController_1 = require("../controllers/projectController");
-const router = express_1.default.Router();
-router.post("/create", projectController_1.createProject);
-router.get("/", projectController_1.getProjects);
+const router = (0, express_1.Router)();
+router.post('/create', projectController_1.createProject);
+router.get('/all', projectController_1.getAllProjects);
 exports.default = router;

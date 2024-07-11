@@ -12,26 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProjects = exports.createProject = void 0;
-const dbConfig_1 = __importDefault(require("../config/dbConfig"));
+exports.getAllProjects = exports.createProject = void 0;
+const project_1 = __importDefault(require("../models/project"));
 const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, startdate, enddate, personworkinon, description } = req.body;
     try {
-        const [result] = yield dbConfig_1.default.execute("INSERT INTO projects (title, startdate, enddate, personworkinon, description) VALUES (?, ?, ?, ?, ?)", [title, startdate, enddate, JSON.stringify(personworkinon), description]);
-        res.status(201).json({ message: "Project created successfully" });
+        const { name, description } = req.body;
+        const newProject = yield project_1.default.create({ name, description });
+        res.status(201).json(newProject);
     }
     catch (error) {
-        res.status(500).json({ error: "Project creation failed" });
+        res.status(500).json({ error: 'Project creation failed' });
     }
 });
 exports.createProject = createProject;
-const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllProjects = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const [rows] = yield dbConfig_1.default.execute("SELECT * FROM projects");
-        res.status(200).json(rows);
+        const projects = yield project_1.default.findAll();
+        res.json(projects);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve projects" });
+        res.status(500).json({ error: 'Failed to fetch projects' });
     }
 });
-exports.getProjects = getProjects;
+exports.getAllProjects = getAllProjects;

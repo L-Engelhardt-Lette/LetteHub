@@ -1,4 +1,4 @@
-import { DataTypes, Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 import sequelize from '../config/dbConfig';
 
 class User extends Model {
@@ -6,6 +6,8 @@ class User extends Model {
   public name!: string;
   public email!: string;
   public password!: string;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 User.init(
@@ -28,10 +30,23 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+    },
   },
   {
     sequelize,
     modelName: 'User',
+    tableName: 'Users', // Optional: Specify the table name explicitly
+    timestamps: true, // Enable timestamps
+    underscored: true, // Use snake_case for automatically added attributes (updatedAt, createdAt)
   }
 );
 
