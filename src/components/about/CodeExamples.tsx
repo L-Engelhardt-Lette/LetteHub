@@ -4,15 +4,113 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { IconType } from "react-icons";
 import { FiDollarSign, FiEye, FiPlay, FiSearch } from "react-icons/fi";
 
+type FeatureType = {
+  id: number;
+  callout: string;
+  title: string;
+  description: string;
+  contentPosition: "l" | "r";
+  Icon: IconType;
+  code: string;
+};
+
+const initialFeatures: FeatureType[] = [
+  {
+    id: 1,
+    callout: "Initialize Project",
+    title: "Funktion zur Initialisierung eines Projekts",
+    description:
+      "Diese Funktion richtet die anfängliche Konfiguration und die Parameter für ein neues Projekt in der Anwendung ein.",
+    contentPosition: "r",
+    Icon: FiEye,
+    code: `function initializeProject(name: string, description: string, startDate: Date): Project {
+  const newProject: Project = {
+    id: generateUniqueId(),
+    name,
+    description,
+    startDate,
+    tasks: [],
+    status: 'Not Started'
+  };
+  return newProject;
+}`,
+  },
+  {
+    id: 2,
+    callout: "Parallax Text",
+    title: "Parallax-Textinhalt",
+    description:
+      "Diese Komponente zeigt einen Textinhaltabschnitt mit einem Parallax-Scrolling-Effekt unter Verwendung von React und Framer Motion.",
+    contentPosition: "l",
+    Icon: FiSearch,
+    code: `import { motion } from 'framer-motion';
+import React from 'react';
+
+const TextParallaxContentExample = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="parallax-text-content"
+    >
+      <h1>Parallax Text Effekt</h1>
+      <p>
+        Dieser Text verwendet einen Parallax-Scrolling-Effekt, um ein
+        ansprechendes Benutzererlebnis zu schaffen.
+      </p>
+    </motion.div>
+  );
+};
+
+export default TextParallaxContentExample;`,
+  },
+  {
+    id: 3,
+    callout: "Project View",
+    title: "Projektansichtstabelle",
+    description:
+      "Diese Komponente zeigt eine Tabellenansicht von Projekten, zeigt deren Details an und ermöglicht die Interaktion mit jedem Projektelement.",
+    contentPosition: "r",
+    Icon: FiPlay,
+    code: `import React from 'react';
+
+const ProjectViewTableBeta = ({ projects }) => {
+  return (
+    <table className="project-view-table">
+      <thead>
+        <tr>
+          <th>Projektname</th>
+          <th>Beschreibung</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {projects.map(project => (
+          <tr key={project.id}>
+            <td>{project.name}</td>
+            <td>{project.description}</td>
+            <td>{project.status}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default ProjectViewTableBeta;`,
+  },
+];
+
 const CodeExample = () => {
   return (
     <>
-      <SwapColumnFeatures />
+      <SwapColumnFeatures features={initialFeatures} />
     </>
   );
 };
 
-const SwapColumnFeatures = () => {
+const SwapColumnFeatures = ({ features }: { features: FeatureType[] }) => {
   const [featureInView, setFeatureInView] = useState<FeatureType>(features[0]);
 
   return (
@@ -124,12 +222,10 @@ const ExampleFeature = ({ featureInView }: { featureInView: FeatureType }) => {
       </div>
       <div className="p-2">
         <p className="font-mono text-sm text-slate-200">
-          <span className="text-green-300">~</span> Show a part of your product
-          that explains what{" "}
-          <span className="inline-block rounded bg-indigo-600 px-1 font-semibold">
-            "{featureInView.title}"
-          </span>{" "}
-          means.
+          <span className="text-green-300">~</span>{" "}
+          <code className="block p-2 mt-2 whitespace-pre-line">
+            {featureInView.code}
+          </code>
         </p>
       </div>
 
@@ -141,51 +237,3 @@ const ExampleFeature = ({ featureInView }: { featureInView: FeatureType }) => {
 };
 
 export default CodeExample;
-
-type FeatureType = {
-  id: number;
-  callout: string;
-  title: string;
-  description: string;
-  contentPosition: "l" | "r";
-  Icon: IconType;
-};
-
-const features: FeatureType[] = [
-  {
-    id: 1,
-    callout: "User Backend",
-    title: "It's simple",
-    description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
-    contentPosition: "r",
-    Icon: FiEye,
-  },
-  {
-    id: 2,
-    callout: "Find people",
-    title: "They're all here",
-    description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
-    contentPosition: "l",
-    Icon: FiSearch,
-  },
-  {
-    id: 3,
-    callout: "Have fun",
-    title: "Let's party",
-    description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
-    contentPosition: "r",
-    Icon: FiPlay,
-  },
-  {
-    id: 4,
-    callout: "Get paid",
-    title: "Cha-ching!",
-    description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
-    contentPosition: "l",
-    Icon: FiDollarSign,
-  },
-];
