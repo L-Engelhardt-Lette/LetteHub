@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../scss/pages/ProjectDetail.scss";
 import { CustomKanban } from "../components/Project/ProjectViewTableBeta";
 import SearchComponent from "../components/Project/Deatils/UserSearchBar";
@@ -7,46 +8,47 @@ import { GoX } from "react-icons/go";
 import { CiCircleCheck } from "react-icons/ci";
 import { GoXCircle } from "react-icons/go";
 import { BiEditAlt } from "react-icons/bi";
-// Beispiel-Mock-Daten. Ersetze diese mit deinen eigenen Daten oder API-Aufrufen.
-const projects = [
-  {
-    id: "1",
-    name: "Project Alpha",
-    description: "This is the description for Project Alpha.",
-    startDate: "2024-01-01",
-    endDate: "2024-12-31",
-    participants: ["Alice Müller", "Bob Schmidt", "Charlie Brown"],
-  },
-  {
-    id: "2",
-    name: "Project Beta",
-    description: "This is the description for Project Beta.",
-    startDate: "2024-02-01",
-    endDate: "2024-11-30",
-    participants: ["David Lange", "Eva Köhler", "Frank Meier", "Klaus Rührei"],
-  },
-  // Weitere Projekte hier hinzufügen
-];
 
 const ProjectDetail: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
+  const navigate = useNavigate();
   const [editable, setEditable] = useState(false);
-  const [editedProject, setEditedProject] = useState(
-    projects.find((p) => p.id === projectId)
+  const [editedProject, setEditedProject] = useState<any>(null);
+  const [tempName, setTempName] = useState("");
+  const [tempStartDate, setTempStartDate] = useState("");
+  const [tempEndDate, setTempEndDate] = useState("");
+  const [tempParticipants, setTempParticipants] = useState<string[]>([]);
+  const [tempDescription, setTempDescription] = useState("");
+  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
+    []
   );
-  const [tempName, setTempName] = useState(editedProject?.name || "");
-  const [tempStartDate, setTempStartDate] = useState(
-    editedProject?.startDate || ""
-  );
-  const [tempEndDate, setTempEndDate] = useState(editedProject?.endDate || "");
-  const [tempParticipants, setTempParticipants] = useState<string[]>(
-    editedProject?.participants || []
-  );
-  const [tempDescription, setTempDescription] = useState(
-    editedProject?.description || ""
-  );
-  const [selectedParticipants, setSelectedParticipants] =
-    useState<string[]>(tempParticipants); // Initially set to tempParticipants
+
+  useEffect(() => {
+    if (projectId) {
+      const fetchProject = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:5000/api/projects/${projectId}`,
+            { withCredentials: true }
+          );
+          setEditedProject(response.data);
+          setTempName(response.data.name);
+          setTempStartDate(response.data.startDate);
+          setTempEndDate(response.data.endDate);
+          setTempParticipants(response.data.participants);
+          setTempDescription(response.data.description);
+          setSelectedParticipants(response.data.participants);
+        } catch (error) {
+          console.error("Error fetching project:", error);
+          navigate("/projectSelect");
+        }
+      };
+
+      fetchProject();
+    } else {
+      navigate("/projectSelect");
+    }
+  }, [projectId, navigate]);
 
   const toggleEditMode = () => {
     setEditable(!editable);
@@ -55,23 +57,28 @@ const ProjectDetail: React.FC = () => {
     setTempEndDate(editedProject?.endDate || "");
     setTempParticipants(editedProject?.participants || []);
     setTempDescription(editedProject?.description || "");
-
-    // Set selectedParticipants to tempParticipants when entering edit mode
     setSelectedParticipants([...tempParticipants]);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const updatedProject = {
-      ...editedProject,
       name: tempName,
       startDate: tempStartDate,
       endDate: tempEndDate,
       participants: tempParticipants,
       description: tempDescription,
     };
-    console.log("Updated Project:", updatedProject);
-    setEditedProject(updatedProject);
-    setEditable(false);
+    try {
+      await axios.put(
+        `http://localhost:5000/api/projects/${projectId}`,
+        updatedProject,
+        { withCredentials: true }
+      );
+      setEditedProject(updatedProject);
+      setEditable(false);
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -107,7 +114,7 @@ const ProjectDetail: React.FC = () => {
   return (
     <>
       <div className="project-detail">
-        <Link to="./projectSelect">
+        <Link to="/projectSelect">
           <button className="back-button">Zurück</button>
         </Link>
         <div className="project-card">
@@ -166,9 +173,7 @@ const ProjectDetail: React.FC = () => {
                   ))}
                 </div>
                 <SearchComponent
-                  participants={projects.flatMap(
-                    (project) => project.participants
-                  )}
+                  participants={selectedParticipants}
                   onSelect={handleParticipantSelect}
                 />
               </>
@@ -228,7 +233,7 @@ const ProjectDetail: React.FC = () => {
         {/* Hier könnte die ProjectDetailAccordion-Komponente eingefügt werden */}
         {/* <ProjectDetailAccordion /> */}
       </div>
-      <CustomKanban />
+      <CustomKanban projectId={projectId || ""} />
     </>
   );
 };

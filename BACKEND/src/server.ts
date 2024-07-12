@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import session from "express-session";
@@ -52,19 +52,7 @@ app.get("/api/check-login", (req: Request, res: Response) => {
   }
 });
 
-// Middleware to protect routes
-const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-  if (req.session.user) {
-    next();
-  } else {
-    res.status(401).json({ error: "Unauthorized" });
-  }
-};
-
-// Apply the middleware to routes you want to protect
-app.use("/api/projects", isAuthenticated, projectRoutes);
-app.use("/api/tasks", isAuthenticated, taskRoutes);
-
+// Login endpoint
 app.post("/api/auth/login", (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -77,6 +65,7 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
   }
 });
 
+// Register endpoint
 app.post("/api/auth/register", async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
@@ -92,6 +81,142 @@ app.post("/api/auth/register", async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: "User registration failed" });
   }
+});
+
+// Project endpoints
+let projectCounter = 1;
+let projects: {
+  id: string;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  participants: string[];
+}[] = [];
+
+app.get("/api/projects", (req: Request, res: Response) => {
+  res.json(projects);
+});
+
+app.post("/api/projects", (req: Request, res: Response) => {
+  const { name, description, startDate, endDate, participants } = req.body;
+  const newProject = {
+    id: projectCounter.toString(),
+    name,
+    description,
+    startDate,
+    endDate,
+    participants,
+  };
+  projectCounter++;
+  projects.push(newProject);
+  res.status(201).json(newProject);
+});
+
+app.put("/api/projects/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, description, startDate, endDate, participants } = req.body;
+  const project = projects.find((p) => p.id === id);
+  if (project) {
+    project.name = name;
+    project.description = description;
+    project.startDate = startDate;
+    project.endDate = endDate;
+    project.participants = participants;
+    res.status(200).json(project);
+  } else {
+    res.status(404).json({ error: "Project not found" });
+  }
+});
+
+app.delete("/api/projects/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  projects = projects.filter((project) => project.id !== id);
+  res.status(200).json({ message: "Project deleted successfully" });
+});
+
+// Task endpoints
+let taskCounter = 1;
+let tasks: {
+  task_id: number;
+  task_name: string;
+  projectID: string;
+  description: string;
+  persons: string[];
+  status: number;
+  progress: number;
+  startDate: string;
+  finishDate: string;
+  column: string;
+}[] = [];
+
+app.get("/api/tasks", (req: Request, res: Response) => {
+  res.json(tasks);
+});
+
+app.post("/api/tasks", (req: Request, res: Response) => {
+  const {
+    task_name,
+    projectID,
+    description,
+    persons,
+    status,
+    progress,
+    startDate,
+    finishDate,
+    column,
+  } = req.body;
+  const newTask = {
+    task_id: taskCounter,
+    task_name,
+    projectID,
+    description,
+    persons,
+    status,
+    progress,
+    startDate,
+    finishDate,
+    column,
+  };
+  taskCounter++;
+  tasks.push(newTask);
+  res.status(201).json(newTask);
+});
+
+app.put("/api/tasks/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    task_name,
+    projectID,
+    description,
+    persons,
+    status,
+    progress,
+    startDate,
+    finishDate,
+    column,
+  } = req.body;
+  const task = tasks.find((t) => t.task_id === parseInt(id));
+  if (task) {
+    task.task_name = task_name;
+    task.projectID = projectID;
+    task.description = description;
+    task.persons = persons;
+    task.status = status;
+    task.progress = progress;
+    task.startDate = startDate;
+    task.finishDate = finishDate;
+    task.column = column;
+    res.status(200).json(task);
+  } else {
+    res.status(404).json({ error: "Task not found" });
+  }
+});
+
+app.delete("/api/tasks/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  tasks = tasks.filter((task) => task.task_id !== parseInt(id));
+  res.status(200).json({ message: "Task deleted successfully" });
 });
 
 (async () => {

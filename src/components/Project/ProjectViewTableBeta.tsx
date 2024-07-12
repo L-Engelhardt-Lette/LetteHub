@@ -33,15 +33,17 @@ type Task = {
 
 type TaskType = Task;
 
-export const CustomKanban = () => {
+export const CustomKanban: React.FC<{ projectId: string }> = ({
+  projectId,
+}) => {
   return (
     <div className="h-screen w-full bg-neutral-900 text-neutral-50">
-      <Board />
+      <Board projectId={projectId} />
     </div>
   );
 };
 
-const Board = () => {
+const Board: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [cards, setCards] = useState<TaskType[]>([]);
   const [columns, setColumns] = useState([
     {
@@ -70,7 +72,7 @@ const Board = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/tasks")
+      .get(`http://localhost:5000/api/tasks?projectID=${projectId}`)
       .then((response) => {
         if (Array.isArray(response.data)) {
           setCards(response.data);
@@ -81,7 +83,7 @@ const Board = () => {
       .catch((error) => {
         console.error("Error fetching tasks:", error);
       });
-  }, []);
+  }, [projectId]);
 
   const addColumn = () => {
     const newColumnIndex = columns.length + 1;

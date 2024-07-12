@@ -1,26 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateProjectModal from "../components/CreateProjectModal";
 import "../scss/pages/ProjectSelect.scss";
 import { motion } from "framer-motion";
 import { FiTrash2, FiEye } from "react-icons/fi";
+import axios from "axios";
 
-const projects = [
-  {
-    id: "1",
-    name: "Project Alpha",
-  },
-  {
-    id: "2",
-    name: "Project Beta",
-  },
-  // Weitere Projekte hier hinzufügen
-];
+type Project = {
+  id: string;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  participants: string[];
+};
 
 const ProjectSelect: React.FC = () => {
-  const [items, setItems] = useState(projects);
+  const [items, setItems] = useState<Project[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/projects", {
+          withCredentials: true,
+        });
+        setItems(response.data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -30,17 +43,31 @@ const ProjectSelect: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleCreateProject = (name: string) => {
-    const newProject = {
-      id: (items.length + 1).toString(),
-      name,
-    };
-    setItems([...items, newProject]);
-    setIsModalOpen(false);
+  const handleCreateProject = async (name: string) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/projects",
+        { name },
+        { withCredentials: true }
+      );
+
+      setItems([...items, response.data]);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
   };
 
-  const handleDeleteProject = (id: string) => {
-    setItems(items.filter((item) => item.id !== id));
+  const handleDeleteProject = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/projects/${id}`, {
+        withCredentials: true,
+      });
+
+      setItems(items.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
   };
 
   return (
@@ -65,9 +92,9 @@ const ProjectSelect: React.FC = () => {
                 <p>No projects found.</p>
               </div>
             )}
-            {items.map((item, index) => (
+            {items.map((item) => (
               <motion.div
-                key={index}
+                key={item.id}
                 whileHover={{ scale: 1.05 }}
                 className="grid-item"
               >
