@@ -40,6 +40,7 @@ A React application with TypeScript and Vite setup designed for scalable and mai
 4. Start the development server:
    \`\`\`
    npm run dev
+    \`\`\`
 
 ## Usage
 
