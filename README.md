@@ -26,7 +26,7 @@ A React application with TypeScript and Vite setup designed for scalable and mai
 ### Steps
 
 1. Clone the repository:
-   \`\`\`sh
+   ```sh
    git clone https://github.com/your-username/LetteHub.git
    \`\`\`
 2. Navigate to the project directory:
@@ -55,18 +55,17 @@ A React application with TypeScript and Vite setup designed for scalable and mai
 ### Examples
 
 \`\`\`tsx
-// Example usage of a component
 import React from "react";
 import Home from "./components/Home";
 
 const App = () => (
-
   <div>
     <Home />
   </div>
 );
 
 export default App;
+
 \`\`\`
 
 ## Features
