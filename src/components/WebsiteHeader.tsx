@@ -27,9 +27,7 @@ const WebsiteHeader: React.FC = () => {
           <li>
             <Link to="/about">About</Link>
           </li>
-          <li>
-            <Link to="/services">Services</Link>
-          </li>
+
           <li>
             <Link to="/projectSelect">Project</Link>
           </li>
