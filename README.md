@@ -105,9 +105,6 @@ Distributed under the MIT License. See \`LICENSE\` for more information.
 - **Nick Bodinus:** [GitHub Profile](https://github.com/Nbdnus) (Back End)
 - **Luca Krickl:** [GitHub Profile](https://github.com/LucaKrickl) (Back End / Databank)
 
-## Documentation
-
-- For more detailed documentation, please refer to the [project documentation](link-to-documentation).
 
 ## Roadmap
 
