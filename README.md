@@ -34,13 +34,13 @@ A React application with TypeScript and Vite setup designed for scalable and mai
    cd LetteHub
    \`\`\`
 3. Install dependencies:
-   \`\`\`sh
+   \`\`\`
    npm install
    # or
    yarn install
    \`\`\`
 4. Start the development server:
-   \`\`\`sh
+   \`\`\`
    npm run dev
    # or
    yarn dev
