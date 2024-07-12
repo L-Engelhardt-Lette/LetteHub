@@ -7,7 +7,6 @@ A React application with TypeScript and Vite setup designed for scalable and mai
 - [Installation](#installation)
 - [Usage](#usage)
 - [Features](#features)
-- [Contributing](#contributing)
 - [Authors and Acknowledgments](#authors-and-acknowledgments)
 
 ## Installation
