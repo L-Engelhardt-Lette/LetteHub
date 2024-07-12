@@ -1,6 +1,6 @@
 import express from 'express';
-import cors from 'cors';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import sequelize from './config/dbConfig';
 import authRoutes from './routes/authRoutes';
 import projectRoutes from './routes/projectRoutes';
@@ -11,13 +11,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration
+// CORS Middleware Configuration
 app.use(cors({
-  origin: 'http://localhost:5173', // Allow requests from your frontend
-  methods: 'GET,POST,PUT,DELETE,OPTIONS',
-  allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-  credentials: true
+    origin: 'http://localhost:5173', // Allow requests from your frontend
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    credentials: true // Enable credentials if your frontend requires them
 }));
+
+app.options('*', cors()); // Respond to preflight requests
 
 app.use(express.json());
 

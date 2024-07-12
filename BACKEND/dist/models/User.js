@@ -26,12 +26,12 @@ User.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    createdAt: {
+    created_at: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: false,
         defaultValue: sequelize_1.Sequelize.literal('CURRENT_TIMESTAMP'),
     },
-    updatedAt: {
+    updated_at: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: false,
         defaultValue: sequelize_1.Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -39,8 +39,8 @@ User.init({
 }, {
     sequelize: dbConfig_1.default,
     modelName: 'User',
-    tableName: 'Users', // Optional: Specify the table name explicitly
-    timestamps: true, // Enable timestamps
+    tableName: 'Users',
+    timestamps: true,
     underscored: true, // Use snake_case for automatically added attributes (updatedAt, createdAt)
 });
 exports.default = User;
