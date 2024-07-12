@@ -5,14 +5,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; // Full height of the viewport
-  background-color: $background-light; // Use background color variable
+  height: 100vh;
+  background-color: $background-light;
 
   .form {
-    background-color: $foreground-dark; // Use foreground color variable
+    background-color: $foreground-dark;
     display: block;
-    padding: 2rem; // Increased padding for taller form
-    max-width: 450px; // Increased width
+    padding: 2rem;
+    max-width: 450px;
     border-radius: 0.5rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -23,7 +23,7 @@
       line-height: 1.75rem;
       font-weight: 600;
       text-align: center;
-      color: $primary-dark; // Use primary dark color variable
+      color: $primary-dark;
     }
 
     .input-container {
@@ -40,34 +40,35 @@
         align-items: center;
 
         .error {
-          color: $error; // Use error color variable
-          font-size: 0.75rem; // Smaller font size
-          padding: 0; // No padding
-          margin-left: 1rem; // Space between label and error
+          color: $error;
+          font-size: 0.75rem;
+          padding: 0;
+          margin-left: 1rem;
         }
       }
 
       input {
         outline: none;
-        border: 1px solid $border-light; // Use border color variable
-        background-color: $foreground-dark; // Use foreground color variable
+        border: 1px solid $border-light;
+        background-color: $foreground-dark;
         padding: 1rem;
         font-size: 0.875rem;
         line-height: 1.25rem;
-        width: calc(
-          100% - 2rem
-        ); // Adjusted width to fit the container with padding
-        max-width: 400px; // Ensure it doesn't overflow the form
+        width: 100%;
         border-radius: 0.5rem;
+        box-sizing: border-box;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       }
     }
 
     button {
       outline: none;
-      border: 1px solid $border-light; // Use border color variable
+      border: 1px solid $border-light;
       margin: 8px 0;
       font-family: UnageoRegular;
+      width: 100%;
+      padding: 1rem;
+      box-sizing: border-box;
     }
 
     .submit {
@@ -76,18 +77,19 @@
       padding-bottom: 0.75rem;
       padding-left: 1.25rem;
       padding-right: 1.25rem;
-      background-color: $primary; // Use primary color variable
-      color: $foreground-dark; // Use foreground color variable
+      background-color: $primary;
+      color: $foreground-dark;
       font-size: 0.875rem;
       line-height: 1.25rem;
       font-weight: 500;
       width: 100%;
       border-radius: 0.5rem;
       text-transform: uppercase;
+      box-sizing: border-box;
     }
 
     .signup-link {
-      color: $copy-light; // Use copy light color variable
+      color: $copy-light;
       font-size: 0.875rem;
       line-height: 1.25rem;
       text-align: center;
@@ -96,16 +98,16 @@
       a {
         padding-left: 5px;
         text-decoration: underline;
-        color: $primary-dark; // Use primary dark color variable
+        color: $primary-dark;
       }
     }
 
     .error {
       font-family: MonaspaceNeonRegular;
-      color: $error; // Use error color variable
-      font-size: 0.75rem; // Smaller font size
-      padding: 0; // No padding
-      margin: 4px 0 0; // Adjust margin for spacing
+      color: $error;
+      font-size: 0.75rem;
+      padding: 0;
+      margin: 4px 0 0;
     }
   }
 }
