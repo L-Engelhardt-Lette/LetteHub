@@ -47,7 +47,12 @@ const User: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading">
+        <div className="spinner"></div>
+        <p>Loading user details...</p>
+      </div>
+    );
   }
 
   if (error) {
@@ -58,7 +63,7 @@ const User: React.FC = () => {
     <div className="user">
       <h1>User Details</h1>
       {user && (
-        <div>
+        <div className="user-details">
           <p>
             <strong>Name:</strong> {user.name}
           </p>
