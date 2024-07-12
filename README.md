@@ -20,8 +20,8 @@ A React application with TypeScript and Vite setup designed for scalable and mai
 
 ### Prerequisites
 
-- Node.js (version X.X.X or later)
-- npm or yarn
+- Node.js ('20.15.0')
+- npm 
 
 ### Steps
 
