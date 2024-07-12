@@ -28,7 +28,7 @@ A React application with TypeScript and Vite setup designed for scalable and mai
 1. Clone the repository:
    ```sh
    git clone https://github.com/your-username/LetteHub.git
-   \`\`\`
+   
 2. Navigate to the project directory:
    \`\`\`sh
    cd LetteHub
