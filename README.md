@@ -113,16 +113,6 @@ Distributed under the MIT License. See \`LICENSE\` for more information.
 
 - For more detailed documentation, please refer to the [project documentation](link-to-documentation).
 
-## Support
-
-For support, please contact [email@example.com](mailto:email@example.com).
-
-## Badges
-
-![Build Status](link-to-build-status)
-![Coverage](link-to-coverage)
-![License](link-to-license)
-
 ## Roadmap
 
 - Future plan 1
