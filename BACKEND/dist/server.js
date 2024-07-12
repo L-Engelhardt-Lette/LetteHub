@@ -14,31 +14,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const dbConfig_1 = __importDefault(require("./config/dbConfig")); // Adjust the path as necessary
+const cors_1 = __importDefault(require("cors"));
+const dbConfig_1 = __importDefault(require("./config/dbConfig"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const projectRoutes_1 = __importDefault(require("./routes/projectRoutes"));
 const taskRoutes_1 = __importDefault(require("./routes/taskRoutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
-// Test database connection
+// CORS Middleware Configuration
+app.use((0, cors_1.default)({
+    origin: 'http://localhost:5173',
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    credentials: true // Enable credentials if your frontend requires them
+}));
+app.options('*', (0, cors_1.default)()); // Respond to preflight requests
+app.use(express_1.default.json());
+app.use('/api/auth', authRoutes_1.default);
+app.use('/api/projects', projectRoutes_1.default);
+app.use('/api/tasks', taskRoutes_1.default);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield dbConfig_1.default.authenticate();
         console.log('Connection to the database has been established successfully.');
-        // Sync all models
-        yield dbConfig_1.default.sync({ force: false }); // Set force: true to drop and recreate tables
+        yield dbConfig_1.default.sync({ force: false });
         console.log('Database synced successfully.');
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
     }
     catch (error) {
         console.error('Unable to connect to the database:', error);
     }
 }))();
-app.use(express_1.default.json());
-// Define your routes here
-app.use('/api/auth', authRoutes_1.default);
-app.use('/api/projects', projectRoutes_1.default);
-app.use('/api/tasks', taskRoutes_1.default);
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
