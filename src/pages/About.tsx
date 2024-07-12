@@ -41,22 +41,27 @@ const ProfileCard = ({
 }) => (
   <motion.div
     whileHover={{ scale: 1.05 }}
-    className="p-4 flex flex-col items-center bg-white bg-opacity-75 rounded-lg shadow-md"
+    className="p-4 flex flex-col items-center bg-primary-light bg-opacity-75 rounded-lg shadow-md"
   >
     <img
       src={`${github}.png`}
       alt={`${name}'s GitHub`}
       className="w-24 h-24 rounded-full"
     />
-    <h3 className="mt-4 text-lg font-semibold text-black">{name}</h3>
-    <p className="text-gray-700">{role}</p>
+    <h3 className="mt-4 text-lg font-semibold text-primary-content font-UnageoBold">
+      {name}
+    </h3>
+    <p className="text-secondary-content font-UnageoRegular">{role}</p>
   </motion.div>
 );
 
 const AboutSection = () => (
-  <section className="relative flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white">
-    <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-900 to-black opacity-70"></div>
-    <h1 id="TeamTitle" className="relative z-10">
+  <section className="relative flex flex-col items-center justify-center min-h-screen bg-background-dark text-foreground-dark">
+    <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-background-dark opacity-70"></div>
+    <h1
+      id="TeamTitle"
+      className="relative z-10 text-primary-content font-MonaspaceNeonRegular"
+    >
       Our Team
     </h1>
     <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-screen-lg p-4">
@@ -72,7 +77,7 @@ function AboutPage() {
     <Layout>
       <div className="snap-y snap-proximity overflow-y-scroll h-screen">
         <motion.div
-          className="snap-start h-screen bg-gray-100"
+          className="snap-start h-screen bg-background-light"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
@@ -80,16 +85,16 @@ function AboutPage() {
           <AboutSection />
         </motion.div>
         <motion.div
-          className="snap-start h-screen bg-gray-200 place-content-center"
+          className="snap-start h-screen bg-foreground-dark place-content-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <div className="p-5 md:p-20 text-center max-w-screen-md mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-5">
+          <div className="p-5 md:p-20 text-center max-w-screen-md mx-auto text-copy">
+            <h2 className="text-3xl md:text-4xl font-bold mb-5 text-primary font-UnageoBold">
               Technologien und Ansätze
             </h2>
-            <p className="text-lg">
+            <p className="text-lg text-copy-light font-UnageoRegular">
               Unser Projekt ist eine moderne Webanwendung, die verschiedene
               Technologien nutzt, um eine effiziente und benutzerfreundliche
               Plattform zu bieten. Wir setzen <strong>TypeScript</strong> und{" "}
@@ -114,16 +119,16 @@ function AboutPage() {
           <DoubleScrollingLogos />
         </motion.div>
         <motion.div
-          className="snap-start h-screen bg-gray-300 flex items-center place-content-center"
+          className="snap-start h-screen bg-foreground-light flex items-center place-content-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <div className="p-5 md:p-20 text-center max-w-screen-md mx-auto">
-            <h2 className="text-2xl md:text-4xl font-bold mb-5">
+          <div className="p-5 md:p-20 text-center max-w-screen-md mx-auto text-copy">
+            <h2 className="text-2xl md:text-4xl font-bold mb-5 text-secondary font-UnageoBold">
               LetteHub Projektübersicht
             </h2>
-            <p>
+            <p className="font-UnageoRegular">
               Das LetteHub-Repository ist darauf ausgelegt, eine React-Anwendung
               mit TypeScript und Vite einzurichten und eine optimierte
               Entwicklungsumgebung mit Hot Module Replacement und
@@ -131,7 +136,7 @@ function AboutPage() {
               Dieses Setup ist ideal für die Erstellung skalierbarer und
               wartbarer Anwendungen.
             </p>
-            <p>
+            <p className="font-UnageoRegular">
               Zu den Hauptmerkmalen gehören Konfigurationen für erweiterte
               Typüberprüfung und schnelle Aktualisierungsmöglichkeiten. Die
               Projektstruktur umfasst Verzeichnisse wie `BACKEND`, `public` und
