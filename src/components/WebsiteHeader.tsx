@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../scss/Components/WebsiteHeader.scss";
-import DarkLightModeSwitch from "./DarkLightModeSwitch";
 import HeaderUserIcon from "./HeaderUserIcon";
 
 const WebsiteHeader: React.FC = () => {
