@@ -152,7 +152,7 @@ const SlidingFeatureDisplay = ({
           stiffness: 400,
           damping: 25,
         }}
-        className="h-fit w-3/5 rounded-xl p-8"
+        className="h-fit w-2/5 rounded-xl p-8"
       >
         <ExampleFeature featureInView={featureInView} />
       </motion.div>
@@ -214,16 +214,21 @@ const Content = ({
 
 const ExampleFeature = ({ featureInView }: { featureInView: FeatureType }) => {
   return (
-    <div className="relative h-96 w-full rounded-xl bg-slate-800 shadow-xl">
+    <motion.div
+      initial={{ height: "24rem" }}
+      animate={{ height: "auto" }}
+      transition={{ duration: 0.5 }}
+      className="relative w-full rounded-xl bg-slate-800 shadow-xl"
+    >
       <div className="flex w-full gap-1.5 rounded-t-xl bg-slate-900 p-3">
         <div className="h-3 w-3 rounded-full bg-red-500" />
         <div className="h-3 w-3 rounded-full bg-yellow-500" />
         <div className="h-3 w-3 rounded-full bg-green-500" />
       </div>
-      <div className="p-2">
+      <div className="p-4">
         <p className="font-mono text-sm text-slate-200">
-          <span className="text-green-300">~</span>{" "}
-          <code className="block p-2 mt-2 whitespace-pre-line">
+          <span className="text-green-300">~</span>
+          <code className="block bg-slate-800 p-4 rounded mt-2 whitespace-pre-line">
             {featureInView.code}
           </code>
         </p>
@@ -232,7 +237,7 @@ const ExampleFeature = ({ featureInView }: { featureInView: FeatureType }) => {
       <span className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] text-9xl text-slate-700">
         <featureInView.Icon />
       </span>
-    </div>
+    </motion.div>
   );
 };
 
