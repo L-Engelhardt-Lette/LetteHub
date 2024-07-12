@@ -2,6 +2,7 @@ import React from "react";
 import { motion, useTransform, useScroll } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
+import { Link } from "react-router-dom";
 
 // Constants
 const GRID_BOX_SIZE = 64;
@@ -87,21 +88,21 @@ const Content = ({ opacity }: { opacity: any }) => {
         }}
         className="mb-9 max-w-2xl text-center text-base leading-relaxed text-zinc-400 sm:text-lg md:text-lg md:leading-relaxed"
       >
-        Build beautiful landing pages for your startups, clients, and side
-        projects, without having to think about design.
+        Wir sind nicht nur ein Tool, sondern eine Revolution im
+        Projektmanagement. Erleben Sie den Unterschied.
       </motion.p>
       <motion.div
         initial={{ y: 25, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1.25, ease: "easeInOut", delay: 1 }}
+        transition={{ duration: 1.25, ease: "easeInOut", delay: 0.5 }}
         className="flex flex-col items-center gap-6 sm:flex-row"
       >
         <SplashButton className="flex items-center gap-2">
-          Try it free
+          <Link to="/login">Login</Link>
           <FiArrowRight />
         </SplashButton>
         <GhostButton className="rounded-md px-4 py-2 text-zinc-100">
-          Learn more
+          <Link to="/about">Learn more</Link>
         </GhostButton>
       </motion.div>
     </motion.div>

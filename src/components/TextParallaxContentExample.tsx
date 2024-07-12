@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
 import DarkGridHero from "./DarkGridHero";
+import { Link } from "react-router-dom";
 
 const IMG_PADDING = 12;
 
@@ -123,9 +124,6 @@ const ExampleContent = () => (
         Mit LetteHub können Sie Ihre kreativen Ideen in geordnete Bahnen lenken
         und Ihre Projekte effizient zum Erfolg führen.
       </p>
-      <button className="w-full rounded bg-neutral-900 px-9 py-4 text-xl text-white transition-colors hover:bg-neutral-700 md:w-fit">
-        Learn more <FiArrowRight className="inline" />
-      </button>
     </div>
   </div>
 );
@@ -144,9 +142,6 @@ const ExampleContent2 = () => (
         Mit LetteHub setzen Sie auf eine transparente, nachhaltige und
         zukunftsweisende Arbeitsweise.
       </p>
-      <button className="w-full rounded bg-neutral-900 px-9 py-4 text-xl text-white transition-colors hover:bg-neutral-700 md:w-fit">
-        Learn more <FiArrowRight className="inline" />
-      </button>
     </div>
   </div>
 );
@@ -169,7 +164,8 @@ const ExampleContent3 = () => (
         unserer Projekte.
       </p>
       <button className="w-full rounded bg-neutral-900 px-9 py-4 text-xl text-white transition-colors hover:bg-neutral-700 md:w-fit">
-        Learn more <FiArrowRight className="inline" />
+        <Link to="/projectSelect">Start your journey</Link>
+        <FiArrowRight className="inline" />
       </button>
     </div>
   </div>
