@@ -71,7 +71,6 @@ export default App;
 - **Component Examples:** Includes reusable components like \`ProfileCard\`, \`CommitStats\`, \`DoubleScrollingLogos\`, etc.
 - **Responsive Design:** Mobile-first approach with a responsive layout.
 
-## Contributing
 
 ### Guidelines
 
@@ -90,13 +89,6 @@ export default App;
    \`\`\`
 5. Create a Pull Request.
 
-### Code of Conduct
-
-Please read the [Code of Conduct](link-to-code-of-conduct) for guidelines on contributing to this project.
-
-## License
-
-Distributed under the MIT License. See \`LICENSE\` for more information.
 
 ## Authors and Acknowledgments
 
@@ -105,18 +97,3 @@ Distributed under the MIT License. See \`LICENSE\` for more information.
 - **Nick Bodinus:** [GitHub Profile](https://github.com/Nbdnus) (Back End)
 - **Luca Krickl:** [GitHub Profile](https://github.com/LucaKrickl) (Back End / Databank)
 
-
-## Roadmap
-
-- Future plan 1
-- Future plan 2
-
-## FAQ
-
-### Question 1
-
-Answer to question 1.
-
-### Question 2
-
-Answer to question 2.
