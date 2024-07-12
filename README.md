@@ -49,7 +49,7 @@ A React application with TypeScript and Vite setup designed for scalable and mai
 
 ### Examples
 
-\`\`\`tsx
+
 import React from "react";
 import Home from "./components/Home";
 
@@ -61,7 +61,7 @@ const App = () => (
 
 export default App;
 
-\`\`\`
+
 
 ## Features
 
