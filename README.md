@@ -39,7 +39,7 @@ A React application with TypeScript and Vite setup designed for scalable and mai
 
 ### Running the Application
 
-1. After starting the development server, open your browser and go to \`http://localhost:5000\`.
+1. After starting the development server, open your browser and go to \`http://localhost:5173\`.
 
 ### Examples
 
