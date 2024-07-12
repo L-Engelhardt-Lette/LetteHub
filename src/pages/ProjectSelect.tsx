@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateProjectModal from "../components/CreateProjectModal";
 import "../scss/pages/ProjectSelect.scss";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { FiTrash2, FiEye } from "react-icons/fi";
 
 const projects = [
@@ -44,24 +44,24 @@ const ProjectSelect: React.FC = () => {
   };
 
   return (
-    <div className="project relative mx-auto max-w-7xl">
+    <div className="project">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="min-h-screen bg-background-dark text-foreground-dark p-8"
+        className="content"
       >
-        <h1 className="title text-3xl font-UnageoBold text-primary-content">
+        <h1 className="title">
           {items.length > 0
             ? items.length > 1
               ? "My Projects"
               : "My Project"
             : "Create your first project"}
         </h1>
-        <div className="grid-container mt-8">
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid-container">
+          <div className="grid">
             {items.length === 0 && (
-              <div className="no-projects col-span-full text-center text-secondary-content">
+              <div className="no-projects">
                 <p>No projects found.</p>
               </div>
             )}
@@ -69,27 +69,27 @@ const ProjectSelect: React.FC = () => {
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.05 }}
-                className="grid-item bg-primary-light bg-opacity-75 rounded-lg shadow-md p-4"
+                className="grid-item"
               >
-                <div className="inner-grid-item ">
-                  <div className="grid-item-title mt-2 text-lg font-UnageoBold text-primary-content">
+                <div className="inner-grid-item">
+                  <div className="grid-item-title">
                     <strong>{item.name}</strong>
                   </div>
-                  <div className="flex justify-between mt-4">
+                  <div className="grid-item-actions">
                     <button
-                      className="grid-item-delete-button bg-green-500 text-white px-4 py-2 rounded font-UnageoRegular flex items-center justify-center w-full sm:w-auto"
+                      className="grid-item-action-button view-button"
                       onClick={() => navigate(`/project/${item.id}`)}
                       title="View details"
                     >
-                      <FiEye className="mr-2" />
+                      <FiEye className="icon" />
                       View Details
                     </button>
                     <button
-                      className="grid-item-delete-button bg-red-500 text-white px-4 py-2 rounded font-UnageoRegular flex items-center justify-center w-full sm:w-auto"
+                      className="grid-item-action-button delete-button"
                       onClick={() => handleDeleteProject(item.id)}
                       title="Delete project"
                     >
-                      <FiTrash2 className="mr-2" />
+                      <FiTrash2 className="icon" />
                       Delete
                     </button>
                   </div>
@@ -98,10 +98,12 @@ const ProjectSelect: React.FC = () => {
             ))}
             <motion.div
               whileHover={{ scale: 1.1 }}
-              className="add-project-button-container flex justify-center items-center bg-primary-light bg-opacity-75 rounded-lg shadow-md"
+              className={`add-project-button-container ${
+                items.length === 0 ? "empty" : ""
+              }`}
             >
               <button
-                className="add-project-button bg-secondary text-white px-4 py-2 rounded-full font-UnageoBold"
+                className="add-project-button"
                 onClick={handleOpenModal}
                 title="Create new project"
               >

@@ -1,25 +1,37 @@
+@font-face {
+  font-family: "UnageoBold";
+  src: url("/font/unageo/fonts/ttf/Unageo-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
 .project {
   padding: 20px;
-  max-width: 1400px; /* Erhöhte Breite für das Projekt */
+  max-width: 1400px; /* Increased width for the project container */
   margin: 0 auto;
 
   .title {
-    font-size: 2rem;
-    margin-top: 100px; /* Erhöhter Abstand zum oberen Rand */
-    margin-bottom: 60px; /* Erhöhter Abstand zum Grid */
+    font-size: 2.5rem; /* Bigger font size for the title */
+    margin-top: 100px; /* Increased margin from the top */
+    margin-bottom: 60px; /* Increased margin to the grid */
     text-align: center;
+    font-family: "UnageoBold", sans-serif;
+    color: #000000; /* Black color for the title */
   }
 
   .grid-container {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Vertikal oben ausrichten */
+    align-items: flex-start; /* Align items at the top vertically */
   }
 
   .grid {
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Größere Spaltenbreite */
+    grid-template-columns: repeat(
+      3,
+      minmax(300px, 1fr)
+    ); /* Larger column width */
   }
 
   .grid-item {
@@ -29,6 +41,12 @@
     background-color: #e6e6e6;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px; /* Wider width */
+    height: 300px; /* Taller height */
 
     &:hover {
       transform: translateY(-5px);
@@ -36,74 +54,103 @@
 
     &-title {
       margin-top: 10px;
-      font-size: 1.2rem;
-      text-align: center; /* Zentriert den Text im Titel */
+      font-size: 1.5rem; /* Bigger font size for the title */
+      text-align: center; /* Center text in the title */
+      font-family: "UnageoBold", sans-serif;
+      color: #000000; /* Black color for the title */
     }
 
-    &-content {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #007bff; /* Blauton für das Feld */
-      color: #d3d3d3;
-      text-align: center;
-      height: 300px; /* Quadratische Höhe */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      img {
-        max-width: 100%; /* Maximale Breite für das Bild */
-        max-height: 100%; /* Maximale Höhe für das Bild */
-        border-radius: 5px;
-        object-fit: cover; /* Bild skalieren und zuschneiden */
-      }
-    }
-
-    &-action-button {
+    &-actions {
       margin-top: 10px;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 5px;
-      background-color: #28a745; /* Grün für Aktionsschaltflächen */
-      color: #ffffff;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
 
-      &:hover {
-        background-color: #218838;
+      .grid-item-action-button {
+        padding: 6px 12px; /* Smaller padding */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48%; /* Wider width */
+        color: #ffffff;
+        font-family: "UnageoBold", sans-serif;
+        font-size: 0.9rem; /* Smaller font size */
+
+        &.view-button {
+          background-color: #28a745; /* Green for view button */
+
+          &:hover {
+            background-color: #218838;
+          }
+        }
+
+        &.delete-button {
+          background-color: #dc3545; /* Red for delete button */
+
+          &:hover {
+            background-color: #c82333;
+          }
+        }
+
+        .icon {
+          margin-right: 4px; /* Smaller margin */
+          font-size: 1rem; /* Smaller icon size */
+        }
       }
     }
   }
 
-  .add-project-button {
-    font-size: 1.8rem; /* etwas kleinere Schriftgröße */
-    width: 50px; /* Breite des Buttons */
-    height: 50px; /* Höhe des Buttons */
-    border: none;
-    border-radius: 50%;
-    background-color: transparent; /* transparenter Hintergrund */
-    color: #007bff; /* Blaufarbe für den Button */
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-
+  .add-project-button-container {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    /* Schatten für einen leichten 3D-Effekt */
+    width: 300px; /* Wider width */
+    height: 300px; /* Taller height */
+    border-radius: 10px;
+    background-color: #007bff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+
+    &.empty {
+      background-color: #ff5733; /* Different color when no projects exist */
+    }
 
     &:hover {
-      background-color: #f0f0f0; /* Hintergrundfarbe beim Hover */
-      color: #0056b3; /* dunklere Blaufarbe */
-      transform: translateY(-2px); /* Anhebungseffekt */
+      transform: translateY(-5px);
+    }
+
+    .add-project-button {
+      font-size: 2rem; /* Center the + symbol */
+      width: 60px; /* Wider width */
+      height: 60px; /* Taller height */
+      border: none;
+      border-radius: 50%;
+      background-color: transparent;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      /* Shadow for a slight 3D effect */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        background-color: #f0f0f0; /* Background color on hover */
+        color: #0056b3; /* Darker blue color */
+        transform: translateY(-2px); /* Lift effect */
+      }
     }
   }
 
   .no-projects {
-    margin-top: 40px; /* Erhöhter Abstand vom Grid */
+    margin-top: 40px; /* Increased margin from the grid */
     text-align: center;
     color: #777;
 
