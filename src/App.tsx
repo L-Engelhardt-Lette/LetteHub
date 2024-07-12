@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import WebsiteHeader from "./components/WebsiteHeader";
 import Loader from "./components/Loader";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Signup from "./pages/signup";
 import Projects from "./pages/ProjectSelect";
 import { AuthProvider } from "./components/auth/authContext";
 import ProtectedRoute from "./routes/ProtectedRoutes";
