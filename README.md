@@ -36,8 +36,6 @@ A React application with TypeScript and Vite setup designed for scalable and mai
 3. Install dependencies:
    \`\`\`
    npm install
-   # or
-   yarn install
    \`\`\`
 4. Start the development server:
    \`\`\`
