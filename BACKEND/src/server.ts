@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import session from "express-session";
@@ -52,7 +52,19 @@ app.get("/api/check-login", (req: Request, res: Response) => {
   }
 });
 
-// Login endpoint
+// Middleware to protect routes
+const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+  if (req.session.user) {
+    next();
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
+};
+
+// Apply the middleware to routes you want to protect
+app.use("/api/projects", isAuthenticated, projectRoutes);
+app.use("/api/tasks", isAuthenticated, taskRoutes);
+
 app.post("/api/auth/login", (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -65,7 +77,6 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
   }
 });
 
-// Register endpoint
 app.post("/api/auth/register", async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
