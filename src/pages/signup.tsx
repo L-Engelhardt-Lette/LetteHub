@@ -19,6 +19,8 @@ const Signup: React.FC = () => {
     repassword: "",
   });
 
+  const [signupError, setSignupError] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -59,12 +61,13 @@ const Signup: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("User registration failed");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "User registration failed");
       }
 
       navigate("/login");
-    } catch (error) {
-      console.error("Error registering user:", error);
+    } catch (error: any) {
+      setSignupError(error.message || "Error registering user");
     }
   };
 
@@ -116,6 +119,7 @@ const Signup: React.FC = () => {
           />
           {errors.repassword && <p className="error">{errors.repassword}</p>}
         </div>
+        {signupError && <p className="error">{signupError}</p>}
         <button type="submit" className="submit">
           Sign Up
         </button>

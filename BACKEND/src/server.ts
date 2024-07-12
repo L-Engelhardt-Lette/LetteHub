@@ -65,6 +65,24 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
   }
 });
 
+// Register endpoint
+app.post("/api/auth/register", async (req: Request, res: Response) => {
+  const { name, email, password } = req.body;
+
+  try {
+    // Simulate user registration (replace with your own logic)
+    // For example, you can save the user data to your database
+    // Here we just send a success response
+
+    // Save the user to the database (pseudo code)
+    // await User.create({ name, email, password });
+
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "User registration failed" });
+  }
+});
+
 (async () => {
   try {
     await sequelize.authenticate();
