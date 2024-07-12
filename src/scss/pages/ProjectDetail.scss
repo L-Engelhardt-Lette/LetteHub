@@ -1,287 +1,156 @@
-@import "../Colors.scss";
-@import "../Fonts.scss";
+@font-face {
+  font-family: UnageoBold;
+  src: url("/font/unageo/fonts/ttf/Unageo-Bold.ttf");
+  font-style: bold;
+}
 
-.project-card {
-  background-color: #f2f2f2;
-  padding: 20px;
-  border-radius: 8px;
-  width: 100%; /* Karte auf volle Breite setzen */
-  max-width: 1900px; /* Maximalbreite der Karte für bessere Lesbarkeit begrenzen */
-  margin-top: 100px;
-  margin-left: auto; /* Setzt den linken Rand der Karte auf 0 */
-  margin-right: auto; /* Verschiebt die Karte nach rechts, um sie zu zentrieren */
-  position: relative; /* Position relativ setzen, um Linie und Buttons absolut zu positionieren */
+.project-detail {
+  position: relative;
+  padding: 1.5em;
 
-  #project-detail-title{
-    font-style: bold;
-    padding-bottom: 5px;
-    font-family:  UnageoBold;
-    font-size: 1.5em;
-    color: $primary-dark;
-    
-  }
-  .card-section {
-    margin-top: 10px;
-    margin-bottom: 10px; /* Zum Beispiel 5px Abstand nach unten */
-    line-height: 1.5;
-    text-align: left;
-    position: relative;
-  }
-  .progress-section{
-    align-items: center;
-    display: flex;
-
-    .progress-loader {
-      transform: translate(calc(-50% + 80px), calc(-50% + 6.5px)); /* 20px nach rechts */
-      width: 150px;
-      background: rgba(34, 34, 34, 0.253);
-      height: 10px;
-      border-radius: 7px;
-    }
-    
-    
-    
-    
-    .progress {
-      width: 1px;
-      height: 10px;
-      border-radius: 7px;
-      background: rgb(255, 255, 255);
-      transition: 0.5s;
-      animation: loading_44 5s cubic-bezier(.4,1.01,1,1) infinite;
-    }
-  }
-
-  // hr {
-  //   border: none;
-  //   border-top: 1px solid #ccc;
-  //   margin: 10px 0;
-  //   position: absolute; /* Linie absolut positionieren */
-  //   width: 100%; /* Breite der Karte abzüglich der horizontalen Padding */
-  //   left: 0px; /* Abstand zum linken Rand der Karte */
-  //   top: 60%; /* Mittig auf der Karte */
-  //   transform: translateY(-50%); /* Vertikal zentrieren */
-  //   display: block; /* Standardmäßig sichtbar */
-  // }
-
-  .edit-mode {
-    hr {
-      display: none; /* Ausblenden der hr im Bearbeitungsmodus */
-    }
-  }
-  .edit-button {
-    margin-left: auto; /* Nach rechts schieben */
-   
-    
-    padding: 10px 20px; /* Erhöhte Padding-Werte für größere Buttons */
-    background-color: #0e76a8; /* Blaue Hintergrundfarbe */
+  .back-button {
+    position: absolute;
+    top: 5em; /* Ensures the button is below the header */
+    left: 1em;
+    background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 10px;
+    padding: 10px 20px;
     cursor: pointer;
-    display: flex;
-    align-items: center; /* Icons vertikal zentrieren */
-  
-    svg {
-      margin-right: 8px; /* Abstand zwischen Icon und Text */
+    font-size: 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    z-index: 2; /* Ensures the button is on top of other elements */
+  }
+
+  .back-button:hover {
+    background-color: #0056b3;
+  }
+
+  .project-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 6em; /* Adjust this to push the title and everything else down */
+  }
+
+  #project-detail-title {
+    margin-bottom: 0.5em;
+    font-family: UnageoBold;
+    font-size: 24px;
+  }
+
+  .card-section {
+    margin-bottom: 1em;
+
+    strong {
+      display: inline-block;
+      width: 80px;
     }
-  
-    &:hover {
-      color: #f3f4f6; /* Textfarbe bei Hover */
-      background: linear-gradient(
-        156deg,
-        rgba(69, 195, 255, 1) 0%,
-        rgba(14, 118, 168, 1) 100%
-      );
+
+    .selected-participants {
+      display: flex;
+      flex-wrap: wrap;
+
+      .selected-participant {
+        background: #e1f5fe;
+        border-radius: 4px;
+        padding: 5px 10px;
+        margin: 5px;
+        display: flex;
+        align-items: center;
+
+        .remove-participant {
+          margin-left: 5px;
+          cursor: pointer;
+        }
+      }
     }
   }
+
+  .progress-section {
+    .progress-loader {
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+      height: 20px;
+      margin-top: 5px;
+
+      .progress {
+        background: #76c7c0;
+        width: 50%; /* Example width */
+        height: 100%;
+      }
+    }
+  }
+
+  .description-input {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 10px;
+  }
+
   .edit-buttons {
-     /* Buttons absolut positionieren */
-    // bottom: 20px; /* 20px Abstand vom unteren Rand der Karte */
-    // right: 20px; /* 20px Abstand vom rechten Rand */
-    // display: flex; /* Flexbox für nebeneinander liegende Buttons */
-    // align-items: center; /* Zentriert die Buttons horizontal und vertikal */
-
-    .save-button,
-    .cancel-button {
-      border-radius: 10px;
-      padding: 10px 20px; /* Etwas kleineres Verhältnis als ursprünglich */
- /* Größere Padding-Werte für die Buttons */
-      font-size: 16px; /* Schriftgröße erhöhen */
-      display: flex; /* Flexbox für nebeneinander liegende Buttons */
-      align-items: center; /* Icons vertikal zentrieren */
-      justify-content: center; /* Text horizontal zentrieren */
-      margin-left: 10px; /* Abstand zwischen den Buttons */
-
-      svg {
-        margin-right: 8px; /* Abstand zwischen Icon und Text */
-      }
-    }
-  }
-
-  #Buttons {
     display: flex;
-    justify-content: flex-end; /* Elements nach rechts ausrichten */
-  }
-  
-  
-  
+    justify-content: flex-end;
 
-  .save-button {
-    background-color: $add;
-    color: $foreground-dark;
+    #Buttons {
+      display: flex;
 
-    &:hover {
-      background: linear-gradient(
-        156deg,
-        rgba(88, 255, 69, 1) 0%,
-        rgba(39, 143, 15, 1) 100%
-      );
-    }
-  }
+      .save-button,
+      .cancel-button {
+        display: flex;
+        align-items: center;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+        margin-left: 10px;
+        text-decoration: none;
 
-  .cancel-button {
-    background-color: $delete;
-    color: $foreground-dark;
-
-    &:hover {
-      background: linear-gradient(
-        156deg,
-        rgba(250, 107, 107, 1) 0%,
-        rgba(255, 0, 0, 1) 100%
-      );
-    }
-  }
-
-  .selected-participants {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 5px;
-  }
-
-  .selected-participant {
-    background-color: #e2e3e5;
-    color: #333;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    display: flex;
-    align-items: center;
-  }
-
-  .remove-participant {
-    margin-left: 5px;
-    cursor: pointer;
-
-    &:hover {
-      border-radius: 15px;
-      background-color: $delete;
-      color: $foreground-dark;
-    }
-  }
-}
-
-.TooltipButtonContainer {
-  background-color: $primary;
-  border-radius: 0.375em;
-  font-family: MonaspaceNeonRegular;
-
-  #icon {
-    color: $foreground-dark;
-  }
-  .flex-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.4rem;
-    cursor: pointer;
-    border-radius: 0.375rem;
-    color: #71717a; /* neutral-500 */
-    font-weight: 500;
-    position: relative;
-    z-index: 9999999999;
-
-    &:hover {
-      color: #f3f4f6; /* neutral-100 */
-      background: rgb(69, 195, 255);
-      background: linear-gradient(
-        156deg,
-        rgba(69, 195, 255, 1) 0%,
-        rgba(14, 118, 168, 1) 100%
-      );
-    }
-
-    &[data-tooltip] {
-      &::after {
-        content: attr(data-tooltip);
-        margin-top: 0.5rem;
-        font-size: 1em; /* text-sm */
-        visibility: hidden;
-        transform: scale(0.5);
-        transform-origin: top;
-        opacity: 0;
-        transition: all 0.3s;
-        position: absolute;
-        background-color: #ffffff; /* white */
-        top: calc(100% + 4px);
-        transform: translateY(-50%);
-        z-index: -1;
-        padding: 0.325rem 0.7rem; /* px-2.5 py-1 */
-        min-height: fit-content;
-        min-width: fit-content;
-        border-radius: 0.375rem;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        color: $foreground-light; /* zinc-800 */
-        white-space: nowrap;
-        font-size: 12px; /* text-[10px] */
-      }
-
-      &::before {
-        visibility: hidden;
-        opacity: 0;
-        transition: all 0.3s;
-        background-color: #ffffff; /* white */
-        clip-path: polygon(50% 0, 0 100%, 100% 100%);
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 0;
-        width: 0.75rem; /* w-3 */
-        height: 0.25rem; /* h-[4px] */
-      }
-
-      &:hover {
-        &::after {
-          visibility: visible;
-          opacity: 1;
-          transform: scale(1);
+        &.cancel-button {
+          background-color: #dc3545;
         }
 
-        &::before {
-          visibility: visible;
-          opacity: 1;
+        svg {
+          margin-right: 5px;
         }
+      }
+
+      .save-button:hover {
+        background-color: #0056b3;
+      }
+
+      .cancel-button:hover {
+        background-color: #c82333;
       }
     }
   }
-}
 
-.description-input {
-  background-color: #ffffff; /* Hintergrundfarbe */
-  color: #333; /* Textfarbe */
-  padding: 10px; /* Innenabstand erhöhen */
-  border-radius: 8px; /* Abgerundete Ecken */
-  border: none; /* Kein Rahmen */
-  width: 100vw; /* Über die gesamte Bildschirmbreite */
-  min-height: 150px; /* Mindesthöhe für das Beschreibungsfeld */
-  max-height: 300px; /* Maximale Höhe für das Beschreibungsfeld */
-  resize: vertical; /* Vertikales Resize zulassen */
-  line-height: 1.5; /* Zeilenhöhe erhöhen für bessere Lesbarkeit */
-  margin-bottom: 20px; /* Abstand nach unten für die Buttons */
-  margin-left: auto; /* Horizontal zentrieren */
-  margin-right: auto; /* Horizontal zentrieren */
-}
+  .edit-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
 
+    svg {
+      margin-right: 5px;
+    }
+  }
+
+  .edit-button:hover {
+    background-color: #0056b3;
+  }
+}

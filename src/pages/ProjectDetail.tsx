@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "../scss/pages/ProjectDetail.scss";
 import { CustomKanban } from "../components/Project/ProjectViewTableBeta";
 import SearchComponent from "../components/Project/Deatils/UserSearchBar";
@@ -107,6 +107,9 @@ const ProjectDetail: React.FC = () => {
   return (
     <>
       <div className="project-detail">
+        <Link to="./projectSelect">
+          <button className="back-button">Zurück</button>
+        </Link>
         <div className="project-card">
           <h2 id="project-detail-title">
             {editable ? (
@@ -191,7 +194,7 @@ const ProjectDetail: React.FC = () => {
           </div>
           <hr />
           <div className="card-section">
-            <strong>Beschreibung:</strong>{" "}
+            <strong>Beschreibung:</strong>
             {editable ? (
               <textarea
                 className="description-input"
@@ -199,7 +202,7 @@ const ProjectDetail: React.FC = () => {
                 onChange={(e) => setTempDescription(e.target.value)}
               />
             ) : (
-              editedProject.description
+              <div>{editedProject.description}</div>
             )}
           </div>
           {editable ? (
