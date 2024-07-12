@@ -1,44 +1,84 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import sequelize from './config/dbConfig';
-import authRoutes from './routes/authRoutes';
-import projectRoutes from './routes/projectRoutes';
-import taskRoutes from './routes/taskRoutes';
+import express, { Request, Response } from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import session from "express-session";
+import bodyParser from "body-parser";
+import sequelize from "./config/dbConfig";
+import authRoutes from "./routes/authRoutes";
+import projectRoutes from "./routes/projectRoutes";
+import taskRoutes from "./routes/taskRoutes";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS Middleware Configuration
-app.use(cors({
-    origin: 'http://localhost:5173', // Allow requests from your frontend
-    methods: 'GET,POST,PUT,DELETE,OPTIONS',
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-    credentials: true // Enable credentials if your frontend requires them
-}));
+// Session Middleware Configuration
+app.use(
+  session({
+    secret: "your-secret-key", // Use a strong secret key in production
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set to true if using HTTPS
+  })
+);
 
-app.options('*', cors()); // Respond to preflight requests
+// CORS Middleware Configuration
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Allow requests from your frontend
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    allowedHeaders:
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+    credentials: true, // Enable credentials if your frontend requires them
+  })
+);
+
+app.options("*", cors()); // Respond to preflight requests
 
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/tasks', taskRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/tasks", taskRoutes);
+
+// Check login status endpoint
+app.get("/api/check-login", (req: Request, res: Response) => {
+  if (req.session.user) {
+    res.json({ loggedIn: true });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+// Login endpoint
+app.post("/api/auth/login", (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  // Simulate user authentication (replace with your own logic)
+  if (email === "user@example.com" && password === "password123") {
+    req.session.user = { email }; // Store user info in session
+    res.json({ message: "Login successful", token: "dummy-token" });
+  } else {
+    res.status(401).json({ error: "Invalid email or password" });
+  }
+});
 
 (async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Connection to the database has been established successfully.');
+  try {
+    await sequelize.authenticate();
+    console.log(
+      "Connection to the database has been established successfully."
+    );
 
-        await sequelize.sync({ force: false });
-        console.log('Database synced successfully.');
+    await sequelize.sync({ force: false });
+    console.log("Database synced successfully.");
 
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    } catch (error) {
-        console.error('Unable to connect to the database:', error);
-    }
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
 })();

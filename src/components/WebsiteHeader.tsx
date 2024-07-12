@@ -1,13 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../scss/Components/WebsiteHeader.scss";
-import HeaderUserIcon from "./HeaderUserIcon";
+
+import UserAvatar from "./User/UserAvatar";
 
 const WebsiteHeader: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await fetch("/api/check-login");
+        const data = await response.json();
+        setIsLoggedIn(data.loggedIn);
+      } catch (error) {
+        console.error("Error checking login status:", error);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
   const handleLoginClick = () => {
-    navigate("/user");
+    navigate("/login");
   };
 
   return (
@@ -27,7 +43,6 @@ const WebsiteHeader: React.FC = () => {
           <li>
             <Link to="/about">About</Link>
           </li>
-
           <li>
             <Link to="/projectSelect">Project</Link>
           </li>
@@ -38,9 +53,15 @@ const WebsiteHeader: React.FC = () => {
       </nav>
       <div id="HeaderRightContent">
         <div className="Content">
-          <button onClick={handleLoginClick} className="user-icon-button">
-            <HeaderUserIcon />
-          </button>
+          {isLoggedIn ? (
+            <button onClick={handleLoginClick} className="user-icon-button">
+              <UserAvatar loggedIn={true} />
+            </button>
+          ) : (
+            <button onClick={handleLoginClick} className="user-icon-button">
+              <UserAvatar loggedIn={false} />
+            </button>
+          )}
         </div>
         <div className="Content">{/*<DarkLightModeSwitch /> */}</div>
       </div>

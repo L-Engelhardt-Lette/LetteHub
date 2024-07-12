@@ -46,6 +46,7 @@ const Login: React.FC = () => {
           email: formData.email,
           password: formData.password,
         }),
+        credentials: "include", // Important to include credentials in the request
       });
 
       if (!response.ok) {
