@@ -41,7 +41,7 @@ const WebsiteHeader: React.FC = () => {
   }, [navigate]);
 
   return (
-    <header className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+    <header className="bg-backgroundlight dark:backgrounddark text-foregroundlight dark:text-foregrounddark">
       <div className="p-4 flex justify-between items-center">
         <h1 className="text-primary dark:text-primary-light font-bold text-2xl">
           <Link to="/" id="HeaderTitle">
@@ -94,7 +94,7 @@ const Chip = ({
       className={`${
         selected
           ? "text-foregroundlight dark:text-primary-light"
-          : "text-gray-900 dark:text-gray-100 hover:text-primary-light"
+          : "text-foregroundlight dark:text-foregrounddark hover:text-primary-light"
       } text-base transition-colors px-3 py-1 rounded-md relative`}
     >
       <span className="relative z-10">{text}</span>
@@ -102,7 +102,7 @@ const Chip = ({
         <motion.span
           layoutId="pill-tab"
           transition={{ type: "spring", duration: 0.5 }}
-          className="absolute inset-0 z-0 bg-gradient-to-r from-primary to-primary-light dark:from-primary-dark dark:to-primary-light rounded-md"
+          className="absolute inset-0 z-0 bg-gradient-to-r from-primary to-primarylight dark:from-primarydark dark:to-primarylight rounded-md"
         ></motion.span>
       )}
     </button>

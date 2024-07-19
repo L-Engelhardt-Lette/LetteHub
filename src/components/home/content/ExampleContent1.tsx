@@ -6,13 +6,13 @@ const ExampleContent1 = () => (
       Willkommen bei LetteHub
     </h2>
     <div className="col-span-1 md:col-span-8">
-      <p className="mb-4 text-xl text-neutral-600 dark:text-foreground-dark md:text-2xl">
+      <p className="mb-4 text-xl text-foregroundlight dark:text-foregrounddark md:text-2xl">
         Ihrem perfekten Ort für die Organisation und Strukturierung von
         Projekten. Bei uns finden Sie das Werkzeug, das Ihnen hilft, den
         Überblick zu behalten und gleichzeitig erstklassige Arbeit zu
         garantieren.
       </p>
-      <p className="mb-8 text-xl text-neutral-600 dark:text-foreground-dark md:text-2xl">
+      <p className="mb-8 text-xl text-foregroundlight dark:text-foregrounddark md:text-2xl">
         Mit LetteHub können Sie Ihre kreativen Ideen in geordnete Bahnen lenken
         und Ihre Projekte effizient zum Erfolg führen.
       </p>
