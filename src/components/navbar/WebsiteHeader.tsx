@@ -7,7 +7,7 @@ import React, {
   memo,
 } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import UserAvatar from "./User/UserAvatar";
+import UserAvatar from "../User/UserAvatar";
 import { motion } from "framer-motion";
 
 const tabs = [
