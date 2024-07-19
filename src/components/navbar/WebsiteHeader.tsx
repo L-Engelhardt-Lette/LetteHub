@@ -41,14 +41,14 @@ const WebsiteHeader: React.FC = () => {
   }, [navigate]);
 
   return (
-    <header className="bg-backgroundlight dark:backgrounddark text-foregroundlight dark:text-foregrounddark">
-      <div className="p-4 flex justify-between items-center">
+    <header className="bg-backgroundlight dark:bg-backgrounddark text-foregroundlight dark:text-foregrounddark">
+      <div className="p-4 flex flex-wrap justify-between items-center">
         <h1 className="text-primary dark:text-primary-light font-bold text-2xl">
           <Link to="/" id="HeaderTitle">
             LetteHub
           </Link>
         </h1>
-        <div className="flex justify-center space-x-4">
+        <div className="flex flex-wrap justify-center space-x-2 md:space-x-4 mt-2 md:mt-0">
           {tabs.map((tab) => (
             <MemoizedChip
               key={tab.name}
@@ -59,7 +59,7 @@ const WebsiteHeader: React.FC = () => {
             />
           ))}
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 mt-2 md:mt-0">
           <button onClick={handleLoginClick} className="user-icon-button">
             <UserAvatar loggedIn={isLoggedIn} />
           </button>
