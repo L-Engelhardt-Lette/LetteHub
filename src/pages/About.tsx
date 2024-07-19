@@ -11,7 +11,7 @@ const profiles = [
   {
     name: "Ludwig Engelhardt",
     role: "Front End / Back End",
-    github: "https://github.com/L-Engelhardt-Lette",
+    github: "https://github.com/LudwigLEDE",
   },
   {
     name: "Ole Herold",
