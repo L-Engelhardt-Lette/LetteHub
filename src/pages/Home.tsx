@@ -9,10 +9,7 @@ const Home = () => {
   return (
     <Layout>
       <div className="home-container">
-        <div className="section">
-          <h1>Home Page</h1>
-          {/* <DarkGridHero /> */}
-        </div>
+        <div className="section">{/* <DarkGridHero /> */}</div>
 
         <div className="section">
           <TextParallaxContentExample />
