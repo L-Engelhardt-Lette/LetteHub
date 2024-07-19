@@ -14,7 +14,9 @@ if (container) {
   // Initial render
   root.render(
     <React.StrictMode>
-      <AppRoutes />
+      <div className="bg-backgroundlight dark:bg-backgroundlight">
+        <AppRoutes />
+      </div>
     </React.StrictMode>
   );
 } else {

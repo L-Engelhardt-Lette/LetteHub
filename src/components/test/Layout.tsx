@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 
 const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <div>
+    <div className="bg-backgroundlight dark:bg-backgroundlight">
       <main>{children}</main>
     </div>
   );
