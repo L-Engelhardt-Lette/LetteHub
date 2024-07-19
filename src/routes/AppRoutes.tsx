@@ -10,7 +10,7 @@ import ProjectDetail from "../pages/ProjectDetail"; // Importiere die ProjectDet
 import Login from "../pages/Login";
 import Signup from "../pages/signup";
 import NotFound from "../pages/NotFound";
-import WebsiteHeader from "../components/WebsiteHeader"; // Import the header
+import WebsiteHeader from "../components/navbar/WebsiteHeader"; // Import the header
 import User from "../pages/User";
 
 const AppRoutes = () => (
