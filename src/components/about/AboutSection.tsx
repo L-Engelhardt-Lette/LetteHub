@@ -25,11 +25,10 @@ const profiles = [
 ];
 
 const AboutSection = () => (
-  <section className="relative flex flex-col items-center justify-center min-h-screen bg-backgrounddark text-foregrounddark">
-    <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-backgrounddark opacity-70"></div>
+  <section className="relative flex flex-col items-center justify-center min-h-screen bg-backgroundlight text-foregroundlight dark:bg-backgrounddark dark:text-foregrounddark">
     <h1
       id="TeamTitle"
-      className="relative z-10 text-primarycontent font-MonaspaceNeonRegular text-3xl md:text-5xl"
+      className="relative z-10 text-primary dark:text-primarylight font-MonaspaceNeonRegular text-3xl md:text-5xl"
     >
       Our Team
     </h1>

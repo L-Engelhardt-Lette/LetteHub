@@ -27,31 +27,33 @@ function AboutPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <div className="p-5 md:p-20 text-center max-w-screen-md mx-auto text-foregroundlight dark:text-foregrounddark">
-              <h2 className="text-3xl md:text-4xl font-bold mb-5 text-primary font-UnageoBold">
-                Technologien und Ansätze
-              </h2>
-              <p className="text-lg text-foregroundlight dark:text-foregrounddark font-UnageoRegular">
-                Unser Projekt ist eine moderne Webanwendung, die verschiedene
-                Technologien nutzt, um eine effiziente und benutzerfreundliche
-                Plattform zu bieten. Wir setzen <strong>TypeScript</strong> und{" "}
-                <strong>React</strong> für robuste und wiederverwendbare
-                UI-Komponenten ein. <strong>SCSS</strong> und{" "}
-                <strong>Tailwind CSS</strong> sorgen für schnelles und
-                effizientes Styling. Die serverseitige Logik wird mit{" "}
-                <strong>Node.js</strong> und <strong>Express</strong> umgesetzt,
-                während <strong>MySQL</strong> zur Datenspeicherung dient.{" "}
-                <strong>Vite</strong> ermöglicht schnelle Builds, und{" "}
-                <strong>XAMPP</strong> dient als lokaler Entwicklungsserver.
-                Unsere Entwicklung erfolgt in <strong>VS Code</strong>, und{" "}
-                <strong>GitHub</strong> wird für die Zusammenarbeit genutzt. Zur
-                Dokumentation verwenden wir <strong>Markdown</strong>, und{" "}
-                <strong>JSON</strong> wird für den Datenaustausch verwendet.{" "}
-                <strong>Adobe Illustrator</strong> nutzen wir für Design-Assets,
-                und <strong>Scrum</strong> organisiert unsere
-                Entwicklungsprozesse. Diese Technologien ermöglichen uns, eine
-                robuste und ansprechende Webanwendung zu entwickeln.
-              </p>
+            <div className="p-5 md:p-20 text-center mx-auto text-foregroundlight dark:text-foregrounddark">
+              <div className="max-w-screen-md text-center mx-auto p-5">
+                <h2 className="text-3xl md:text-4xl font-bold mb-5 text-primary font-UnageoBold">
+                  Technologien und Ansätze
+                </h2>
+                <p className="text-lg text-foregroundlight dark:text-foregrounddark font-UnageoRegular">
+                  Unser Projekt ist eine moderne Webanwendung, die verschiedene
+                  Technologien nutzt, um eine effiziente und benutzerfreundliche
+                  Plattform zu bieten. Wir setzen <strong>TypeScript</strong>{" "}
+                  und <strong>React</strong> für robuste und wiederverwendbare
+                  UI-Komponenten ein. <strong>SCSS</strong> und{" "}
+                  <strong>Tailwind CSS</strong> sorgen für schnelles und
+                  effizientes Styling. Die serverseitige Logik wird mit{" "}
+                  <strong>Node.js</strong> und <strong>Express</strong>{" "}
+                  umgesetzt, während <strong>MySQL</strong> zur Datenspeicherung
+                  dient. <strong>Vite</strong> ermöglicht schnelle Builds, und{" "}
+                  <strong>XAMPP</strong> dient als lokaler Entwicklungsserver.
+                  Unsere Entwicklung erfolgt in <strong>VS Code</strong>, und{" "}
+                  <strong>GitHub</strong> wird für die Zusammenarbeit genutzt.
+                  Zur Dokumentation verwenden wir <strong>Markdown</strong>, und{" "}
+                  <strong>JSON</strong> wird für den Datenaustausch verwendet.{" "}
+                  <strong>Adobe Illustrator</strong> nutzen wir für
+                  Design-Assets, und <strong>Scrum</strong> organisiert unsere
+                  Entwicklungsprozesse. Diese Technologien ermöglichen uns, eine
+                  robuste und ansprechende Webanwendung zu entwickeln.
+                </p>
+              </div>
               <DoubleScrollingLogos />
             </div>
           </motion.div>
@@ -62,7 +64,7 @@ function AboutPage() {
             transition={{ duration: 1 }}
           >
             <div className="p-5 md:p-20 text-center max-w-screen-md mx-auto text-foregroundlight dark:text-foregrounddark">
-              <h2 className="text-2xl md:text-4xl font-bold mb-5 text-secondary dark:text-secondarylight font-UnageoBold">
+              <h2 className="text-2xl md:text-4xl font-bold mb-5 text-primary dark:text-primarylight font-UnageoBold">
                 LetteHub Projektübersicht
               </h2>
               <p className="font-UnageoRegular">
