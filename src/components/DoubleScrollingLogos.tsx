@@ -24,34 +24,64 @@ import { DiScrum } from "react-icons/di";
 import { IconType } from "react-icons";
 import React from "react";
 
-const DoubleScrollingLogos = () => {
-  return (
-    <section className="bg-white py-4">
-      <div className="flex overflow-hidden">
-        <TranslateWrapper>
-          <LogoItemsTop />
+const logosTop = [
+  { Icon: SiTypescript, href: "https://www.typescriptlang.org/" },
+  { Icon: GrMysql, href: "https://www.mysql.com/" },
+  { Icon: FaReact, href: "https://reactjs.org/" },
+  { Icon: SiJavascript, href: "https://www.javascript.com/" },
+  { Icon: SiXampp, href: "https://www.apachefriends.org/index.html" },
+  { Icon: VscVscode, href: "https://code.visualstudio.com/" },
+  {
+    Icon: FaHtml5,
+    href: "https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5",
+  },
+  { Icon: SiVite, href: "https://vitejs.dev/" },
+  { Icon: FaNode, href: "https://nodejs.org/" },
+  { Icon: SiExpress, href: "https://expressjs.com/" },
+];
+
+const logosBottom = [
+  { Icon: FaCss3, href: "https://developer.mozilla.org/en-US/docs/Web/CSS" },
+  { Icon: RiTailwindCssFill, href: "https://tailwindcss.com/" },
+  { Icon: BsFiletypeScss, href: "https://sass-lang.com/" },
+  { Icon: BsFiletypeJson, href: "https://www.json.org/json-en.html" },
+  {
+    Icon: BsFiletypeTsx,
+    href: "https://www.typescriptlang.org/docs/handbook/jsx.html",
+  },
+  {
+    Icon: SiAdobeillustrator,
+    href: "https://www.adobe.com/products/illustrator.html",
+  },
+  { Icon: FaGithub, href: "https://github.com/" },
+  {
+    Icon: FaMarkdown,
+    href: "https://daringfireball.net/projects/markdown/",
+  },
+  { Icon: AiOutlineOpenAI, href: "https://www.openai.com/" },
+  { Icon: DiScrum, href: "https://www.scrum.org/" },
+];
+
+const DoubleScrollingLogos = () => (
+  <section className="bg-backgroundlight dark:bg-backgrounddark py-4 relative overflow-hidden max-w-screen-lg mx-auto">
+    <FadeOverlay position="left" />
+    <div className="flex overflow-hidden">
+      {Array.from({ length: 3 }).map((_, idx) => (
+        <TranslateWrapper key={`top-${idx}`}>
+          <LogoItems logos={logosTop} />
         </TranslateWrapper>
-        <TranslateWrapper>
-          <LogoItemsTop />
+      ))}
+    </div>
+    <div className="flex overflow-hidden mt-4">
+      {Array.from({ length: 3 }).map((_, idx) => (
+        <TranslateWrapper key={`bottom-${idx}`} reverse>
+          <LogoItems logos={logosBottom} />
         </TranslateWrapper>
-        <TranslateWrapper>
-          <LogoItemsTop />
-        </TranslateWrapper>
-      </div>
-      <div className="flex overflow-hidden mt-4">
-        <TranslateWrapper reverse>
-          <LogoItemsBottom />
-        </TranslateWrapper>
-        <TranslateWrapper reverse>
-          <LogoItemsBottom />
-        </TranslateWrapper>
-        <TranslateWrapper reverse>
-          <LogoItemsBottom />
-        </TranslateWrapper>
-      </div>
-    </section>
-  );
-};
+      ))}
+    </div>
+    <FadeOverlay position="right" />
+  </section>
+);
 
 const TranslateWrapper = ({
   children,
@@ -59,75 +89,48 @@ const TranslateWrapper = ({
 }: {
   children: JSX.Element;
   reverse?: boolean;
-}) => {
-  return (
-    <motion.div
-      initial={{ translateX: reverse ? "-100%" : "0%" }}
-      animate={{ translateX: reverse ? "0%" : "-100%" }}
-      transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-      className="flex gap-4 px-2"
-    >
-      {children}
-    </motion.div>
-  );
-};
+}) => (
+  <motion.div
+    initial={{ translateX: reverse ? "-100%" : "0%" }}
+    animate={{ translateX: reverse ? "0%" : "-100%" }}
+    transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+    className="flex gap-4 px-2 min-w-full"
+  >
+    {children}
+  </motion.div>
+);
 
-const LogoItem = ({ Icon, href }: { Icon: IconType; href: string }) => {
-  return (
-    <a
-      href={href}
-      rel="nofollow"
-      target="_blank"
-      className="w-16 md:w-24 h-16 md:h-24 flex justify-center items-center hover:bg-slate-200 text-black transition-colors"
-    >
-      <Icon className="text-4xl md:text-5xl" />
-    </a>
-  );
-};
+const LogoItem = ({ Icon, href }: { Icon: IconType; href: string }) => (
+  <a
+    href={href}
+    rel="nofollow"
+    target="_blank"
+    className="w-16 md:w-20 h-16 md:h-20 flex justify-center items-center hover:bg-primarylight text-foregroundlight dark:text-foregrounddark transition-colors"
+  >
+    <Icon className="text-4xl md:text-5xl" />
+  </a>
+);
 
-const LogoItemsTop = () => (
+const LogoItems = ({
+  logos,
+}: {
+  logos: { Icon: IconType; href: string }[];
+}) => (
   <>
-    <LogoItem Icon={SiTypescript} href="https://www.typescriptlang.org/" />
-    <LogoItem Icon={GrMysql} href="https://www.mysql.com/" />
-    <LogoItem Icon={FaReact} href="https://reactjs.org/" />
-    <LogoItem Icon={SiJavascript} href="https://www.javascript.com/" />
-    <LogoItem Icon={SiXampp} href="https://www.apachefriends.org/index.html" />
-    <LogoItem Icon={VscVscode} href="https://code.visualstudio.com/" />
-    <LogoItem
-      Icon={FaHtml5}
-      href="https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5"
-    />
-    <LogoItem Icon={SiVite} href="https://vitejs.dev/" />
-    <LogoItem Icon={FaNode} href="https://nodejs.org/" />
-    <LogoItem Icon={SiExpress} href="https://expressjs.com/" />
+    {logos.map(({ Icon, href }, idx) => (
+      <LogoItem key={idx} Icon={Icon} href={href} />
+    ))}
   </>
 );
 
-const LogoItemsBottom = () => (
-  <>
-    <LogoItem
-      Icon={FaCss3}
-      href="https://developer.mozilla.org/en-US/docs/Web/CSS"
-    />
-    <LogoItem Icon={RiTailwindCssFill} href="https://tailwindcss.com/" />
-    <LogoItem Icon={BsFiletypeScss} href="https://sass-lang.com/" />
-    <LogoItem Icon={BsFiletypeJson} href="https://www.json.org/json-en.html" />
-    <LogoItem
-      Icon={BsFiletypeTsx}
-      href="https://www.typescriptlang.org/docs/handbook/jsx.html"
-    />
-    <LogoItem
-      Icon={SiAdobeillustrator}
-      href="https://www.adobe.com/products/illustrator.html"
-    />
-    <LogoItem Icon={FaGithub} href="https://github.com/" />
-    <LogoItem
-      Icon={FaMarkdown}
-      href="https://daringfireball.net/projects/markdown/"
-    />
-    <LogoItem Icon={AiOutlineOpenAI} href="https://www.openai.com/" />
-    <LogoItem Icon={DiScrum} href="https://www.scrum.org/" />
-  </>
+const FadeOverlay = ({ position }: { position: "left" | "right" }) => (
+  <div
+    className={`absolute top-0 ${
+      position === "left" ? "left-0" : "right-0"
+    } h-full w-16 pointer-events-none bg-gradient-to-${
+      position === "left" ? "r" : "l"
+    } from-backgroundlight dark:from-backgrounddark`}
+  />
 );
 
 export default DoubleScrollingLogos;
