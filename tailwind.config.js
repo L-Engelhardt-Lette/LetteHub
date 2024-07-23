@@ -40,7 +40,7 @@ module.exports = {
         errorcontent: '#f9bcbc',
       },
       fontFamily: {
-        UnageoRegular: ['UnageoRegular', 'sans-serif'],
+        UnageoRegular: ['UnageoRegular', 'sans-seri^'],
         UnageoBold: ['UnageoBold', 'sans-serif'],
         MonaspaceNeonRegular: ['MonaspaceNeonRegular', 'monospace'],
       },
