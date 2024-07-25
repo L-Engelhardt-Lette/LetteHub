@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 // Session Middleware Configuration
 app.use(
   session({
-    secret: "your-secret-key", // Use a strong secret key in production
+    secret: process.env.JWT_SECRET!, // Use a strong secret key in production
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }, // Set to true if using HTTPS
@@ -26,7 +26,7 @@ app.use(
 // CORS Middleware Configuration
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow requests from your frontend
+    origin: "http://localhost:5174", // Allow requests from your frontend
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     allowedHeaders:
       "Origin, X-Requested-With, Content-Type, Accept, Authorization",
