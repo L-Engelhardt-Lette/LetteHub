@@ -1,11 +1,14 @@
+version: '3.8'
 services:
   app:
     build: .
     ports:
-      - "5000:5000"
+      - "5001:5000" # Change 5000 to 5001 (or any other available port)
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    environment:
+      - JWT_SECRET_KEY=your-secret-key
     depends_on:
       - mongo
   mongo:

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from "../api/auth"; // Ensure this path is correct
 import "../scss/pages/LoginAndCreateUser.scss";
 
 const Login: React.FC = () => {
@@ -37,27 +38,10 @@ const Login: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-        credentials: "include", // Important to include credentials in the request
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Login failed");
+      const success = await login(formData.email, formData.password);
+      if (success) {
+        navigate("/user");
       }
-
-      const data = await response.json();
-      localStorage.setItem("token", data.token);
-
-      navigate("/user"); // Navigate to the user page on successful login
     } catch (error: any) {
       setLoginError(error.message || "Error logging in");
     }
