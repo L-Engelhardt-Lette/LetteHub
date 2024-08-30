@@ -1,5 +1,8 @@
+// frontend/src/Signup.tsx
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../scss/pages/LoginAndCreateUser.scss";
 
 const Signup: React.FC = () => {
@@ -29,12 +32,20 @@ const Signup: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setErrors({
+      name: "",
+      email: "",
+      password: "",
+      repassword: "",
+    });
+
     const validationErrors: typeof errors = {
       name: "",
       email: "",
       password: "",
       repassword: "",
     };
+
     if (!formData.name.trim()) validationErrors.name = "Name is required";
     if (!formData.email.trim()) validationErrors.email = "Email is required";
     if (!formData.password.trim())
@@ -48,26 +59,50 @@ const Signup: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
+      const success = await register(
+        formData.name,
+        formData.email,
+        formData.password
+      );
+      if (success) {
+        navigate("/login");
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setSignupError(error.message || "Error registering user");
+      } else {
+        setSignupError("Unknown error occurred during registration");
+      }
+    }
+  };
+
+  const register = async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<boolean> => {
+    try {
+      const response = await axios.post("http://localhost:3001/register", {
+        name,
+        email,
+        password,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "User registration failed");
+      if (response.status === 201) {
+        return true;
+      } else {
+        setSignupError("User registration failed");
+        return false;
       }
-
-      navigate("/login");
-    } catch (error: any) {
-      setSignupError(error.message || "Error registering user");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        setSignupError(error.response.data?.error || "Failed to register user");
+      } else if (error instanceof Error) {
+        setSignupError(error.message);
+      } else {
+        setSignupError("Unknown error occurred during registration");
+      }
+      return false;
     }
   };
 

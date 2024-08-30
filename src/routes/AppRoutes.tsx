@@ -7,11 +7,11 @@ import Impressum from "../pages/Impressum";
 import Services from "../pages/Service";
 import ProjectSelect from "../pages/ProjectSelect";
 import ProjectDetail from "../pages/ProjectDetail"; // Importiere die ProjectDetail-Komponente
-import Login from "../pages/Login";
 import Signup from "../pages/signup";
 import NotFound from "../pages/NotFound";
 import WebsiteHeader from "../components/navbar/WebsiteHeader"; // Import the header
 import User from "../pages/User";
+import Login from "../pages/login";
 
 const AppRoutes = () => (
   <Router>

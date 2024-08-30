@@ -1,14 +1,6 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-  useCallback,
-  memo,
-} from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserAvatar from "../User/UserAvatar";
-import { motion } from "framer-motion";
 
 const tabs = [
   { name: "Home", path: "/" },
@@ -22,23 +14,15 @@ const WebsiteHeader: React.FC = () => {
   const [selected, setSelected] = useState(tabs[0].name);
   const navigate = useNavigate();
 
+  // Simple effect to check login status without fetching
   useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const response = await fetch("/api/check-login");
-        const data = await response.json();
-        setIsLoggedIn(data.loggedIn);
-      } catch (error) {
-        console.error("Error checking login status:", error);
-      }
-    };
-
-    checkLoginStatus();
+    const loggedIn = localStorage.getItem("token") !== null;
+    setIsLoggedIn(loggedIn);
   }, []);
 
-  const handleLoginClick = useCallback(() => {
+  const handleLoginClick = () => {
     navigate("/login");
-  }, [navigate]);
+  };
 
   return (
     <header className="bg-backgroundlight dark:bg-backgrounddark text-foregroundlight dark:text-foregrounddark">
@@ -50,65 +34,30 @@ const WebsiteHeader: React.FC = () => {
         </h1>
         <div className="flex flex-wrap justify-center space-x-2 md:space-x-4 mt-2 md:mt-0">
           {tabs.map((tab) => (
-            <MemoizedChip
+            <button
               key={tab.name}
-              text={tab.name}
-              selected={selected === tab.name}
-              setSelected={setSelected}
-              path={tab.path}
-            />
+              onClick={() => {
+                setSelected(tab.name);
+                navigate(tab.path);
+              }}
+              className={`${
+                selected === tab.name
+                  ? "text-foregroundlight dark:text-primary-light"
+                  : "text-foregroundlight dark:text-foregrounddark hover:text-primary-light"
+              } text-base transition-colors px-3 py-1 rounded-md relative`}
+            >
+              {tab.name}
+            </button>
           ))}
         </div>
         <div className="flex items-center space-x-4 mt-2 md:mt-0">
           <button onClick={handleLoginClick} className="user-icon-button">
             <UserAvatar loggedIn={isLoggedIn} />
           </button>
-          <div className="Content">{/* <DarkLightModeSwitch /> */}</div>
         </div>
       </div>
     </header>
   );
 };
-
-const Chip = ({
-  text,
-  selected,
-  setSelected,
-  path,
-}: {
-  text: string;
-  selected: boolean;
-  setSelected: Dispatch<SetStateAction<string>>;
-  path: string;
-}) => {
-  const navigate = useNavigate();
-
-  const handleClick = useCallback(() => {
-    setSelected(text);
-    navigate(path);
-  }, [navigate, setSelected, text, path]);
-
-  return (
-    <button
-      onClick={handleClick}
-      className={`${
-        selected
-          ? "text-foregroundlight dark:text-primary-light"
-          : "text-foregroundlight dark:text-foregrounddark hover:text-primary-light"
-      } text-base transition-colors px-3 py-1 rounded-md relative`}
-    >
-      <span className="relative z-10">{text}</span>
-      {selected && (
-        <motion.span
-          layoutId="pill-tab"
-          transition={{ type: "spring", duration: 0.5 }}
-          className="absolute inset-0 z-0 bg-gradient-to-r from-primary to-primarylight dark:from-primarydark dark:to-primarylight rounded-md"
-        ></motion.span>
-      )}
-    </button>
-  );
-};
-
-const MemoizedChip = memo(Chip);
 
 export default WebsiteHeader;

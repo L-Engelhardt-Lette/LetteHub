@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../api/auth"; // Ensure this path is correct
+import axios from "axios";
 import "../scss/pages/LoginAndCreateUser.scss";
 
 const Login: React.FC = () => {
@@ -42,8 +42,36 @@ const Login: React.FC = () => {
       if (success) {
         navigate("/user");
       }
-    } catch (error: any) {
-      setLoginError(error.message || "Error logging in");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setLoginError(error.message || "Error logging in");
+      } else {
+        setLoginError("Unknown error occurred");
+      }
+    }
+  };
+
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const response = await axios.post<{ token: string }>(
+        "http://localhost:3001/login",
+        { email, password }
+      );
+
+      if (response.status === 200 && response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        return true;
+      } else {
+        setLoginError("Invalid email or password");
+        return false;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setLoginError(error.message);
+      } else {
+        setLoginError("Unknown error occurred during login");
+      }
+      return false;
     }
   };
 
