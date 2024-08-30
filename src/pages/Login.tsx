@@ -1,16 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import axios from "axios";
-import "../scss/pages/LoginAndCreateUser.scss";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loginError, setLoginError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,60 +15,79 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError(""); // Reset error message
 
     try {
       const response = await axios.post(
         "http://localhost:3001/api/login",
         formData
       );
-
-      if (response.status === 200) {
-        localStorage.setItem("token", response.data.token); // Store the token in localStorage
-        localStorage.setItem("userId", response.data.userId); // Store the user ID
-        navigate("/projectSelect"); // Redirect to the project page
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        navigate("/projectSelect");
       } else {
-        setLoginError("Login failed. Please check your credentials.");
+        setLoginError("Invalid login credentials.");
       }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setLoginError(error.response?.data?.error || "Login failed.");
-      } else {
-        setLoginError("An unexpected error occurred.");
-      }
+    } catch (error) {
+      setLoginError("Login failed. Please try again.");
     }
   };
 
   return (
-    <div className="login">
-      <form onSubmit={handleSubmit} className="form">
-        <h1 className="form-title">Login</h1>
-        <div className="input-container">
-          <label htmlFor="email">Email:</label>
+    <motion.div
+      className="flex justify-center items-center min-h-screen bg-backgroundlight dark:bg-backgrounddark"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="bg-foregrounddark dark:bg-foregroundlight p-8 max-w-md w-full rounded-lg shadow-lg"
+      >
+        <h1 className="text-2xl font-UnageoBold text-center text-primary dark:text-primarydark mb-6">
+          Login
+        </h1>
+        <div className="mb-4">
+          <label className="block text-primary dark:text-primarydark mb-2 font-UnageoRegular">
+            Email:
+          </label>
           <input
             type="email"
-            id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
+            className="w-full p-4 bg-backgroundlight text-foregroundlight dark:bg-backgrounddark dark:text-foregrounddark rounded-lg border border-borderlight dark:border-borderdark focus:outline-none"
           />
         </div>
-        <div className="input-container">
-          <label htmlFor="password">Password:</label>
+        <div className="mb-6">
+          <label className="block text-primary dark:text-primarydark mb-2 font-UnageoRegular">
+            Password:
+          </label>
           <input
             type="password"
-            id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
+            className="w-full p-4 bg-backgroundlight text-foregroundlight dark:bg-backgrounddark dark:text-foregrounddark rounded-lg border border-borderlight dark:border-borderdark focus:outline-none"
           />
         </div>
-        {loginError && <p className="error">{loginError}</p>}
-        <button type="submit" className="submit">
+        <button
+          type="submit"
+          className="w-full py-3 bg-primary text-primarycontent rounded-lg font-UnageoBold hover:bg-primarydark dark:bg-primarydark transition"
+        >
           Login
         </button>
+        <div className="text-center mt-4 text-copydark dark:text-copylight font-MonaspaceNeonRegular">
+          Don't have an account?
+          <a
+            href="/signup"
+            className="text-secondary dark:text-secondarydark ml-2 hover:underline"
+          >
+            Create one here
+          </a>
+        </div>
+        {loginError && <p className="text-error mt-2 text-sm">{loginError}</p>}
       </form>
-    </div>
+    </motion.div>
   );
 };
 

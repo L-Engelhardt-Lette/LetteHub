@@ -4,7 +4,7 @@ import express, { Request, Response } from "express";
 import { openDb } from "../database";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
-import { generateToken } from "../utils/auth";
+import { authenticateToken, generateToken } from "../utils/auth"; // Import necessary utilities
 
 const router = express.Router();
 
@@ -58,6 +58,29 @@ router.post("/login", async (req: Request, res: Response) => {
       res.status(401).json({ error: "Invalid email or password" });
     }
   } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// User details endpoint
+router.get("/user", authenticateToken, async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const db = await openDb();
+    const user = await db.get("SELECT name, email FROM users WHERE id = ?", [
+      req.user.userId,
+    ]);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

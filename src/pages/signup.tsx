@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "../scss/pages/LoginAndCreateUser.scss";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     repassword: "",
   });
-
   const [signupError, setSignupError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,86 +19,80 @@ const Signup: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSignupError(""); // Reset error message
-
-    if (formData.password !== formData.repassword) {
-      setSignupError("Passwords do not match");
-      return;
-    }
-
-    try {
-      const response = await axios.post("http://localhost:3001/api/register", {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (response.status === 201) {
-        localStorage.setItem("token", response.data.token); // Store the token in localStorage
-        localStorage.setItem("userId", response.data.userId); // Store the user ID
-        navigate("/projectSelect"); // Redirect to the project page
-      } else {
-        setSignupError("Signup failed. Please try again.");
-      }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setSignupError(error.response?.data?.error || "Signup failed.");
-      } else {
-        setSignupError("An unexpected error occurred.");
-      }
-    }
+    // Handle form submission
   };
 
   return (
-    <div className="signup">
-      <form onSubmit={handleSubmit} className="form">
-        <h1 className="form-title">Sign Up</h1>
-        <div className="input-container">
-          <label htmlFor="name">Name:</label>
+    <motion.div
+      className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-800 dark:bg-gray-800 p-8 max-w-md w-full rounded-lg shadow-lg"
+      >
+        <h1 className="text-2xl font-semibold text-center text-gray-100 mb-6">
+          Sign Up
+        </h1>
+        <div className="mb-4">
+          <label className="block text-gray-400 mb-2">Name:</label>
           <input
             type="text"
-            id="name"
             name="name"
             value={formData.name}
             onChange={handleChange}
+            className="w-full p-4 bg-gray-900 text-gray-100 rounded-lg border border-gray-700 focus:outline-none"
           />
         </div>
-        <div className="input-container">
-          <label htmlFor="email">Email:</label>
+        <div className="mb-4">
+          <label className="block text-gray-400 mb-2">Email:</label>
           <input
             type="email"
-            id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
+            className="w-full p-4 bg-gray-900 text-gray-100 rounded-lg border border-gray-700 focus:outline-none"
           />
         </div>
-        <div className="input-container">
-          <label htmlFor="password">Password:</label>
+        <div className="mb-4">
+          <label className="block text-gray-400 mb-2">Password:</label>
           <input
             type="password"
-            id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
+            className="w-full p-4 bg-gray-900 text-gray-100 rounded-lg border border-gray-700 focus:outline-none"
           />
         </div>
-        <div className="input-container">
-          <label htmlFor="repassword">Re-enter Password:</label>
+        <div className="mb-6">
+          <label className="block text-gray-400 mb-2">Re-enter Password:</label>
           <input
             type="password"
-            id="repassword"
             name="repassword"
             value={formData.repassword}
             onChange={handleChange}
+            className="w-full p-4 bg-gray-900 text-gray-100 rounded-lg border border-gray-700 focus:outline-none"
           />
         </div>
-        {signupError && <p className="error">{signupError}</p>}
-        <button type="submit" className="submit">
+        <button
+          type="submit"
+          className="w-full py-3 bg-blue-500 text-gray-100 rounded-lg font-semibold hover:bg-blue-600 transition"
+        >
           Sign Up
         </button>
+        <div className="text-center mt-4 text-gray-400">
+          Already have an account?
+          <Link to="/login" className="text-blue-400 ml-2 hover:underline">
+            Login here
+          </Link>
+        </div>
+        {signupError && (
+          <p className="text-red-500 text-xs mt-2">{signupError}</p>
+        )}
       </form>
-    </div>
+    </motion.div>
   );
 };
 
