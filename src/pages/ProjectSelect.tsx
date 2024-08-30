@@ -22,6 +22,7 @@ const ProjectSelect: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Redirect to login if not authenticated
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -29,10 +30,11 @@ const ProjectSelect: React.FC = () => {
     }
   }, [navigate]);
 
+  // Fetch projects from the API
   const fetchProjects = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:3001/api/projects", {
-        withCredentials: true,
+        withCredentials: true, // Ensure credentials are included
       });
       setItems(response.data);
     } catch (error) {
@@ -44,14 +46,17 @@ const ProjectSelect: React.FC = () => {
     fetchProjects();
   }, [fetchProjects]);
 
+  // Handle opening the modal
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
 
+  // Handle closing the modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
+  // Handle creating a new project
   const handleCreateProject = async (
     name: string,
     description: string,
@@ -62,7 +67,7 @@ const ProjectSelect: React.FC = () => {
       const response = await axios.post(
         "http://localhost:3001/api/projects",
         { name, description, startDate, endDate },
-        { withCredentials: true }
+        { withCredentials: true } // Ensure credentials are included
       );
 
       setItems((prevItems) => [...prevItems, response.data]);
@@ -72,10 +77,11 @@ const ProjectSelect: React.FC = () => {
     }
   };
 
+  // Handle deleting a project
   const handleDeleteProject = async (id: string) => {
     try {
       await axios.delete(`http://localhost:3001/api/projects/${id}`, {
-        withCredentials: true,
+        withCredentials: true, // Ensure credentials are included
       });
 
       setItems((prevItems) => prevItems.filter((item) => item.id !== id));
@@ -94,9 +100,9 @@ const ProjectSelect: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="content bg-gray-100 rounded-lg p-5 shadow-lg w-full max-w-4xl"
+        className="content bg-gray-100 dark:bg-gray-800 rounded-lg p-5 shadow-lg w-full max-w-4xl"
       >
-        <h1 className="title text-3xl font-bold mb-4">
+        <h1 className="title text-3xl font-bold mb-4 text-gray-800 dark:text-gray-200">
           {items.length > 0
             ? items.length > 1
               ? "My Projects"
@@ -106,15 +112,17 @@ const ProjectSelect: React.FC = () => {
         <div className="grid-container grid gap-5">
           {items.length === 0 && (
             <div className="no-projects text-center p-10 flex flex-col items-center justify-center h-full">
-              <p className="text-lg mb-4">No projects found.</p>
+              <p className="text-lg mb-4 text-gray-600 dark:text-gray-300">
+                No projects found.
+              </p>
               <button
-                className="add-project-button bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl hover:bg-blue-700"
+                className="add-project-button bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl hover:bg-blue-700 transition-colors"
                 onClick={handleOpenModal}
                 title="Create new project"
               >
                 <FiPlusCircle className="text-white w-8 h-8" />
               </button>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
                 Click to create your first project
               </p>
             </div>
@@ -123,15 +131,15 @@ const ProjectSelect: React.FC = () => {
             <motion.div
               key={item.id}
               whileHover={{ scale: 1.05 }}
-              className="grid-item bg-white rounded-lg p-5 shadow-lg"
+              className="grid-item bg-white dark:bg-gray-700 rounded-lg p-5 shadow-lg"
             >
               <div className="inner-grid-item flex flex-col justify-between h-full">
-                <div className="grid-item-title font-bold text-lg mb-2">
+                <div className="grid-item-title font-bold text-lg mb-2 text-gray-800 dark:text-gray-200">
                   {item.name}
                 </div>
                 <div className="grid-item-actions flex justify-between mt-4">
                   <button
-                    className="grid-item-action-button view-button text-blue-500"
+                    className="grid-item-action-button view-button text-blue-500 dark:text-blue-300"
                     onClick={() => navigate(`/project/${item.id}`)}
                     title="View details"
                   >
@@ -139,7 +147,7 @@ const ProjectSelect: React.FC = () => {
                     View Details
                   </button>
                   <button
-                    className="grid-item-action-button delete-button text-red-500"
+                    className="grid-item-action-button delete-button text-red-500 dark:text-red-300"
                     onClick={() => handleDeleteProject(item.id)}
                     title="Delete project"
                   >
@@ -156,7 +164,7 @@ const ProjectSelect: React.FC = () => {
               className="add-project-button-container flex items-center justify-center"
             >
               <button
-                className="add-project-button bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl hover:bg-blue-700"
+                className="add-project-button bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl hover:bg-blue-700 transition-colors"
                 onClick={handleOpenModal}
                 title="Create new project"
               >
