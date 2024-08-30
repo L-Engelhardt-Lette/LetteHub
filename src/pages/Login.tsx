@@ -23,7 +23,7 @@ const Login: React.FC = () => {
       );
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
-        navigate("/projectSelect");
+        navigate("/projectSelect"); // Ensure this is the correct route to your project selection page
       } else {
         setLoginError("Invalid login credentials.");
       }

@@ -22,7 +22,6 @@ const ProjectSelect: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Redirect to login if not authenticated
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -30,11 +29,10 @@ const ProjectSelect: React.FC = () => {
     }
   }, [navigate]);
 
-  // Fetch projects from the API
   const fetchProjects = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:3001/api/projects", {
-        withCredentials: true, // Ensure credentials are included
+        withCredentials: true,
       });
       setItems(response.data);
     } catch (error) {
@@ -46,17 +44,14 @@ const ProjectSelect: React.FC = () => {
     fetchProjects();
   }, [fetchProjects]);
 
-  // Handle opening the modal
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
 
-  // Handle closing the modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
-  // Handle creating a new project
   const handleCreateProject = async (
     name: string,
     description: string,
@@ -67,7 +62,7 @@ const ProjectSelect: React.FC = () => {
       const response = await axios.post(
         "http://localhost:3001/api/projects",
         { name, description, startDate, endDate },
-        { withCredentials: true } // Ensure credentials are included
+        { withCredentials: true }
       );
 
       setItems((prevItems) => [...prevItems, response.data]);
@@ -77,11 +72,10 @@ const ProjectSelect: React.FC = () => {
     }
   };
 
-  // Handle deleting a project
   const handleDeleteProject = async (id: string) => {
     try {
       await axios.delete(`http://localhost:3001/api/projects/${id}`, {
-        withCredentials: true, // Ensure credentials are included
+        withCredentials: true,
       });
 
       setItems((prevItems) => prevItems.filter((item) => item.id !== id));
@@ -91,38 +85,32 @@ const ProjectSelect: React.FC = () => {
   };
 
   return (
-    <div
-      className={`project h-screen w-screen flex flex-col items-center justify-center p-4 ${
-        items.length > 0 ? "overflow-y-auto" : ""
-      }`}
-    >
-      <motion.div
+    <div className="project max-w-7xl mx-auto px-4 py-8">
+      <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="content bg-gray-100 dark:bg-gray-800 rounded-lg p-5 shadow-lg w-full max-w-4xl"
+        transition={{ duration: 0.5 }}
+        className="title text-4xl font-bold mt-24 mb-16 text-center text-black"
       >
-        <h1 className="title text-3xl font-bold mb-4 text-gray-800 dark:text-gray-200">
-          {items.length > 0
-            ? items.length > 1
-              ? "My Projects"
-              : "My Project"
-            : "Create your first project"}
-        </h1>
-        <div className="grid-container grid gap-5">
+        {items.length > 0
+          ? items.length > 1
+            ? "My Projects"
+            : "My Project"
+          : "Create your first project"}
+      </motion.h1>
+      <div className="grid-container flex justify-center items-start">
+        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {items.length === 0 && (
-            <div className="no-projects text-center p-10 flex flex-col items-center justify-center h-full">
-              <p className="text-lg mb-4 text-gray-600 dark:text-gray-300">
-                No projects found.
-              </p>
+            <div className="no-projects text-center p-10 flex flex-col items-center justify-center h-full text-gray-500">
+              <p className="italic text-lg mb-4">No projects found.</p>
               <button
-                className="add-project-button bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl hover:bg-blue-700 transition-colors"
+                className="add-project-button bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl hover:bg-blue-700 transition transform hover:translate-y-1"
                 onClick={handleOpenModal}
                 title="Create new project"
               >
                 <FiPlusCircle className="text-white w-8 h-8" />
               </button>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
+              <p className="mt-2 text-gray-600">
                 Click to create your first project
               </p>
             </div>
@@ -131,27 +119,27 @@ const ProjectSelect: React.FC = () => {
             <motion.div
               key={item.id}
               whileHover={{ scale: 1.05 }}
-              className="grid-item bg-white dark:bg-gray-700 rounded-lg p-5 shadow-lg"
+              className="grid-item p-6 border-2 border-gray-300 rounded-xl bg-gray-200 shadow-lg transition transform hover:translate-y-1 w-72 h-72 flex flex-col items-center justify-center"
             >
-              <div className="inner-grid-item flex flex-col justify-between h-full">
-                <div className="grid-item-title font-bold text-lg mb-2 text-gray-800 dark:text-gray-200">
+              <div className="inner-grid-item flex flex-col justify-between h-full text-center">
+                <div className="grid-item-title text-2xl font-bold text-black mb-4">
                   {item.name}
                 </div>
-                <div className="grid-item-actions flex justify-between mt-4">
+                <div className="grid-item-actions flex justify-between mt-4 w-full">
                   <button
-                    className="grid-item-action-button view-button text-blue-500 dark:text-blue-300"
+                    className="grid-item-action-button view-button bg-green-500 text-white rounded-md py-2 px-4 flex items-center justify-center transition hover:bg-green-600 w-1/2"
                     onClick={() => navigate(`/project/${item.id}`)}
                     title="View details"
                   >
-                    <FiEye className="icon" />
+                    <FiEye className="icon mr-2 text-lg" />
                     View Details
                   </button>
                   <button
-                    className="grid-item-action-button delete-button text-red-500 dark:text-red-300"
+                    className="grid-item-action-button delete-button bg-red-500 text-white rounded-md py-2 px-4 flex items-center justify-center transition hover:bg-red-600 w-1/2"
                     onClick={() => handleDeleteProject(item.id)}
                     title="Delete project"
                   >
-                    <FiTrash2 className="icon" />
+                    <FiTrash2 className="icon mr-2 text-lg" />
                     Delete
                   </button>
                 </div>
@@ -161,10 +149,10 @@ const ProjectSelect: React.FC = () => {
           {items.length > 0 && (
             <motion.div
               whileHover={{ scale: 1.1 }}
-              className="add-project-button-container flex items-center justify-center"
+              className="add-project-button-container flex items-center justify-center w-72 h-72 bg-blue-500 rounded-xl shadow-lg transition transform hover:translate-y-1"
             >
               <button
-                className="add-project-button bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl hover:bg-blue-700 transition-colors"
+                className="add-project-button text-white text-4xl w-16 h-16 rounded-full transition hover:bg-gray-200 hover:text-blue-800 transform hover:translate-y-1"
                 onClick={handleOpenModal}
                 title="Create new project"
               >
@@ -173,14 +161,14 @@ const ProjectSelect: React.FC = () => {
             </motion.div>
           )}
         </div>
-        <Suspense fallback={<div>Loading...</div>}>
-          <CreateProjectModal
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            onCreateProject={handleCreateProject}
-          />
-        </Suspense>
-      </motion.div>
+      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <CreateProjectModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onCreateProject={handleCreateProject}
+        />
+      </Suspense>
     </div>
   );
 };

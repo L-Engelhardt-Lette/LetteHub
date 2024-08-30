@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../scss/pages/ProjectDetail.scss";
 import { CustomKanban } from "../components/Project/ProjectViewTable";
 import SearchComponent from "../components/Project/Deatils/UserSearchBar";
 import { GoX } from "react-icons/go";
@@ -24,29 +23,42 @@ const ProjectDetail: React.FC = () => {
   );
 
   useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      console.error("No access token found");
+      navigate("/login"); // Redirect to login if no token is found
+      return;
+    }
+
     if (projectId) {
       const fetchProject = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/projects/${projectId}`,
-            { withCredentials: true }
+            `http://localhost:3001/api/projects/${projectId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`, // Use the stored access token
+              },
+            }
           );
+          console.log("Project data:", response.data); // Debugging log
           setEditedProject(response.data);
           setTempName(response.data.name);
           setTempStartDate(response.data.startDate);
           setTempEndDate(response.data.endDate);
-          setTempParticipants(response.data.participants);
+          setTempParticipants(response.data.participants || []); // Ensure it's an array
           setTempDescription(response.data.description);
-          setSelectedParticipants(response.data.participants);
+          setSelectedParticipants(response.data.participants || []); // Ensure it's an array
         } catch (error) {
           console.error("Error fetching project:", error);
-          navigate("/projectSelect");
+          navigate("/projects");
         }
       };
 
       fetchProject();
     } else {
-      navigate("/projectSelect");
+      navigate("/projects");
     }
   }, [projectId, navigate]);
 
@@ -68,11 +80,24 @@ const ProjectDetail: React.FC = () => {
       participants: tempParticipants,
       description: tempDescription,
     };
+
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      console.error("No access token found");
+      navigate("/login");
+      return;
+    }
+
     try {
       await axios.put(
-        `http://localhost:5000/api/projects/${projectId}`,
+        `http://localhost:3001/api/projects/${projectId}`,
         updatedProject,
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Use the stored access token
+          },
+        }
       );
       setEditedProject(updatedProject);
       setEditable(false);
@@ -113,60 +138,69 @@ const ProjectDetail: React.FC = () => {
 
   return (
     <>
-      <div className="project-detail">
-        <Link to="/projectSelect">
-          <button className="back-button">Zurück</button>
+      <div className="relative p-6">
+        <Link to="/projects">
+          <button className="absolute top-20 left-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">
+            Back
+          </button>
         </Link>
-        <div className="project-card">
-          <h2 id="project-detail-title">
+        <div className="bg-white rounded-lg shadow-lg p-5 mt-24">
+          <h2 id="project-detail-title" className="text-2xl font-bold mb-4">
             {editable ? (
               <input
                 type="text"
                 value={tempName}
                 onChange={(e) => setTempName(e.target.value)}
+                className="w-full border rounded p-2"
               />
             ) : (
               editedProject.name
             )}
           </h2>
-          <hr />
+          <hr className="mb-4" />
 
-          <div className="card-section">
+          <div className="mb-4">
             {editable ? (
               <>
-                <strong>Start:</strong>
+                <strong className="block">Start:</strong>
                 <input
                   type="date"
                   value={tempStartDate}
                   onChange={(e) => setTempStartDate(e.target.value)}
+                  className="border rounded p-2"
                 />
-                &nbsp;|&nbsp;
-                <strong>Ende:</strong>{" "}
+                <span className="mx-2">|</span>
+                <strong className="block">End:</strong>{" "}
                 <input
                   type="date"
                   value={tempEndDate}
                   onChange={(e) => setTempEndDate(e.target.value)}
+                  className="border rounded p-2"
                 />
               </>
             ) : (
               <>
-                <strong>Start:</strong> {editedProject.startDate} &nbsp;|&nbsp;{" "}
-                <strong>Ende:</strong> {editedProject.endDate}
+                <strong className="block">Start:</strong>{" "}
+                {editedProject.startDate} <span className="mx-2">|</span>{" "}
+                <strong className="block">End:</strong> {editedProject.endDate}
               </>
             )}
           </div>
-          <hr />
+          <hr className="mb-4" />
 
-          <div className="card-section">
-            <strong>Teilnehmer:</strong>{" "}
+          <div className="mb-4">
+            <strong className="block">Participants:</strong>{" "}
             {editable ? (
               <>
-                <div className="selected-participants">
+                <div className="flex flex-wrap">
                   {selectedParticipants.map((participant, index) => (
-                    <div key={index} className="selected-participant">
+                    <div
+                      key={index}
+                      className="bg-blue-100 rounded p-2 m-1 flex items-center"
+                    >
                       {participant}
                       <GoX
-                        className="remove-participant"
+                        className="ml-2 cursor-pointer"
                         onClick={() => handleRemoveParticipant(participant)}
                       />
                     </div>
@@ -178,60 +212,63 @@ const ProjectDetail: React.FC = () => {
                 />
               </>
             ) : (
-              <div className="selected-participants">
-                {editedProject.participants.map((participant, index) => (
-                  <div key={index} className="selected-participant">
-                    {participant}
-                  </div>
-                ))}
+              <div className="flex flex-wrap">
+                {Array.isArray(editedProject.participants) ? (
+                  editedProject.participants.map((participant, index) => (
+                    <div
+                      key={index}
+                      className="bg-blue-100 rounded p-2 m-1 flex items-center"
+                    >
+                      {participant}
+                    </div>
+                  ))
+                ) : (
+                  <p>No participants found</p>
+                )}
               </div>
             )}
           </div>
-          <hr />
+          <hr className="mb-4" />
 
-          <div className="card-section">
-            <div className="progress-section">
-              <strong>Progress:</strong> {/* Hier Platz für den Fortschritt */}
-              <div className="progress-loader">
-                <div className="progress"></div>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div className="card-section">
-            <strong>Beschreibung:</strong>
+          <div className="mb-4">
+            <strong className="block">Description:</strong>
             {editable ? (
               <textarea
-                className="description-input"
+                className="w-full h-24 border rounded p-2"
                 value={tempDescription}
                 onChange={(e) => setTempDescription(e.target.value)}
               />
             ) : (
-              <div>{editedProject.description}</div>
+              <p>{editedProject.description}</p>
             )}
           </div>
           {editable ? (
-            <div className="edit-buttons">
-              <div id="Buttons">
-                <button className="save-button" id="lol" onClick={handleSave}>
-                  <CiCircleCheck />
-                  Speichern
-                </button>
-                <button className="cancel-button" onClick={handleCancel}>
-                  <GoXCircle />
-                  Abbrechen
-                </button>
-              </div>
+            <div className="flex justify-end space-x-4">
+              <button
+                className="flex items-center bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
+                onClick={handleSave}
+              >
+                <CiCircleCheck className="mr-2" />
+                Save
+              </button>
+              <button
+                className="flex items-center bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
+                onClick={handleCancel}
+              >
+                <GoXCircle className="mr-2" />
+                Cancel
+              </button>
             </div>
           ) : (
-            <button className="edit-button" onClick={toggleEditMode}>
-              <BiEditAlt />
-              Bearbeiten
+            <button
+              className="flex items-center bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
+              onClick={toggleEditMode}
+            >
+              <BiEditAlt className="mr-2" />
+              Edit
             </button>
           )}
         </div>
-        {/* Hier könnte die ProjectDetailAccordion-Komponente eingefügt werden */}
-        {/* <ProjectDetailAccordion /> */}
       </div>
       <CustomKanban projectId={projectId || ""} />
     </>

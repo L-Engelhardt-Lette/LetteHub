@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios"; // Import axios to make API requests
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +20,29 @@ const Signup: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
+
+    // Check if passwords match
+    if (formData.password !== formData.repassword) {
+      setSignupError("Passwords do not match");
+      return;
+    }
+
+    try {
+      // Make a POST request to the backend to register the user
+      const response = await axios.post("http://localhost:3001/api/register", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // If registration is successful, navigate to the login page
+      if (response.status === 201) {
+        navigate("/login");
+      }
+    } catch (error) {
+      setSignupError("Registration failed. Please try again.");
+      console.error("Error during registration:", error);
+    }
   };
 
   return (
