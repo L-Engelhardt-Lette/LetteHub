@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../scss/pages/LoginAndCreateUser.scss";
 
@@ -10,10 +10,7 @@ const Login: React.FC = () => {
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
+
   const [loginError, setLoginError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,55 +20,27 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const validationErrors: typeof errors = {
-      email: "",
-      password: "",
-    };
-    if (!formData.email.trim()) validationErrors.email = "Email is required";
-    if (!formData.password.trim())
-      validationErrors.password = "Password is required";
-
-    if (Object.keys(validationErrors).some((key) => validationErrors[key])) {
-      setErrors(validationErrors);
-      return;
-    }
+    setLoginError(""); // Reset error message
 
     try {
-      const success = await login(formData.email, formData.password);
-      if (success) {
-        navigate("/user");
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setLoginError(error.message || "Error logging in");
-      } else {
-        setLoginError("Unknown error occurred");
-      }
-    }
-  };
-
-  const login = async (email: string, password: string): Promise<boolean> => {
-    try {
-      const response = await axios.post<{ token: string }>(
-        "http://localhost:3001/login",
-        { email, password }
+      const response = await axios.post(
+        "http://localhost:3001/api/login",
+        formData
       );
 
-      if (response.status === 200 && response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        return true;
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token); // Store the token in localStorage
+        localStorage.setItem("userId", response.data.userId); // Store the user ID
+        navigate("/projectSelect"); // Redirect to the project page
       } else {
-        setLoginError("Invalid email or password");
-        return false;
+        setLoginError("Login failed. Please check your credentials.");
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        setLoginError(error.message);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setLoginError(error.response?.data?.error || "Login failed.");
       } else {
-        setLoginError("Unknown error occurred during login");
+        setLoginError("An unexpected error occurred.");
       }
-      return false;
     }
   };
 
@@ -88,7 +57,6 @@ const Login: React.FC = () => {
             value={formData.email}
             onChange={handleChange}
           />
-          {errors.email && <p className="error">{errors.email}</p>}
         </div>
         <div className="input-container">
           <label htmlFor="password">Password:</label>
@@ -99,15 +67,11 @@ const Login: React.FC = () => {
             value={formData.password}
             onChange={handleChange}
           />
-          {errors.password && <p className="error">{errors.password}</p>}
         </div>
         {loginError && <p className="error">{loginError}</p>}
         <button type="submit" className="submit">
           Login
         </button>
-        <p className="signup-link">
-          Don't have an account? <Link to="/signup">Create one here</Link>.
-        </p>
       </form>
     </div>
   );

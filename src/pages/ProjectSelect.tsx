@@ -22,9 +22,16 @@ const ProjectSelect: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   const fetchProjects = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/projects", {
+      const response = await axios.get("http://localhost:3001/api/projects", {
         withCredentials: true,
       });
       setItems(response.data);
@@ -53,7 +60,7 @@ const ProjectSelect: React.FC = () => {
   ) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/projects",
+        "http://localhost:3001/api/projects",
         { name, description, startDate, endDate },
         { withCredentials: true }
       );
@@ -67,7 +74,7 @@ const ProjectSelect: React.FC = () => {
 
   const handleDeleteProject = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${id}`, {
+      await axios.delete(`http://localhost:3001/api/projects/${id}`, {
         withCredentials: true,
       });
 

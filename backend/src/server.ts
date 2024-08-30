@@ -1,66 +1,33 @@
 // backend/src/server.ts
 
-import express, { Request, Response } from "express";
-import { openDb } from "./database"; // Import the database connection
-import bcrypt from "bcrypt";
+import express from "express";
 import cors from "cors";
+import authRoutes from "./routes/auth";
+import { openDb } from "./database";
 
 const app = express();
-app.use(express.json());
+const port = 3001;
+
 app.use(cors());
+app.use(express.json());
 
-app.post("/register", async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
-
-  try {
-    const db = await openDb();
-    const existingUser = await db.get("SELECT * FROM users WHERE email = ?", [
-      email,
-    ]);
-
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ error: "User with this email already exists" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await db.run(
-      "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
-      [
-        name,
-        email,
-        hashedPassword,
-        "user", // Default role
-      ]
-    );
-
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
-    console.error("Error during registration:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+// Connect to the database and ensure tables are set up
+app.use(async (req, res, next) => {
+  const db = await openDb();
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      password TEXT NOT NULL
+    )
+  `);
+  next();
 });
 
-app.post("/login", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+// Use the authentication routes
+app.use("/api", authRoutes);
 
-  try {
-    const db = await openDb();
-    const user = await db.get("SELECT * FROM users WHERE email = ?", [email]);
-
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ error: "Invalid email or password" });
-    }
-
-    // In a real application, you'd generate a JWT here
-    res.status(200).json({ message: "Login successful" });
-  } catch (error) {
-    console.error("Error during login:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
