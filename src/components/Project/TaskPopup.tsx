@@ -43,7 +43,6 @@ const TaskPopUp: React.FC<TaskPopUpProps> = ({
   const [personList, setPersonList] = useState<string[]>([]);
 
   useEffect(() => {
-    // Optionally fetch personList from API
     setPersonList(["Person 1", "Person 2", "Person 3"]); // Replace with actual data
   }, []);
 
@@ -88,7 +87,6 @@ const TaskPopUp: React.FC<TaskPopUpProps> = ({
 
   const handleSave = async () => {
     try {
-      // Update the task via API
       const response = await axios.put(
         `http://localhost:3001/api/tasks/${editableTask.task_id}`,
         editableTask
@@ -121,7 +119,7 @@ const TaskPopUp: React.FC<TaskPopUpProps> = ({
             onClick={(e) => e.stopPropagation()}
             className="bg-black p-6 rounded-lg w-full max-w-2xl shadow-xl cursor-default relative overflow-hidden"
           >
-            {/* Content of Task UI */}
+            {/* Task Form UI */}
             <div className="flex justify-end mt-4 space-x-2">
               <button
                 onClick={handleClose}

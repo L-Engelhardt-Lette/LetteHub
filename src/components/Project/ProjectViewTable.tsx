@@ -123,15 +123,23 @@ const Board: React.FC<{ projectId: string }> = ({ projectId }) => {
       });
   };
 
-  const addTask = (newTask: Task) => {
-    axios
-      .post("http://localhost:3001/api/tasks", newTask)
-      .then((response) => {
-        setCards((prevCards) => [...prevCards, response.data]);
-      })
-      .catch((error) => {
-        console.error("Error adding task:", error);
-      });
+  const addTask = async (newTask: Omit<Task, "task_id">) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/tasks",
+        newTask
+      );
+
+      if (response.status === 201) {
+        return response.data; // Return the created task
+      } else {
+        console.error("Unexpected response status:", response.status);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error adding task:", error);
+      throw error; // Re-throw the error to handle it in the calling function
+    }
   };
 
   const deleteTask = (taskId: number) => {
@@ -199,7 +207,7 @@ type ColumnProps = {
   deleteColumn: (index: number) => void;
   updateColumnTitle: (newTitle: string) => void;
   onCardDoubleClick: (card: Task) => void;
-  addTask: (task: Task) => void;
+  addTask: (task: Omit<Task, "task_id">) => Promise<Task | null>;
   deleteTask: (taskId: number) => void;
 };
 
@@ -383,12 +391,7 @@ const Column = ({
           );
         })}
         <DropIndicator beforeId={null} column={column} />
-        <AddCard
-          column={column}
-          setCards={setCards}
-          cards={cards}
-          addTask={addTask}
-        />
+        <AddCard column={column} setCards={setCards} addTask={addTask} />
       </div>
     </div>
   );
@@ -528,23 +531,21 @@ const BurnBarrel = ({
 type AddCardProps = {
   column: ColumnType;
   setCards: Dispatch<SetStateAction<Task[]>>;
-  cards: Task[];
-  addTask: (task: Task) => void;
+  addTask: (task: Omit<Task, "task_id">) => Promise<Task | null>;
 };
 
-const AddCard = ({ column, setCards, cards, addTask }: AddCardProps) => {
+const AddCard = ({ column, setCards, addTask }: AddCardProps) => {
   const [text, setText] = useState("");
   const [adding, setAdding] = useState(false);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!text.trim().length) return;
 
-    const newCard: Task = {
+    const newTask: Omit<Task, "task_id"> = {
       task_name: text.trim(),
-      projectID: "1",
-      task_id: Date.now(),
+      projectID: "1", // Make sure this matches the actual projectID
       project_id: 1,
       description: "New task description",
       name: text.trim(),
@@ -556,8 +557,18 @@ const AddCard = ({ column, setCards, cards, addTask }: AddCardProps) => {
       column,
     };
 
-    addTask(newCard);
-    setAdding(false);
+    try {
+      const createdTask = await addTask(newTask);
+
+      if (createdTask) {
+        setCards((prevCards) => [...prevCards, createdTask]);
+      }
+
+      setText("");
+      setAdding(false);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
   return (

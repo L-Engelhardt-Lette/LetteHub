@@ -30,9 +30,7 @@ router.get("/projects/:id", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Project not found" });
     }
 
-    const tasks = await db.all("SELECT * FROM tasks WHERE project_id = ?", [
-      id,
-    ]);
+    const tasks = await db.all("SELECT * FROM tasks WHERE projectID = ?", [id]);
     project.tasks = tasks; // Attach tasks to the project
 
     res.status(200).json(project);
@@ -54,16 +52,18 @@ router.post("/projects", async (req: Request, res: Response) => {
       description,
       startDate,
       endDate,
+      tasks: "[]", // Initialize with an empty array of tasks as JSON string
     };
 
     await db.run(
-      "INSERT INTO projects (id, name, description, startDate, endDate) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO projects (id, name, description, startDate, endDate, tasks) VALUES (?, ?, ?, ?, ?, ?)",
       [
         newProject.id,
         newProject.name,
         newProject.description,
         newProject.startDate,
         newProject.endDate,
+        newProject.tasks,
       ]
     );
 
@@ -77,13 +77,13 @@ router.post("/projects", async (req: Request, res: Response) => {
 // Update a project
 router.put("/projects/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, description, startDate, endDate } = req.body;
+  const { name, description, startDate, endDate, tasks } = req.body;
 
   try {
     const db = await openDb();
     const result = await db.run(
-      "UPDATE projects SET name = ?, description = ?, startDate = ?, endDate = ? WHERE id = ?",
-      [name, description, startDate, endDate, id]
+      "UPDATE projects SET name = ?, description = ?, startDate = ?, endDate = ?, tasks = ? WHERE id = ?",
+      [name, description, startDate, endDate, JSON.stringify(tasks), id]
     );
 
     if (result.changes === 0) {

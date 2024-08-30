@@ -83,23 +83,4 @@ router.get("/user", authenticateToken, async (req: Request, res: Response) => {
   }
 });
 
-// Project details endpoint
-router.get("/projects/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  try {
-    const db = await openDb();
-    const project = await db.get("SELECT * FROM projects WHERE id = ?", [id]);
-
-    if (!project) {
-      return res.status(404).json({ error: "Project not found" });
-    }
-
-    res.status(200).json(project);
-  } catch (error) {
-    console.error("Error fetching project:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
 export default router;

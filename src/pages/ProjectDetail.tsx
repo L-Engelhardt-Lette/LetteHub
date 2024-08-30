@@ -21,6 +21,7 @@ const ProjectDetail: React.FC = () => {
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
     []
   );
+  const [tasks, setTasks] = useState<any[]>([]);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -42,7 +43,6 @@ const ProjectDetail: React.FC = () => {
               },
             }
           );
-          console.log("Project data:", response.data); // Debugging log
           setEditedProject(response.data);
           setTempName(response.data.name);
           setTempStartDate(response.data.startDate);
@@ -50,6 +50,7 @@ const ProjectDetail: React.FC = () => {
           setTempParticipants(response.data.participants || []); // Ensure it's an array
           setTempDescription(response.data.description);
           setSelectedParticipants(response.data.participants || []); // Ensure it's an array
+          setTasks(response.data.tasks || []); // Load tasks if they exist
         } catch (error) {
           console.error("Error fetching project:", error);
           navigate("/projects");
@@ -79,6 +80,7 @@ const ProjectDetail: React.FC = () => {
       endDate: tempEndDate,
       participants: tempParticipants,
       description: tempDescription,
+      tasks: tasks, // Ensure tasks are included in the update
     };
 
     const accessToken = localStorage.getItem("accessToken");
