@@ -1,15 +1,15 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 export interface Task {
-  id: string;
+  id: Types.ObjectId; // Use Types.ObjectId for MongoDB IDs
   name: string;
-  projectId: string;
+  projectId: Types.ObjectId; // Update this to match the type used in the schema
   columnId: string;
   description: string;
   status: string;
   progress: number;
-  startDate: string;
-  endDate: string;
+  startDate: Date; // Use Date type here
+  endDate: Date; // Use Date type here
   position: number;
 }
 
@@ -20,8 +20,8 @@ const taskSchema = new Schema<Task>({
   description: { type: String },
   status: { type: String, required: true },
   progress: { type: Number, required: true },
-  startDate: { type: Date, required: true },
-  endDate: { type: Date, required: true },
+  startDate: { type: Date, required: true }, // Corrected the type
+  endDate: { type: Date, required: true }, // Corrected the type
   position: { type: Number, required: true },
 });
 
