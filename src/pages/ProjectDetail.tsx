@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { CustomKanban } from "../components/Project/ProjectViewTable";
+import { CustomKanban } from "../components/Project/ProjectPoster";
 import SearchComponent from "../components/Project/Deatils/UserSearchBar";
 import { GoX } from "react-icons/go";
 import { CiCircleCheck } from "react-icons/ci";
@@ -272,7 +272,7 @@ const ProjectDetail: React.FC = () => {
           )}
         </div>
       </div>
-      <CustomKanban projectId={projectId || ""} />
+      <CustomKanban />
     </>
   );
 };
