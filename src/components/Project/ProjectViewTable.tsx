@@ -14,6 +14,7 @@ import TooltipButtonDelete from "./DeleteButton";
 import ColumnAddButton from "./AddColumnButton";
 import TaskPopUp from "./TaskPopup";
 
+// Define the types for Task and Column
 type ColumnType = "backlog" | "todo" | "doing" | "done" | `column${number}`;
 
 interface Task {
@@ -28,7 +29,7 @@ interface Task {
   progress: number;
   startDate: string;
   finishDate: string;
-  column: ColumnType; // Ensure 'column' matches ColumnType
+  column: ColumnType;
 }
 
 export const CustomKanban: React.FC<{ projectId: string }> = ({
@@ -129,16 +130,12 @@ const Board: React.FC<{ projectId: string }> = ({ projectId }) => {
         "http://localhost:3001/api/tasks",
         newTask
       );
-
-      if (response.status === 201) {
-        return response.data; // Return the created task
-      } else {
-        console.error("Unexpected response status:", response.status);
-        return null;
-      }
+      const createdTask = response.data;
+      setCards((prevCards) => [...prevCards, createdTask]);
+      return createdTask;
     } catch (error) {
       console.error("Error adding task:", error);
-      throw error; // Re-throw the error to handle it in the calling function
+      return null;
     }
   };
 
@@ -391,7 +388,12 @@ const Column = ({
           );
         })}
         <DropIndicator beforeId={null} column={column} />
-        <AddCard column={column} setCards={setCards} addTask={addTask} />
+        <AddCard
+          column={column}
+          setCards={setCards}
+          cards={cards}
+          addTask={addTask}
+        />
       </div>
     </div>
   );
@@ -531,6 +533,7 @@ const BurnBarrel = ({
 type AddCardProps = {
   column: ColumnType;
   setCards: Dispatch<SetStateAction<Task[]>>;
+  cards: Task[];
   addTask: (task: Omit<Task, "task_id">) => Promise<Task | null>;
 };
 
@@ -543,9 +546,9 @@ const AddCard = ({ column, setCards, addTask }: AddCardProps) => {
 
     if (!text.trim().length) return;
 
-    const newTask: Omit<Task, "task_id"> = {
+    const newCard: Omit<Task, "task_id"> = {
       task_name: text.trim(),
-      projectID: "1", // Make sure this matches the actual projectID
+      projectID: "1",
       project_id: 1,
       description: "New task description",
       name: text.trim(),
@@ -557,17 +560,11 @@ const AddCard = ({ column, setCards, addTask }: AddCardProps) => {
       column,
     };
 
-    try {
-      const createdTask = await addTask(newTask);
-
-      if (createdTask) {
-        setCards((prevCards) => [...prevCards, createdTask]);
-      }
-
+    const createdTask = await addTask(newCard);
+    if (createdTask) {
+      setCards((prevCards) => [...prevCards, createdTask]);
       setText("");
       setAdding(false);
-    } catch (error) {
-      console.error("Error adding task:", error);
     }
   };
 
@@ -577,6 +574,7 @@ const AddCard = ({ column, setCards, addTask }: AddCardProps) => {
         <motion.form layout onSubmit={handleSubmit}>
           <textarea
             onChange={(e) => setText(e.target.value)}
+            value={text}
             autoFocus
             placeholder="Add new task..."
             className="w-full rounded border border-violet-400 bg-violet-400/20 p-3 text-sm text-neutral-50 placeholder-violet-300 focus:outline-0"
