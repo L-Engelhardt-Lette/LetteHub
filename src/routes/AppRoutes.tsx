@@ -10,7 +10,7 @@ import NotFound from "../pages/NotFound";
 import WebsiteHeader from "../components/navbar/WebsiteHeader";
 import User from "../pages/User";
 import PrivateRoute from "./PrivateRoute";
-import Login from "../pages/login";
+import Login from "../pages/Login";
 import Signup from "../pages/signup";
 
 const AppRoutes: React.FC = () => (
