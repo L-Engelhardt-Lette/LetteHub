@@ -18,17 +18,30 @@ const Login: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/login",
+        "http://localhost:3001/api/auth/login",
         formData
       );
-      if (response.data.token) {
+
+      // Check if the response status is 200 or 201 (indicating success)
+      if (
+        (response.status === 200 || response.status === 201) &&
+        response.data.token
+      ) {
+        // Store the token in localStorage
         localStorage.setItem("token", response.data.token);
-        navigate("/projectSelect"); // Ensure this is the correct route to your project selection page
+        // Navigate to the project selection page or dashboard
+        navigate("/projectSelect");
       } else {
+        // This should be handled, but typically it wouldn't happen if the backend is correct
         setLoginError("Invalid login credentials.");
       }
-    } catch (error) {
-      setLoginError("Login failed. Please try again.");
+    } catch (error: any) {
+      // More detailed error handling can be done based on the error type
+      if (error.response && error.response.status === 401) {
+        setLoginError("Invalid login credentials.");
+      } else {
+        setLoginError("Login failed. Please try again.");
+      }
     }
   };
 
