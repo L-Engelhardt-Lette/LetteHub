@@ -21,9 +21,20 @@ const Signup: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Check if any fields are null or empty
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.repassword
+    ) {
+      setSignupError("All fields are required.");
+      return;
+    }
+
     // Check if passwords match
     if (formData.password !== formData.repassword) {
-      setSignupError("Passwords do not match");
+      setSignupError("Passwords do not match.");
       return;
     }
 
@@ -55,69 +66,82 @@ const Signup: React.FC = () => {
 
   return (
     <motion.div
-      className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900"
+      className="flex justify-center items-center min-h-screen bg-backgroundlight dark:bg-backgrounddark"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-800 dark:bg-gray-800 p-8 max-w-md w-full rounded-lg shadow-lg"
+        className="bg-foregrounddark dark:bg-foregroundlight p-8 max-w-md w-full rounded-lg shadow-lg"
       >
-        <h1 className="text-2xl font-semibold text-center text-gray-100 mb-6">
+        <h1 className="text-2xl font-UnageoBold text-center text-primarydark dark:text-primarylight mb-6">
           Sign Up
         </h1>
         <div className="mb-4">
-          <label className="block text-gray-400 mb-2">Name:</label>
+          <label className="block text-copylight dark:text-foregrounddark mb-2">
+            Name:
+          </label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full p-2 bg-gray-700 text-gray-100 rounded"
+            className="w-full p-2 bg-backgroundlight text-copylight dark:bg-backgrounddark dark:text-foregrounddark rounded border border-borderlight dark:border-borderdark"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-400 mb-2">Email:</label>
+          <label className="block text-copylight dark:text-foregrounddark mb-2">
+            Email:
+          </label>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full p-2 bg-gray-700 text-gray-100 rounded"
+            className="w-full p-2 bg-backgroundlight text-copylight dark:bg-backgrounddark dark:text-foregrounddark rounded border border-borderlight dark:border-borderdark"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-400 mb-2">Password:</label>
+          <label className="block text-copylight dark:text-foregrounddark mb-2">
+            Password:
+          </label>
           <input
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full p-2 bg-gray-700 text-gray-100 rounded"
+            className="w-full p-2 bg-backgroundlight text-copylight dark:bg-backgrounddark dark:text-foregrounddark rounded border border-borderlight dark:border-borderdark"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-400 mb-2">Confirm Password:</label>
+          <label className="block text-copylight dark:text-foregrounddark mb-2">
+            Confirm Password:
+          </label>
           <input
             type="password"
             name="repassword"
             value={formData.repassword}
             onChange={handleChange}
-            className="w-full p-2 bg-gray-700 text-gray-100 rounded"
+            className="w-full p-2 bg-backgroundlight text-copylight dark:bg-backgrounddark dark:text-foregrounddark rounded border border-primarydark dark:border-primarylight"
           />
         </div>
         {signupError && (
-          <div className="mb-4 text-red-500 text-sm">{signupError}</div>
+          <div className="mb-4 text-errorcontent dark:text-error text-sm">
+            {signupError}
+          </div>
         )}
         <div className="flex justify-between items-center">
           <button
             type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+            className="bg-primary text-primarycontent dark:bg-primarydark dark:text-primarylight py-2 px-4 rounded hover:bg-primarydark dark:hover:bg-primarylight transition"
           >
             Sign Up
           </button>
-          <Link to="/login" className="text-gray-400 text-sm">
+          <Link
+            to="/login"
+            className="text-secondary dark:text-secondarylight text-sm hover:underline"
+          >
             Already have an account? Login
           </Link>
         </div>
