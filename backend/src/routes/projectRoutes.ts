@@ -1,8 +1,20 @@
 import { Router } from "express";
+import {
+  getProjects,
+  createProject,
+  deleteProject,
+} from "../controllers/projectController";
+import { authMiddleware } from "../middleware/authMiddleware"; // Ensure this is working
 
 const router = Router();
 
-// Define your project-related routes here
-router.get("/", (req, res) => res.send("Project route"));
+// Fetch all projects
+router.get("/", authMiddleware, getProjects);
+
+// Create a new project
+router.post("/", authMiddleware, createProject);
+
+// Delete a project
+router.delete("/:id", authMiddleware, deleteProject);
 
 export default router;

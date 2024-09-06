@@ -7,6 +7,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loginError, setLoginError] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state for form submission
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -15,6 +16,8 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setLoginError(""); // Clear previous errors
 
     try {
       const response = await axios.post(
@@ -22,26 +25,35 @@ const Login: React.FC = () => {
         formData
       );
 
-      // Check if the response status is 200 or 201 (indicating success)
-      if (
-        (response.status === 200 || response.status === 201) &&
-        response.data.token
-      ) {
-        // Store the token in localStorage
-        localStorage.setItem("token", response.data.token);
-        // Navigate to the project selection page or dashboard
-        navigate("/projectSelect");
-      } else {
-        // This should be handled, but typically it wouldn't happen if the backend is correct
-        setLoginError("Invalid login credentials.");
+      // Handle successful login
+      if (response.status === 200 || response.status === 201) {
+        const { token } = response.data;
+        if (token) {
+          // Store the token securely in localStorage
+          localStorage.setItem("token", token);
+
+          // Redirect to the project selection page
+          navigate("/projectSelect");
+        } else {
+          setLoginError("Failed to retrieve login token. Please try again.");
+        }
       }
     } catch (error: any) {
-      // More detailed error handling can be done based on the error type
+      // Handle errors from the API or network
       if (error.response && error.response.status === 401) {
         setLoginError("Invalid login credentials.");
+      } else if (error.response) {
+        setLoginError("An error occurred. Please try again later.");
+      } else if (error.request) {
+        setLoginError(
+          "No response from the server. Please check your network."
+        );
       } else {
-        setLoginError("Login failed. Please try again.");
+        setLoginError("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setLoading(false); // Stop loading after request completes
+      setFormData({ ...formData, password: "" }); // Clear password field after submission
     }
   };
 
@@ -69,6 +81,8 @@ const Login: React.FC = () => {
             value={formData.email}
             onChange={handleChange}
             className="w-full p-4 bg-backgroundlight text-foregroundlight dark:bg-backgrounddark dark:text-foregrounddark rounded-lg border border-borderlight dark:border-borderdark focus:outline-none"
+            required
+            disabled={loading} // Disable input when loading
           />
         </div>
         <div className="mb-6">
@@ -81,13 +95,16 @@ const Login: React.FC = () => {
             value={formData.password}
             onChange={handleChange}
             className="w-full p-4 bg-backgroundlight text-foregroundlight dark:bg-backgrounddark dark:text-foregrounddark rounded-lg border border-borderlight dark:border-borderdark focus:outline-none"
+            required
+            disabled={loading} // Disable input when loading
           />
         </div>
         <button
           type="submit"
           className="w-full py-3 bg-primary text-primarycontent rounded-lg font-UnageoBold hover:bg-primarydark dark:bg-primarydark transition"
+          disabled={loading} // Disable button when loading
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
         <div className="text-center mt-4 text-copydark dark:text-copylight font-MonaspaceNeonRegular">
           Don't have an account?

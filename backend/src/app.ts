@@ -12,17 +12,22 @@ app.use(
   cors({
     origin: "http://localhost:5173", // Replace with your frontend's URL
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    credentials: true, // Ensure cookies/credentials are allowed
   })
 );
-app.use(express.json());
+app.use(express.json()); // Parse incoming JSON
 
 // Routes
-app.use("/api/auth", authRoutes); // Ensure this matches the route prefix expected
-app.use("/api/projects", projectRoutes);
-app.use("/api/tasks", taskRoutes);
+app.use("/api/auth", authRoutes); // Authentication routes
+app.use("/api/projects", projectRoutes); // Project routes
+app.use("/api/tasks", taskRoutes); // Task routes
 
 // Error handling middleware
-app.use(errorHandler);
+app.use(errorHandler); // Custom error handler
+
+// 404 handler for unknown routes
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Route not found" });
+});
 
 export default app;

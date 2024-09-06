@@ -1,10 +1,19 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const projectSchema = new Schema({
+// Define the interface for the Project model
+interface IProject extends Document {
+  name: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+}
+
+const ProjectSchema: Schema = new Schema({
   name: { type: String, required: true },
-  description: { type: String },
+  description: { type: String, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
 });
 
-export const ProjectModel = model("Project", projectSchema);
+// Export the model
+export const Project = mongoose.model<IProject>("Project", ProjectSchema);
