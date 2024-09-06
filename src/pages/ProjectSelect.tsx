@@ -18,7 +18,7 @@ const CreateProjectModal = lazy(
 
 // Define the Project type
 type Project = {
-  id: string;
+  id: string; // Ensure this is the correct field for project ID
   name: string;
   description: string;
   startDate: string;
@@ -30,7 +30,6 @@ type Project = {
 const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // Fetch projects from the API
@@ -46,23 +45,32 @@ const useProjects = () => {
       });
       setProjects(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      setError("Failed to load projects. Please try again.");
+      console.error("Failed to load projects:", error);
     } finally {
       setLoading(false);
     }
   }, []);
 
   // Delete a project by ID
-  const deleteProject = async (id: string) => {
+  const deleteProject = async (id: string | undefined) => {
+    if (!id) {
+      console.error("Error: Project ID is undefined");
+      return;
+    }
+
     try {
+      const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:3001/api/projects/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token in Authorization header
+        },
         withCredentials: true,
       });
       setProjects((prevProjects) =>
         prevProjects.filter((project) => project.id !== id)
       );
     } catch (error) {
-      setError("Error deleting the project.");
+      console.error("Error deleting the project:", error);
     }
   };
 
@@ -71,17 +79,25 @@ const useProjects = () => {
     name: string,
     description: string,
     startDate: string,
-    endDate: string
+    endDate: string,
+    closeModal: () => void
   ) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://localhost:3001/api/projects",
         { name, description, startDate, endDate },
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include token in Authorization header
+          },
+          withCredentials: true,
+        }
       );
       setProjects((prevProjects) => [...prevProjects, response.data]);
+      closeModal(); // Close modal after creating project
     } catch (error) {
-      setError("Error creating project.");
+      console.error("Error creating project:", error);
     }
   };
 
@@ -95,13 +111,12 @@ const useProjects = () => {
     }
   }, [fetchProjects, navigate]);
 
-  return { projects, createProject, deleteProject, loading, error };
+  return { projects, createProject, deleteProject, loading };
 };
 
 // Main Component for Project Selection
 const ProjectSelect: React.FC = () => {
-  const { projects, createProject, deleteProject, loading, error } =
-    useProjects();
+  const { projects, createProject, deleteProject, loading } = useProjects();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -132,7 +147,7 @@ const ProjectSelect: React.FC = () => {
     () =>
       projects.map((project) => (
         <motion.div
-          key={project.id}
+          key={project.id} // Ensure that key is present
           whileHover={{ scale: 1.05 }}
           className="grid-item p-6 border-2 border-gray-300 rounded-xl bg-gray-200 shadow-lg transition transform hover:translate-y-1 w-72 h-72 flex flex-col items-center justify-center"
         >
@@ -151,7 +166,7 @@ const ProjectSelect: React.FC = () => {
               </button>
               <button
                 className="grid-item-action-button delete-button bg-red-500 text-white rounded-md py-2 px-4 flex items-center justify-center transition hover:bg-red-600 w-1/2"
-                onClick={() => deleteProject(project.id)}
+                onClick={() => deleteProject(project.id)} // Ensure project.id is passed
                 title="Delete project"
               >
                 <FiTrash2 className="icon mr-2 text-lg" />
@@ -164,13 +179,9 @@ const ProjectSelect: React.FC = () => {
     [projects, deleteProject, navigate]
   );
 
-  // Loading and error handling
+  // Loading state
   if (loading) {
     return <div>Loading projects...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
   }
 
   return (
@@ -211,7 +222,15 @@ const ProjectSelect: React.FC = () => {
         <CreateProjectModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          onCreateProject={createProject}
+          onCreateProject={(name, description, startDate, endDate) =>
+            createProject(
+              name,
+              description,
+              startDate,
+              endDate,
+              handleCloseModal
+            )
+          } // Pass handleCloseModal to close modal after creation
         />
       </Suspense>
     </div>

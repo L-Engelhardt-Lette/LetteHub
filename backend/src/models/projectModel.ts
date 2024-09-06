@@ -1,7 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { UUID } from "node:crypto";
 
 // Define the interface for the Project model
 interface IProject extends Document {
+  id: UUID;
   name: string;
   description: string;
   startDate: Date;
@@ -9,6 +11,7 @@ interface IProject extends Document {
 }
 
 const ProjectSchema: Schema = new Schema({
+  id: { type: String, required: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
   startDate: { type: Date, required: true },
