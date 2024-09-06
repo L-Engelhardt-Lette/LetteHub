@@ -34,9 +34,17 @@ const ProjectSelect: React.FC = () => {
       const response = await axios.get("http://localhost:3001/api/projects", {
         withCredentials: true,
       });
-      setItems(response.data);
+
+      // Ensure response.data is an array before setting it
+      if (Array.isArray(response.data)) {
+        setItems(response.data);
+      } else {
+        console.error("Expected an array but got:", response.data);
+        setItems([]);
+      }
     } catch (error) {
       console.error("Error fetching projects:", error);
+      setItems([]); // Set to empty array if there's an error
     }
   }, []);
 
