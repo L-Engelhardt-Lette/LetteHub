@@ -11,6 +11,7 @@ import PrivateRoute from "./routes/PrivateRoute"; // Ensure this path is correct
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import "./styles.scss";
+import { NotificationProvider } from "./hooks/useNotification";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -26,30 +27,32 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <AuthProvider>
-      <Router>
-        {loading ? (
-          <Loader />
-        ) : (
-          <>
-            <WebsiteHeader />
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route
-                path="/projects"
-                element={
-                  <PrivateRoute>
-                    <Projects />
-                  </PrivateRoute>
-                }
-              />
-              {/* Add more routes as needed */}
-            </Routes>
-          </>
-        )}
-      </Router>
-    </AuthProvider>
+    <NotificationProvider>
+      <AuthProvider>
+        <Router>
+          {loading ? (
+            <Loader />
+          ) : (
+            <>
+              <WebsiteHeader />
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route
+                  path="/projects"
+                  element={
+                    <PrivateRoute>
+                      <Projects />
+                    </PrivateRoute>
+                  }
+                />
+                {/* Add more routes as needed */}
+              </Routes>
+            </>
+          )}
+        </Router>
+      </AuthProvider>
+    </NotificationProvider>
   );
 };
 

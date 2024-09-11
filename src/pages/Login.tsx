@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useNotification } from "../hooks/useNotification"; // Import the custom notification hook
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false); // Loading state for form submission
+
+  const { addNotification } = useNotification(); // Use the notification hook
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,24 +35,41 @@ const Login: React.FC = () => {
           // Store the token securely in localStorage
           localStorage.setItem("token", token);
 
+          // Add success notification
+          addNotification("Login successful!", "success");
+
           // Redirect to the project selection page
           navigate("/projectSelect");
         } else {
           setLoginError("Failed to retrieve login token. Please try again.");
+          addNotification(
+            "Failed to retrieve login token. Please try again.",
+            "error"
+          );
         }
       }
     } catch (error: any) {
       // Handle errors from the API or network
       if (error.response && error.response.status === 401) {
         setLoginError("Invalid login credentials.");
+        addNotification("Invalid login credentials.", "error"); // Add error notification
       } else if (error.response) {
         setLoginError("An error occurred. Please try again later.");
+        addNotification("An error occurred. Please try again later.", "error"); // Add error notification
       } else if (error.request) {
         setLoginError(
           "No response from the server. Please check your network."
         );
+        addNotification(
+          "No response from the server. Please check your network.",
+          "error"
+        ); // Add error notification
       } else {
         setLoginError("An unexpected error occurred. Please try again.");
+        addNotification(
+          "An unexpected error occurred. Please try again.",
+          "error"
+        ); // Add error notification
       }
     } finally {
       setLoading(false); // Stop loading after request completes
