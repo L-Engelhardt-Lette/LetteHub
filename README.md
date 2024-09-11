@@ -1,92 +1,50 @@
-# LetteHub
+# React + TypeScript + Vite
 
-A React application with TypeScript and Vite setup designed for scalable and maintainable development. This project provides an optimized development environment with Hot Module Replacement and ESLint integration to ensure high code quality.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Table of Contents
+Currently, two official plugins are available:
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [Authors and Acknowledgments](#authors-and-acknowledgments)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Installation
+## Expanding the ESLint configuration
 
-### Prerequisites
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-- Node.js ('20.15.0')
-- npm 
+- Configure the top-level `parserOptions` property like this:
 
-### Steps
+```js
+export default tseslint.config({
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
+```
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/your-username/LetteHub.git
-   
-2. Navigate to the project directory:
-   \`\`\`
-   cd LetteHub
-   \`\`\`
-3. Install dependencies:
-   \`\`\`
-   npm install
-   \`\`\`
-4. Start the development server:
-   \`\`\`
-   npm run dev
-    \`\`\`
+- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
+- Optionally add `...tseslint.configs.stylisticTypeChecked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-## Usage
+```js
+// eslint.config.js
+import react from 'eslint-plugin-react'
 
-### Running the Application
-
-1. After starting the development server, open your browser and go to \`http://localhost:5173\`.
-
-### Examples
-
-
-import React from "react";
-import Home from "./components/Home";
-
-const App = () => (
-  <div>
-    <Home />
-  </div>
-);
-
-export default App;
-
-
-
-## Features
-
-- **Optimized Development Environment:** Hot Module Replacement and ESLint integration.
-- **TypeScript Support:** Enhanced type-checking for better code quality.
-- **Component Examples:** Includes reusable components like \`ProfileCard\`, \`CommitStats\`, \`DoubleScrollingLogos\`, etc.
-- **Responsive Design:** Mobile-first approach with a responsive layout.
-
-
-### Guidelines
-
-1. Fork the repository.
-2. Create a new branch:
-   \`\`\`
-   git checkout -b feature-branch
-   \`\`\`
-3. Make your changes and commit them:
-   \`\`\`
-   git commit -m "Add new feature"
-   \`\`\`
-4. Push to the branch:
-   \`\`\`
-   git push origin feature-branch
-   \`\`\`
-5. Create a Pull Request.
-
-
-## Authors and Acknowledgments
-
-- **Ludwig Engelhardt:** [GitHub Profile](https://github.com/L-Engelhardt-Lette) (Front End / Back End)
-- **Ole Herold:** [GitHub Profile](https://github.com/OleHerold) (Front End)
-- **Nick Bodinus:** [GitHub Profile](https://github.com/Nbdnus) (Back End)
-- **Luca Krickl:** [GitHub Profile](https://github.com/LucaKrickl) (Back End / Databank)
-
+export default tseslint.config({
+  // Set the react version
+  settings: { react: { version: '18.3' } },
+  plugins: {
+    // Add the react plugin
+    react,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended rules
+    ...react.configs.recommended.rules,
+    ...react.configs['jsx-runtime'].rules,
+  },
+})
+```
