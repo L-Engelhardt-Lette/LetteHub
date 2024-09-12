@@ -5,6 +5,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "./components/loader/Loader";
+import Signin from "./pages/Register";
 
 // Lazy load pages
 const Home = lazy(() => import("./pages/Home"));
@@ -23,13 +24,14 @@ const App: React.FC = () => {
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-
+            <Route path="/register" element={<Signin />} />
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
           </Routes>
         </Suspense>
+        <ToastContainer autoClose={2000} />
       </div>
     </AuthProvider>
   );
