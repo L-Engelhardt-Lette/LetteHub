@@ -15,7 +15,7 @@ export const getUserById = async (id: number) => {
   return user;
 };
 
-export const getUserByEmail = async (email: Text) => {
+export const getUserByEmail = async (email: string) => {
   const db = await initDatabase();
   const user = await db.get("SELECT * FROM users WHERE email = ?", [email]);
   return user;
@@ -33,7 +33,7 @@ export const deleteUserById = async (id: number) => {
   return result.changes;
 };
 
-export const deleteUserByEmail = async (email: Text) => {
+export const deleteUserByEmail = async (email: string) => {
   const db = await initDatabase();
   const result = await db.run("DELETE FROM users WHERE id = ?", [email]);
   return result.changes;

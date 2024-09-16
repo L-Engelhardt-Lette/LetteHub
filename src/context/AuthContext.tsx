@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import axios from "axios"; // Import AxiosError
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -30,12 +30,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const isAuthenticated = !!token;
 
+  // Use Vite environment variable
+  const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
   const login = async (
     username: string,
     password: string
   ): Promise<boolean> => {
     try {
-      const response = await axios.post(`http://localhost:8899/login`, {
+      const response = await axios.post(`${API_BASE_URL}/login`, {
         username,
         password,
       });
@@ -46,7 +50,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(user);
 
       localStorage.setItem("authToken", token);
-      localStorage.setItem("authUser", JSON.stringify(user));
+
+      // Only store `user` if it's defined and valid
+      if (user) {
+        localStorage.setItem("authUser", JSON.stringify(user));
+      } else {
+        // Optionally clear if `user` is invalid
+        localStorage.removeItem("authUser");
+      }
 
       toast.success("Login successful! 🎉");
 
@@ -59,7 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Unexpected error:", error);
         toast.error("An unexpected error occurred. 😞");
       }
-      throw new Error("Login failed");
+      return false; // Return false if login fails
     }
   };
 
@@ -77,9 +88,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const storedToken = localStorage.getItem("authToken");
     const storedUser = localStorage.getItem("authUser");
 
-    if (storedToken && storedUser) {
+    if (storedToken) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+    }
+
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse stored user:", error);
+        // Optionally, clear the invalid data from localStorage
+        localStorage.removeItem("authUser");
+      }
     }
   }, []);
 

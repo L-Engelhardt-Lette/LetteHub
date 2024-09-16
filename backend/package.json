@@ -31,6 +31,8 @@
     "jsonwebtoken": "^9.0.2",
     "pino-http": "^10.0.0",
     "sequelize": "^6.37.3",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "swagger-ui-express": "^5.0.0",
     "zod": "^3.22.4"
   },
@@ -63,6 +65,14 @@
       "src",
       "!src/**/__tests__/**",
       "!src/**/*.test.*"
+    ],
+    "ignorePatterns": [
+      "**/*.sqlite",
+      "src/lettedb.sqlite"
+    ],
+    "external": [
+      "**/*.sqlite",
+      "src/lettedb.sqlite"
     ],
     "splitting": false,
     "sourcemap": true,

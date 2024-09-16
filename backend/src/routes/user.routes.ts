@@ -1,61 +1,88 @@
-import { Router } from "express";
-import User from "../models/user.model";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { Router, Request, Response } from "express";
+import {
+  addUser,
+  getUserById,
+  getAllUsers,
+  deleteUserById,
+  getUserByEmail,
+  deleteUserByEmail,
+} from "../db/userReposetory";
 
 const router = Router();
 
-// Create a new user
-router.post("/", async (req, res) => {
+router.post("/users", async (req: Request, res: Response) => {
   const { name, email } = req.body;
   try {
-    const user = await User.create({ name, email });
-    res.json(user);
+    const userId = await addUser(name, email);
+    res.status(201).json({ id: userId });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json({ error: "Failed to add user" });
   }
 });
 
-router.post("/login", async (req, res) => {
-  const { identifier, password } = req.body;
-
+router.get("/users/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
   try {
-    // Find the user by email or username
-    const user = await User.findOne({
-      where: { email: identifier }, // You can also search by username
-    });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const user = await getUserById(parseInt(id, 10));
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: "User not found" });
     }
-
-    // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      process.env.JWT_SECRET || "secret-key",
-      { expiresIn: "1h" }
-    );
-
-    return res.json({ message: "Login successful", token });
   } catch (error) {
-    return res.status(500).json({ message: "Login failed", error });
+    res.status(500).json({ error: "Failed to get user" });
   }
 });
 
-// Get all users
-router.get("/", async (req, res) => {
-  const users = await User.findAll();
-  res.json(users);
+router.get("/users/:email", async (req: Request, res: Response) => {
+  const { email } = req.params;
+  try {
+    const user = await getUserByEmail(email);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get user" });
+  }
 });
 
-router.put("/", async (req, res) => {});
+router.get("/users", async (req: Request, res: Response) => {
+  try {
+    const users = await getAllUsers();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get users" });
+  }
+});
 
-router.delete("/", async (req, res) => {});
+router.delete("/users/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const changes = await deleteUserById(parseInt(id, 10));
+    if (changes) {
+      res.status(200).json({ message: "User deleted" });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete user" });
+  }
+});
+
+router.delete("/users/:email", async (req: Request, res: Response) => {
+  const { email } = req.params;
+  try {
+    const changes = await deleteUserByEmail(email);
+    if (changes) {
+      res.status(200).json({ message: "User deleted" });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete user" });
+  }
+});
 
 export default router;
