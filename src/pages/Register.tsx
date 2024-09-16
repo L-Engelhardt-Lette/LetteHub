@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -17,23 +17,50 @@ const schema = yup.object().shape({
     .string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
+  passwordConfirmation: yup
+    .string()
+    .oneOf([yup.ref("password"), undefined], "Passwords must match")
+    .required("Please confirm your password"),
 });
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const [passwordStrength, setPasswordStrength] = useState<string>("");
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    watch,
   } = useForm({
     resolver: yupResolver(schema),
     mode: "onChange",
   });
 
+  const watchPassword = watch("password", "");
+
+  // Simple password strength check based on length
+  const calculatePasswordStrength = (password: string) => {
+    if (password.length >= 6 && password.length < 8) {
+      setPasswordStrength("Weak");
+    } else if (password.length >= 8 && password.length < 12) {
+      setPasswordStrength("Moderate");
+    } else if (password.length >= 12) {
+      setPasswordStrength("Strong");
+    } else {
+      setPasswordStrength("");
+    }
+  };
+
+  // Watch password field and update password strength
+  React.useEffect(() => {
+    calculatePasswordStrength(watchPassword);
+  }, [watchPassword]);
+
+  // Handle form submission
   const onSubmit = async (data: any) => {
     try {
-      const response = await axios.post("/api/auth/register", {
+      const response = await axios.post("http://localhost:8899/register", {
         username: data.username,
         email: data.email,
         password: data.password,
@@ -57,6 +84,8 @@ const Register: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <p className="text-2xl font-bold mb-4">Register</p>
+
+        {/* Username Field */}
         <div className="mb-4">
           <label className="block text-gray-700">
             Username
@@ -74,6 +103,7 @@ const Register: React.FC = () => {
           </label>
         </div>
 
+        {/* Email Field */}
         <div className="mb-4">
           <label className="block text-gray-700">
             Email
@@ -91,6 +121,7 @@ const Register: React.FC = () => {
           </label>
         </div>
 
+        {/* Password Field */}
         <div className="mb-4">
           <label className="block text-gray-700">
             Password
@@ -106,8 +137,44 @@ const Register: React.FC = () => {
               </p>
             )}
           </label>
+
+          {/* Password Strength */}
+          {watchPassword && (
+            <div className="mt-1">
+              <p
+                className={`text-sm font-semibold ${
+                  passwordStrength === "Weak"
+                    ? "text-red-500"
+                    : passwordStrength === "Moderate"
+                    ? "text-yellow-500"
+                    : "text-green-500"
+                }`}
+              >
+                Password Strength: {passwordStrength}
+              </p>
+            </div>
+          )}
         </div>
 
+        {/* Confirm Password Field */}
+        <div className="mb-4">
+          <label className="block text-gray-700">
+            Confirm Password
+            <input
+              {...register("passwordConfirmation")}
+              type="password"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Confirm your password"
+            />
+            {errors.passwordConfirmation && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.passwordConfirmation.message}
+              </p>
+            )}
+          </label>
+        </div>
+
+        {/* Submit Button */}
         <button
           type="submit"
           className={`bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg w-full hover:bg-blue-600 transition-colors duration-300 ${

@@ -1,38 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-// Define the schema using Yup
+// Validation schema
 const schema = yup.object().shape({
-  identifier: yup.string().required("Email or Name is required"),
+  username: yup.string().required("Username is required"), // Ensures 'username' is used
   password: yup.string().required("Password is required"),
 });
+
+interface LoginFormInputs {
+  username: string;
+  password: string;
+}
 
 const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [loginError, setLoginError] = useState<string | null>(null);
 
-  // Initialize the form with React Hook Form and Yup Resolver
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
-  } = useForm({
-    resolver: yupResolver(schema), // Integrate Yup with React Hook Form
-    mode: "onChange", // This ensures isValid is updated as the user types
+  } = useForm<LoginFormInputs>({
+    resolver: yupResolver(schema),
+    mode: "onChange",
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LoginFormInputs) => {
     try {
-      await login(data.identifier, data.password);
-      toast.success("Welcome!");
-      navigate("/dashboard"); // Redirect only on successful login
+      setLoginError(null); // Reset any previous login errors
+      console.log("Attempting to log in with:", data);
+
+      // Attempt login
+      const success = await login(data.username, data.password);
+      if (success) {
+        console.log("Login successful, navigating to dashboard.");
+        navigate("/dashboard");
+      }
     } catch (error) {
-      toast.error("Login failed"); // This will be caught by the AuthContext logic
+      console.error("Login failed:", error);
+      setLoginError("Login failed. Please check your credentials.");
     }
   };
 
@@ -43,22 +54,22 @@ const Login: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <p className="text-2xl font-bold mb-4">Login</p>
-        <p className="text-sm text-gray-600 mb-6">
-          Login now and get full access to our app.
-        </p>
+
+        {loginError && (
+          <div className="mb-4 text-red-500 text-sm">{loginError}</div>
+        )}
 
         <div className="mb-4">
-          <label className="block text-gray-700">
-            Email or Name
+          <label className="block text-gray-700 ">
+            Username
             <input
-              {...register("identifier")}
+              {...register("username")}
               type="text"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your email or name"
+              className="mt-1 p-2 block w-full border-2 border-gray-300 rounded-md"
             />
-            {errors.identifier && (
+            {errors.username && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.identifier.message}
+                {errors.username.message}
               </p>
             )}
           </label>
@@ -70,8 +81,7 @@ const Login: React.FC = () => {
             <input
               {...register("password")}
               type="password"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your password"
+              className="mt-1 p-2 block w-full border-2 border-gray-300 rounded-md"
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
@@ -83,38 +93,16 @@ const Login: React.FC = () => {
 
         <button
           type="submit"
-          className={`bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg w-full hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center ${
+          className={`bg-blue-500 text-white py-2 px-4 rounded-lg w-full ${
             !isValid || isSubmitting ? "opacity-50 cursor-not-allowed" : ""
           }`}
-          disabled={!isValid || isSubmitting} // Disable button if form is invalid or submitting
+          disabled={!isValid || isSubmitting}
         >
-          {isSubmitting ? (
-            <svg
-              className="animate-spin h-5 w-5 mr-3 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v8H4z"
-              ></path>
-            </svg>
-          ) : null}
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Submitting..." : "Login"}
         </button>
 
-        <p className="text-sm text-center mt-4">
-          Don’t have an account?{" "}
+        <p className="mt-4">
+          Don't have an account?{" "}
           <a href="/register" className="text-blue-500">
             Register
           </a>

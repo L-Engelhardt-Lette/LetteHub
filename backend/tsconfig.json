@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "start": "nodemon --exec babel-node app.js",
+    "build": "tsc",
+    "dev": "ts-node-dev src/server.ts"
+  },
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

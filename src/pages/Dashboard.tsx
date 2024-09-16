@@ -7,7 +7,6 @@ const Dashboard: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    toast.info("You have logged out!");
   };
 
   return (

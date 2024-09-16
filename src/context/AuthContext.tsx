@@ -1,17 +1,18 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
+import axios from "axios"; // Import AxiosError
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-// Define the shape of the AuthContext
-interface AuthContextProps {
-  isAuthenticated: boolean;
-  login: (identifier: string, password: string) => Promise<void>;
+interface AuthContextType {
+  user: any;
+  token: string | null;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
+  isAuthenticated: boolean;
 }
 
-// Create the AuthContext with default undefined value
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Custom hook to access AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -20,39 +21,72 @@ export const useAuth = () => {
   return context;
 };
 
-// AuthProvider component
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const login = async (identifier: string, password: string) => {
-    const response = await fetch("http://localhost:3001/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ identifier, password }),
-    });
+  const isAuthenticated = !!token;
 
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.message || "Login failed");
+  const login = async (
+    username: string,
+    password: string
+  ): Promise<boolean> => {
+    try {
+      const response = await axios.post(`http://localhost:8899/login`, {
+        username,
+        password,
+      });
+
+      const { token, user } = response.data;
+
+      setToken(token);
+      setUser(user);
+
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("authUser", JSON.stringify(user));
+
+      toast.success("Login successful! 🎉");
+
+      return true;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("Login error response:", error.response);
+        toast.error("Login failed. Please check your credentials. 😞");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred. 😞");
+      }
+      throw new Error("Login failed");
     }
-
-    const data = await response.json();
-    setIsAuthenticated(true);
-    localStorage.setItem("token", data.token);
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem("token");
-    toast.info("Logged out!");
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authUser");
+
+    toast.info("You have been logged out.");
+    navigate("/login");
   };
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+    const storedUser = localStorage.getItem("authUser");
+
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, login, logout, isAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );
