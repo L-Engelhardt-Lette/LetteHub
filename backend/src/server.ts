@@ -1,104 +1,40 @@
-import express from "express";
 import cors from "cors";
-import bcrypt from "bcrypt";
-import User from "./models/user.model";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import sequelize from "./database"; // Import your Sequelize instance
+import express, { type Express } from "express";
+import helmet from "helmet";
+import { pino } from "pino";
 
-dotenv.config(); // Load environment variables
+import { openAPIRouter } from "@/api-docs/openAPIRouter";
+import { healthCheckRouter } from "@/api/healthCheck/healthCheckRouter";
+import { userRouter } from "@/api/user/userRouter";
+import errorHandler from "@/common/middleware/errorHandler";
+import rateLimiter from "@/common/middleware/rateLimiter";
+import requestLogger from "@/common/middleware/requestLogger";
+import { env } from "@/common/utils/envConfig";
 
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET is not defined in the environment variables");
-}
+const logger = pino({ name: "server start" });
+const app: Express = express();
 
-const app = express();
+// Set the application to trust the reverse proxy
+app.set("trust proxy", true);
 
-// Sync the database
-sequelize
-  .sync()
-  .then(() => {
-    console.log("Database synchronized");
-  })
-  .catch((err) => {
-    console.error("Error synchronizing database:", err);
-  });
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(helmet());
+app.use(rateLimiter);
 
-// Middleware
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-app.use(express.json()); // Ensure JSON parsing is enabled
+// Request logging
+app.use(requestLogger);
 
 // Routes
-app.post(`/login`, async (req, res) => {
-  const { username, password } = req.body;
+app.use("/health-check", healthCheckRouter);
+app.use("/users", userRouter);
 
-  // Log the incoming request body to check if username and password are present
-  console.log("Request body:", req.body);
+// Swagger UI
+app.use(openAPIRouter);
 
-  try {
-    // Check if username and password are provided
-    if (!username || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Username and password are required",
-      });
-    }
+// Error handlers
+app.use(errorHandler());
 
-    // Find the user by username only
-    const user = await User.findOne({
-      where: { username }, // Querying only by `username`
-    });
-
-    if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User not found" });
-    }
-
-    // Compare the password with the hashed password in the database
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid password" });
-    }
-
-    // Create a JWT token
-    const token = jwt.sign(
-      { id: user.id, username: user.username },
-      JWT_SECRET,
-      {
-        expiresIn: "1h",
-      }
-    );
-
-    // Respond with the token and user details
-    res.json({
-      success: true,
-      token,
-      user: { id: user.id, username: user.username, email: user.email },
-    });
-  } catch (error: any) {
-    console.error("Error during login:", error.message || error);
-    res.status(500).json({
-      success: false,
-      message: "Login failed",
-      error: error.message || "Unknown error",
-    });
-  }
-});
-
-// Listen on port 8899
-app.listen(8899, () => {
-  console.log("Server is running on http://localhost:8899");
-});
+export { app, logger };
