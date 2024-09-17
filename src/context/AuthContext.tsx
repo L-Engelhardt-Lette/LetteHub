@@ -55,6 +55,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       localStorage.setItem("authToken", token);
       localStorage.setItem("authUser", JSON.stringify(user));
 
+      //TODO: TOKEN LOGIN (needs remove )
+      const authToken = localStorage.getItem("authToken");
+      const authUser = localStorage.getItem("authUser");
+
+      console.log("Logged authToken ", authToken);
+      console.log("Logged authUser ", authUser);
+
       toast.success("Login successful!");
       return true;
     } catch (error: unknown) {

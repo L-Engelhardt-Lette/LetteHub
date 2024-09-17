@@ -1,6 +1,5 @@
-import {
+import React, {
   Dispatch,
-  lazy,
   ReactNode,
   SetStateAction,
   useMemo,
@@ -8,18 +7,25 @@ import {
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiMenu } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import DarkModeToggle from "../button/switch/DarkmodeSwitch";
-import Homepage from "../../pages/Homepage";
-
-const Impressum = lazy(() => import("../../pages/Impressum"));
+import { useAuth } from "../../context/AuthContext"; // Import useAuth for authentication
 
 export const Navbar = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  // State for dark mode
+  const [darkMode, setDarkMode] = useState<"dark" | "light">("light");
 
+  // Use authentication context
+  const { isAuthenticated, logout } = useAuth();
+
+  // Navigation hook
+  const navigate = useNavigate();
+
+  // Toggle dark mode
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
+    const newMode = darkMode === "dark" ? "light" : "dark";
+    setDarkMode(newMode);
+    if (newMode === "dark") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
@@ -29,67 +35,107 @@ export const Navbar = () => {
   return (
     <div
       className={`${
-        darkMode
-          ? "bg-backgrounddark text-foregrounddark"
-          : "bg-backgroundlight text-foregroundlight"
-      }`}
+        darkMode === "dark" ? "bg-backgrounddark" : "bg-backgroundlight"
+      } text-foregroundlight`}
     >
       <RoundedDrawerNav
         links={[
           {
-            title: "Home",
+            title: "Product",
             sublinks: [
-              { title: "Issues", href: "#" },
-              { title: "Kanban", href: "#" },
-              { title: "Gantt", href: "#" },
-              { title: "Mind Maps", href: "#" },
+              {
+                title: "Issues",
+                href: "#",
+              },
+              {
+                title: "Kanban",
+                href: "#",
+              },
+              {
+                title: "Gantt",
+                href: "#",
+              },
+              {
+                title: "Mind Maps",
+                href: "#",
+              },
             ],
           },
           {
-            title: "About",
+            title: "Solutions",
             sublinks: [
-              { title: "Product Management", href: "#" },
-              { title: "Marketing", href: "#" },
-              { title: "IT", href: "#" },
+              {
+                title: "Product Management",
+                href: "#",
+              },
+              {
+                title: "Marketing",
+                href: "#",
+              },
+              {
+                title: "IT",
+                href: "#",
+              },
             ],
           },
           {
-            title: "Impressum",
+            title: "Documentation",
             sublinks: [
-              { title: "Impressums Page", href: "#" },
-              { title: "University", href: "#" },
+              {
+                title: "API Docs",
+                href: "#",
+              },
+              {
+                title: "University",
+                href: "#",
+              },
             ],
           },
           {
-            title: "Code",
+            title: "Media",
             sublinks: [
-              { title: "API Docs", href: "#" },
-              { title: "Socials", href: "#" },
-              { title: "Blog", href: "#" },
+              {
+                title: "Videos",
+                href: "#",
+              },
+              {
+                title: "Socials",
+                href: "#",
+              },
+              {
+                title: "Blog",
+                href: "#",
+              },
+            ],
+          },
+          {
+            title: "Pricing",
+            sublinks: [
+              {
+                title: "Startup",
+                href: "#",
+              },
+              {
+                title: "Small Business",
+                href: "#",
+              },
+              {
+                title: "Enterprise",
+                href: "#",
+              },
             ],
           },
         ]}
         navBackground={
-          darkMode
-            ? "bg-backgrounddark text-foregrounddark"
-            : "bg-backgroundlight text-foregroundlight"
+          darkMode === "dark" ? "bg-backgrounddark" : "bg-backgroundlight"
         }
-        bodyBackground={
-          darkMode
-            ? "bg-backgrounddark text-foregrounddark"
-            : "bg-backgroundlight text-foregroundlight"
-        }
-      >
-        <div className="flex flex-col items-center justify-center px-12 py-32">
-          <p className="text-center">Your hero section content goes here :)</p>
-          <button
-            onClick={toggleDarkMode}
-            className="mt-4 rounded-md bg-primarylight px-3 py-1.5 text-sm text-white transition-colors hover:bg-primarydark"
-          >
-            Toggle Dark Mode
-          </button>
-        </div>
-      </RoundedDrawerNav>
+        bodyBackground="bg-white"
+        darkMode={darkMode}
+        isAuthenticated={isAuthenticated}
+        logout={logout}
+        navigate={navigate}
+        setDarkMode={setDarkMode}
+      ></RoundedDrawerNav>
     </div>
   );
 };
@@ -104,29 +150,37 @@ const RoundedDrawerNav = ({
   navBackground,
   bodyBackground,
   links,
+  darkMode,
+  isAuthenticated,
+  logout,
+  navigate,
+  setDarkMode,
 }: {
   navBackground: string;
   bodyBackground: string;
   children?: ReactNode;
   links: LinkType[];
+  darkMode: "dark" | "light";
+  isAuthenticated: boolean;
+  logout: () => void;
+  navigate: (path: string) => void;
+  setDarkMode: Dispatch<SetStateAction<"dark" | "light">>;
 }) => {
   const [hovered, setHovered] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const navigate = useNavigate();
 
   const activeSublinks = useMemo(() => {
     if (!hovered) return [];
     const link = links.find((l) => l.title === hovered);
+
     return link ? link.sublinks : [];
   }, [hovered]);
-
-  const [mode, setMode] = useState<"dark" | "light">("dark");
 
   return (
     <>
       <nav
         onMouseLeave={() => setHovered(null)}
-        className={`${navBackground} p-4`}
+        className={`p-4 ${navBackground}`}
       >
         <div className="flex items-start justify-between">
           <div className="flex items-start">
@@ -138,20 +192,33 @@ const RoundedDrawerNav = ({
               activeSublinks={activeSublinks}
             />
           </div>
-          <div className="flex">
-            <div className="flex">
-              <DarkModeToggle mode={mode} setMode={setMode} />
-            </div>
-            <button
-              onClick={() => navigate("/login")}
-              className="hidden rounded-md bg-indigo-500 px-3 py-1.5 text-sm text-foregroundlight dark:text-foregrounddark transition-colors hover:bg-indigo-600 md:block"
-            >
-              <span className="font-bold">Login</span>
-            </button>
+          <div className="flex items-center space-x-4">
+            {/* Dark Mode Toggle */}
+            <DarkModeToggle mode={darkMode} setMode={setDarkMode} />
+
+            {/* Show Login or Logout button */}
+            {isAuthenticated ? (
+              <button
+                onClick={() => {
+                  logout();
+                  navigate("/login");
+                }}
+                className="rounded-md bg-red-500 px-3 py-1.5 text-sm text-white transition-colors hover:bg-red-600"
+              >
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="rounded-md bg-indigo-500 px-3 py-1.5 text-sm text-white transition-colors hover:bg-indigo-600"
+              >
+                Login
+              </button>
+            )}
           </div>
           <button
             onClick={() => setMobileNavOpen((pv) => !pv)}
-            className="mt-0.5 block text-2xl text-foregroundlight dark:text-foregrounddark md:hidden"
+            className="mt-0.5 block text-2xl text-neutral-50 md:hidden"
           >
             <FiMenu />
           </button>
@@ -166,15 +233,7 @@ const RoundedDrawerNav = ({
 };
 
 const Logo = () => {
-  return (
-    <svg
-      id="Ebene_2"
-      data-name="Ebene 2"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 94.95 94.95"
-      // You can replace this with an <img> tag if you have an image logo
-    />
-  );
+  return <img src="../../../public/Logo.svg" alt="" className="w-8" />;
 };
 
 const DesktopLinks = ({
@@ -200,14 +259,20 @@ const DesktopLinks = ({
       <AnimatePresence mode="popLayout">
         {hovered && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
             className="space-y-4 py-6"
           >
             {activeSublinks.map((l) => (
               <a
-                className="block text-2xl font-semibold text-foregroundlight dark:text-foregrounddark transition-colors hover:text-neutral-400"
+                className="block text-2xl font-semibold text-neutral-50 transition-colors hover:text-neutral-400"
                 href={l.href}
                 key={l.title}
               >
@@ -226,27 +291,35 @@ const MobileLinks = ({ links, open }: { links: LinkType[]; open: boolean }) => {
     <AnimatePresence mode="popLayout">
       {open && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
           className="grid grid-cols-2 gap-6 py-6 md:hidden"
         >
-          {links.map((l) => (
-            <div key={l.title} className="space-y-1.5">
-              <span className="text-md block font-semibold text-neutral-50 dark:text-foregrounddark">
-                {l.title}
-              </span>
-              {l.sublinks.map((sl) => (
-                <a
-                  className="text-md block text-neutral-300 dark:text-foregrounddark"
-                  href={sl.href}
-                  key={sl.title}
-                >
-                  {sl.title}
-                </a>
-              ))}
-            </div>
-          ))}
+          {links.map((l) => {
+            return (
+              <div key={l.title} className="space-y-1.5">
+                <span className="text-md block font-semibold text-neutral-50">
+                  {l.title}
+                </span>
+                {l.sublinks.map((sl) => (
+                  <a
+                    className="text-md block text-neutral-300"
+                    href={sl.href}
+                    key={sl.title}
+                  >
+                    {sl.title}
+                  </a>
+                ))}
+              </div>
+            );
+          })}
         </motion.div>
       )}
     </AnimatePresence>
@@ -264,7 +337,7 @@ const TopLink = ({
 }) => (
   <span
     onMouseEnter={() => setHovered(title)}
-    className="cursor-pointer text-foregroundlight dark:text-foregrounddark transition-colors hover:text-secondarycontent"
+    className="cursor-pointer text-neutral-50 transition-colors hover:text-neutral-400"
   >
     {children}
   </span>

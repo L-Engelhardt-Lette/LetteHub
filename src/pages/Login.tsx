@@ -39,7 +39,7 @@ const Login: React.FC = () => {
       const success = await login(data.username, data.password);
       if (success) {
         console.log("Login successful, navigating to dashboard.");
-        navigate("/dashboard");
+        navigate("/");
       } else {
         setLoginError("Login failed. Please check your credentials.");
       }

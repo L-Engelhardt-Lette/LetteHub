@@ -1,19 +1,6 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { motion } from "framer-motion";
 import { BsFillCloudyFill, BsStarFill } from "react-icons/bs";
-
-const DarkmodeSwitch = () => {
-  const [mode, setMode] = useState<"dark" | "light">("dark");
-  return (
-    <div
-      className={`px-4 h-[250px] flex items-center justify-center transition-colors ${
-        mode === "dark" ? "bg-slate-900" : "bg-slate-50"
-      }`}
-    >
-      <DarkModeToggle mode={mode} setMode={setMode} />
-    </div>
-  );
-};
 
 const DarkModeToggle = ({
   mode,
@@ -25,7 +12,7 @@ const DarkModeToggle = ({
   return (
     <button
       onClick={() => setMode(mode === "dark" ? "light" : "dark")}
-      className={`p-2 w-28 rounded-full flex shadow-lg relative bg-gradient-to-b ${
+      className={`p-1 w-14 rounded-full flex shadow-sm relative bg-gradient-to-b ${
         mode === "light"
           ? "justify-end from-blue-500 to-sky-300"
           : "justify-start from-indigo-600 to-indigo-400"
@@ -46,7 +33,7 @@ const Thumb = ({ mode }: { mode: "light" | "dark" }) => {
         duration: 0.75,
         type: "spring",
       }}
-      className="h-10 w-10 rounded-full overflow-hidden shadow-lg relative"
+      className="h-5 w-5 rounded-full overflow-hidden shadow-md relative"
     >
       <div
         className={`absolute inset-0 ${
@@ -62,28 +49,28 @@ const Thumb = ({ mode }: { mode: "light" | "dark" }) => {
 };
 
 const SunCenter = () => (
-  <div className="absolute inset-1.5 rounded-full bg-amber-300" />
+  <div className="absolute inset-1 rounded-full bg-amber-300" />
 );
 
 const MoonSpots = () => (
   <>
     <motion.div
-      initial={{ x: -4, opacity: 0 }}
+      initial={{ x: -2, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ delay: 0.15, duration: 0.35 }}
-      className="w-3 h-3 rounded-full bg-slate-300 absolute right-2.5 bottom-1"
+      className="w-1 h-1 rounded-full bg-slate-300 absolute right-1.5 bottom-1"
     />
     <motion.div
-      initial={{ x: -4, opacity: 0 }}
+      initial={{ x: -2, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ delay: 0.2, duration: 0.35 }}
-      className="w-3 h-3 rounded-full bg-slate-300 absolute left-1 bottom-4"
+      className="w-2 h-2 rounded-full bg-slate-300 absolute left-1 bottom-2"
     />
     <motion.div
-      initial={{ x: -4, opacity: 0 }}
+      initial={{ x: -2, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ delay: 0.25, duration: 0.35 }}
-      className="w-2 h-2 rounded-full bg-slate-300 absolute right-2 top-2"
+      className="w-1 h-1 rounded-full bg-slate-300 absolute right-1 top-1"
     />
   </>
 );
@@ -101,7 +88,7 @@ const Stars = () => {
           duration: 5,
           ease: "easeIn",
         }}
-        className="text-slate-300 text-xs absolute right-10 top-2"
+        className="text-slate-300 text-[4px] absolute right-2 top-1"
       >
         <BsStarFill />
       </motion.span>
@@ -116,7 +103,7 @@ const Stars = () => {
           ease: "easeIn",
         }}
         style={{ rotate: "-45deg" }}
-        className="text-slate-300 text-lg absolute right-4 top-3"
+        className="text-slate-300 text-[6px] absolute right-1 top-2"
       >
         <BsStarFill />
       </motion.span>
@@ -131,7 +118,7 @@ const Stars = () => {
           duration: 2.5,
           ease: "easeIn",
         }}
-        className="text-slate-300 absolute right-8 top-8"
+        className="text-slate-300 absolute right-3 top-3 text-[5px]"
       >
         <BsStarFill />
       </motion.span>
@@ -143,45 +130,27 @@ const Clouds = () => {
   return (
     <>
       <motion.span
-        animate={{ x: [-20, -15, -10, -5, 0], opacity: [0, 1, 0.75, 1, 0] }}
+        animate={{
+          x: [-5, -3.75, -2.5, -1.25, 0],
+          opacity: [0, 1, 0.75, 1, 0],
+        }}
         transition={{
           duration: 10,
           repeat: Infinity,
           delay: 0.25,
         }}
-        className="text-white text-xs absolute left-10 top-1"
+        className="text-white text-[4px] absolute left-3 top-1"
       >
         <BsFillCloudyFill />
       </motion.span>
       <motion.span
-        animate={{ x: [-10, 0, 10, 20, 30], opacity: [0, 1, 0.75, 1, 0] }}
+        animate={{ x: [-2.5, 0, 2.5, 5, 7.5], opacity: [0, 1, 0.75, 1, 0] }}
         transition={{
           duration: 20,
           repeat: Infinity,
           delay: 0.5,
         }}
-        className="text-white text-lg absolute left-4 top-4"
-      >
-        <BsFillCloudyFill />
-      </motion.span>
-      <motion.span
-        animate={{ x: [-7, 0, 7, 14, 21], opacity: [0, 1, 0.75, 1, 0] }}
-        transition={{
-          duration: 12.5,
-          repeat: Infinity,
-        }}
-        className="text-white absolute left-9 top-8"
-      >
-        <BsFillCloudyFill />
-      </motion.span>
-      <motion.span
-        animate={{ x: [-15, 0, 15, 30, 45], opacity: [0, 1, 0.75, 1, 0] }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          delay: 0.75,
-        }}
-        className="text-white absolute text-xs left-14 top-4"
+        className="text-white text-[5px] absolute left-1 top-2"
       >
         <BsFillCloudyFill />
       </motion.span>
