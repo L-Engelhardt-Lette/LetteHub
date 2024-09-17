@@ -1,27 +1,12 @@
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
+// src/database.ts
+import { Sequelize } from "sequelize";
 import path from "path";
 
-const initDatabase = async () => {
-  const dbPath = path.resolve(__dirname, "lettedb.sqlite");
+// Initialize Sequelize with SQLite
+const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: path.resolve(__dirname, "lettedb.sqlite"), // Adjust path as needed
+  logging: false,
+});
 
-  const db = await open({
-    filename: dbPath,
-    driver: sqlite3.Database,
-  });
-
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      role TEXT NOT NULL DEFAULT "user",
-    );
-  `);
-
-  // Return the database connection
-  return db;
-};
-
-export default initDatabase;
+export default sequelize;

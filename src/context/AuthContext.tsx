@@ -32,45 +32,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Use Vite environment variable
   const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+    import.meta.env.VITE_API_SERVER_URL || "http://localhost:8080";
 
   const login = async (
     username: string,
     password: string
   ): Promise<boolean> => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, {
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+        // Ensure endpoint matches
         username,
         password,
       });
 
       const { token, user } = response.data;
 
+      // Set user and token
       setToken(token);
       setUser(user);
 
+      // Save to localStorage
       localStorage.setItem("authToken", token);
+      localStorage.setItem("authUser", JSON.stringify(user));
 
-      // Only store `user` if it's defined and valid
-      if (user) {
-        localStorage.setItem("authUser", JSON.stringify(user));
-      } else {
-        // Optionally clear if `user` is invalid
-        localStorage.removeItem("authUser");
-      }
-
-      toast.success("Login successful! 🎉");
-
+      toast.success("Login successful!");
       return true;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.error("Login error response:", error.response);
-        toast.error("Login failed. Please check your credentials. 😞");
+        console.error("Login error response:", error.response?.data);
+        toast.error(
+          error.response?.data.message ||
+            "Login failed. Please check your credentials."
+        );
       } else {
         console.error("Unexpected error:", error);
-        toast.error("An unexpected error occurred. 😞");
+        toast.error("An unexpected error occurred.");
       }
-      return false; // Return false if login fails
+      return false;
     }
   };
 
@@ -97,7 +95,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error("Failed to parse stored user:", error);
-        // Optionally, clear the invalid data from localStorage
         localStorage.removeItem("authUser");
       }
     }

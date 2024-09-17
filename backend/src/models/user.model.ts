@@ -1,15 +1,26 @@
-// models/user.model.ts
-import { DataTypes, Model } from "sequelize";
-import sequelize from "../../../backend/src/database"; // Import your Sequelize instance
+import { DataTypes, Model, Optional } from "sequelize";
+import sequelize from "../database"; // Adjust the path to your database instance
 
-class User extends Model {
-  public id!: number;
-  public username!: string;
-  public email!: string;
-  public password!: string;
-  public role!: string;
+// Define the attributes interface
+interface UserAttributes {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  role: string;
 }
 
+// Optional fields for creation
+interface UserCreationAttributes
+  extends Optional<UserAttributes, "id" | "role"> {}
+
+// Define the User model class
+class User extends Model<UserAttributes, UserCreationAttributes> {
+  static id: any;
+  static password: any;
+}
+
+// Initialize the User model
 User.init(
   {
     id: {
@@ -37,8 +48,9 @@ User.init(
     },
   },
   {
-    sequelize,
+    sequelize, // Sequelize instance
     tableName: "users",
+    // Sequelize will automatically manage `createdAt` and `updatedAt`
   }
 );
 

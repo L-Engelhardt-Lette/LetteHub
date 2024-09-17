@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Use Link for navigation
 import { useAuth } from "../context/AuthContext";
 
 // Validation schema
 const schema = yup.object().shape({
-  username: yup.string().required("Username is required"), // Ensures 'username' is used
+  username: yup.string().required("Username is required"), // Ensure 'username' is used
   password: yup.string().required("Password is required"),
 });
 
@@ -40,10 +40,12 @@ const Login: React.FC = () => {
       if (success) {
         console.log("Login successful, navigating to dashboard.");
         navigate("/dashboard");
+      } else {
+        setLoginError("Login failed. Please check your credentials.");
       }
     } catch (error) {
       console.error("Login failed:", error);
-      setLoginError("Login failed. Please check your credentials.");
+      setLoginError("An unexpected error occurred.");
     }
   };
 
@@ -59,8 +61,9 @@ const Login: React.FC = () => {
           <div className="mb-4 text-red-500 text-sm">{loginError}</div>
         )}
 
+        {/* Username Field */}
         <div className="mb-4">
-          <label className="block text-gray-700 ">
+          <label className="block text-gray-700">
             Username
             <input
               {...register("username")}
@@ -75,6 +78,7 @@ const Login: React.FC = () => {
           </label>
         </div>
 
+        {/* Password Field */}
         <div className="mb-4">
           <label className="block text-gray-700">
             Password
@@ -91,6 +95,7 @@ const Login: React.FC = () => {
           </label>
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
           className={`bg-blue-500 text-white py-2 px-4 rounded-lg w-full ${
@@ -103,9 +108,9 @@ const Login: React.FC = () => {
 
         <p className="mt-4">
           Don't have an account?{" "}
-          <a href="/register" className="text-blue-500">
+          <Link to="/register" className="text-blue-500">
             Register
-          </a>
+          </Link>
         </p>
       </form>
     </div>

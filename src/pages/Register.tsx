@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -23,6 +23,13 @@ const schema = yup.object().shape({
     .required("Please confirm your password"),
 });
 
+interface RegisterFormInputs {
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+}
+
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const [passwordStrength, setPasswordStrength] = useState<string>("");
@@ -32,12 +39,20 @@ const Register: React.FC = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
-  } = useForm({
+  } = useForm<RegisterFormInputs>({
     resolver: yupResolver(schema),
     mode: "onChange",
   });
 
-  const watchPassword = watch("password", "");
+  // Watch password field and update password strength
+  useEffect(() => {
+    const subscription = watch((value) => {
+      if (value.password) {
+        calculatePasswordStrength(value.password);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   // Simple password strength check based on length
   const calculatePasswordStrength = (password: string) => {
@@ -52,15 +67,14 @@ const Register: React.FC = () => {
     }
   };
 
-  // Watch password field and update password strength
-  React.useEffect(() => {
-    calculatePasswordStrength(watchPassword);
-  }, [watchPassword]);
+  const API_BASE_URL =
+    import.meta.env.VITE_API_SERVER_URL || "http://localhost:8080";
 
   // Handle form submission
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: RegisterFormInputs) => {
     try {
-      const response = await axios.post("http://localhost:8899/register", {
+      const response = await axios.post(`${API_BASE_URL}/auth/register`, {
+        // Adjusted the endpoint to match backend
         username: data.username,
         email: data.email,
         password: data.password,
@@ -73,6 +87,7 @@ const Register: React.FC = () => {
         toast.error(response.data.message || "Registration failed");
       }
     } catch (error: any) {
+      console.error("Registration error:", error); // Log error for debugging
       toast.error(error.response?.data?.message || "Registration failed");
     }
   };
@@ -139,7 +154,7 @@ const Register: React.FC = () => {
           </label>
 
           {/* Password Strength */}
-          {watchPassword && (
+          {passwordStrength && (
             <div className="mt-1">
               <p
                 className={`text-sm font-semibold ${

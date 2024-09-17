@@ -10,16 +10,28 @@ import {
 
 const router = Router();
 
+// Add a new user
 router.post("/users", async (req: Request, res: Response) => {
-  const { name, email } = req.body;
+  const { username, email, password } = req.body; // Include 'password' here
+
   try {
-    const userId = await addUser(name, email);
+    // Validate the input
+    if (!username || !email || !password) {
+      return res
+        .status(400)
+        .json({ error: "Username, email, and password are required" });
+    }
+
+    // Pass username, email, and password to addUser
+    const userId = await addUser(username, email, password);
     res.status(201).json({ id: userId });
   } catch (error) {
+    console.error("Error adding user:", error);
     res.status(500).json({ error: "Failed to add user" });
   }
 });
 
+// Get user by ID
 router.get("/users/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -30,10 +42,12 @@ router.get("/users/:id", async (req: Request, res: Response) => {
       res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
+    console.error("Error getting user by ID:", error);
     res.status(500).json({ error: "Failed to get user" });
   }
 });
 
+// Get user by email
 router.get("/users/:email", async (req: Request, res: Response) => {
   const { email } = req.params;
   try {
@@ -44,19 +58,23 @@ router.get("/users/:email", async (req: Request, res: Response) => {
       res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
+    console.error("Error getting user by email:", error);
     res.status(500).json({ error: "Failed to get user" });
   }
 });
 
+// Get all users
 router.get("/users", async (req: Request, res: Response) => {
   try {
     const users = await getAllUsers();
     res.json(users);
   } catch (error) {
+    console.error("Error getting all users:", error);
     res.status(500).json({ error: "Failed to get users" });
   }
 });
 
+// Delete user by ID
 router.delete("/users/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -67,10 +85,12 @@ router.delete("/users/:id", async (req: Request, res: Response) => {
       res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
+    console.error("Error deleting user by ID:", error);
     res.status(500).json({ error: "Failed to delete user" });
   }
 });
 
+// Delete user by email
 router.delete("/users/:email", async (req: Request, res: Response) => {
   const { email } = req.params;
   try {
@@ -81,6 +101,7 @@ router.delete("/users/:email", async (req: Request, res: Response) => {
       res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
+    console.error("Error deleting user by email:", error);
     res.status(500).json({ error: "Failed to delete user" });
   }
 });
