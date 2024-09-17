@@ -1,10 +1,20 @@
-import { Dispatch, ReactNode, SetStateAction, useMemo, useState } from "react";
+import {
+  Dispatch,
+  lazy,
+  ReactNode,
+  SetStateAction,
+  useMemo,
+  useState,
+} from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiMenu } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import DarkModeToggle from "../button/switch/DarkmodeSwitch";
+import Homepage from "../../pages/Homepage";
+
+const Impressum = lazy(() => import("../../pages/Impressum"));
 
 export const Navbar = () => {
-  // State to manage dark mode
   const [darkMode, setDarkMode] = useState(false);
 
   const toggleDarkMode = () => {
@@ -27,7 +37,7 @@ export const Navbar = () => {
       <RoundedDrawerNav
         links={[
           {
-            title: "Product",
+            title: "Home",
             sublinks: [
               { title: "Issues", href: "#" },
               { title: "Kanban", href: "#" },
@@ -36,7 +46,7 @@ export const Navbar = () => {
             ],
           },
           {
-            title: "Solutions",
+            title: "About",
             sublinks: [
               { title: "Product Management", href: "#" },
               { title: "Marketing", href: "#" },
@@ -44,26 +54,18 @@ export const Navbar = () => {
             ],
           },
           {
-            title: "Documentation",
+            title: "Impressum",
             sublinks: [
-              { title: "API Docs", href: "#" },
+              { title: "Impressums Page", href: "#" },
               { title: "University", href: "#" },
             ],
           },
           {
-            title: "Media",
+            title: "Code",
             sublinks: [
-              { title: "Videos", href: "#" },
+              { title: "API Docs", href: "#" },
               { title: "Socials", href: "#" },
               { title: "Blog", href: "#" },
-            ],
-          },
-          {
-            title: "Pricing",
-            sublinks: [
-              { title: "Startup", href: "#" },
-              { title: "Small Business", href: "#" },
-              { title: "Enterprise", href: "#" },
             ],
           },
         ]}
@@ -118,6 +120,8 @@ const RoundedDrawerNav = ({
     return link ? link.sublinks : [];
   }, [hovered]);
 
+  const [mode, setMode] = useState<"dark" | "light">("dark");
+
   return (
     <>
       <nav
@@ -134,15 +138,20 @@ const RoundedDrawerNav = ({
               activeSublinks={activeSublinks}
             />
           </div>
-          <button
-            onClick={() => navigate("/login")}
-            className="hidden rounded-md bg-indigo-500 px-3 py-1.5 text-sm text-foregroundlight transition-colors hover:bg-indigo-600 md:block"
-          >
-            <span className="font-bold">Login</span>
-          </button>
+          <div className="flex">
+            <div className="flex">
+              <DarkModeToggle mode={mode} setMode={setMode} />
+            </div>
+            <button
+              onClick={() => navigate("/login")}
+              className="hidden rounded-md bg-indigo-500 px-3 py-1.5 text-sm text-foregroundlight dark:text-foregrounddark transition-colors hover:bg-indigo-600 md:block"
+            >
+              <span className="font-bold">Login</span>
+            </button>
+          </div>
           <button
             onClick={() => setMobileNavOpen((pv) => !pv)}
-            className="mt-0.5 block text-2xl text-foregroundlight md:hidden"
+            className="mt-0.5 block text-2xl text-foregroundlight dark:text-foregrounddark md:hidden"
           >
             <FiMenu />
           </button>
@@ -198,7 +207,7 @@ const DesktopLinks = ({
           >
             {activeSublinks.map((l) => (
               <a
-                className="block text-2xl font-semibold text-neutral-50 transition-colors hover:text-neutral-400"
+                className="block text-2xl font-semibold text-foregroundlight dark:text-foregrounddark transition-colors hover:text-neutral-400"
                 href={l.href}
                 key={l.title}
               >
@@ -224,12 +233,12 @@ const MobileLinks = ({ links, open }: { links: LinkType[]; open: boolean }) => {
         >
           {links.map((l) => (
             <div key={l.title} className="space-y-1.5">
-              <span className="text-md block font-semibold text-neutral-50">
+              <span className="text-md block font-semibold text-neutral-50 dark:text-foregrounddark">
                 {l.title}
               </span>
               {l.sublinks.map((sl) => (
                 <a
-                  className="text-md block text-neutral-300"
+                  className="text-md block text-neutral-300 dark:text-foregrounddark"
                   href={sl.href}
                   key={sl.title}
                 >
@@ -255,7 +264,7 @@ const TopLink = ({
 }) => (
   <span
     onMouseEnter={() => setHovered(title)}
-    className="cursor-pointer text-neutral-50 transition-colors hover:text-neutral-400"
+    className="cursor-pointer text-foregroundlight dark:text-foregrounddark transition-colors hover:text-secondarycontent"
   >
     {children}
   </span>
