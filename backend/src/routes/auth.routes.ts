@@ -42,7 +42,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Access the JWT secret key from environment variables
-    const JWT_SECRET = process.env.JWT_SECRET_KEY;
+    const JWT_SECRET = process.env.JWT_SECRET_KEY || "lettekey";
 
     if (!JWT_SECRET) {
       console.error("JWT_SECRET_KEY is not defined in environment variables.");
