@@ -32,6 +32,59 @@ export const Navbar = () => {
     }
   };
 
+  {
+    /* Links */
+  }
+  const baseLinks = [
+    {
+      title: "Home",
+      sublinks: [
+        {
+          title: "Projekt Erklärung",
+          href: "#",
+        },
+        { title: "Team Management", href: "#" },
+      ],
+    },
+    {
+      title: "About",
+      sublinks: [],
+    },
+    {
+      title: "Impressum",
+      sublinks: [
+        {
+          title: "Impressums Page",
+          href: "#",
+        },
+        {
+          title: "Datenschutz",
+          href: "#",
+        },
+      ],
+    },
+    {
+      title: "Code",
+      sublinks: [
+        { title: "Github", href: "https://github.com/LudwigLEDE/LetteHub" },
+        { title: "API Docs", href: "http://localhost:8080" },
+      ],
+    },
+  ];
+
+  if (isAuthenticated) {
+    baseLinks.push({
+      title: "Dashboard",
+      sublinks: [
+        {
+          title: "Project Select",
+          href: "#",
+        },
+        { title: "Team Management", href: "#" },
+      ],
+    });
+  }
+
   return (
     <div
       className={`${
@@ -39,97 +92,11 @@ export const Navbar = () => {
       } text-foregroundlight`}
     >
       <RoundedDrawerNav
-        links={[
-          {
-            title: "Product",
-            sublinks: [
-              {
-                title: "Issues",
-                href: "#",
-              },
-              {
-                title: "Kanban",
-                href: "#",
-              },
-              {
-                title: "Gantt",
-                href: "#",
-              },
-              {
-                title: "Mind Maps",
-                href: "#",
-              },
-            ],
-          },
-          {
-            title: "Solutions",
-            sublinks: [
-              {
-                title: "Product Management",
-                href: "#",
-              },
-              {
-                title: "Marketing",
-                href: "#",
-              },
-              {
-                title: "IT",
-                href: "#",
-              },
-            ],
-          },
-          {
-            title: "Documentation",
-            sublinks: [
-              {
-                title: "API Docs",
-                href: "#",
-              },
-              {
-                title: "University",
-                href: "#",
-              },
-            ],
-          },
-          {
-            title: "Media",
-            sublinks: [
-              {
-                title: "Videos",
-                href: "#",
-              },
-              {
-                title: "Socials",
-                href: "#",
-              },
-              {
-                title: "Blog",
-                href: "#",
-              },
-            ],
-          },
-          {
-            title: "Pricing",
-            sublinks: [
-              {
-                title: "Startup",
-                href: "#",
-              },
-              {
-                title: "Small Business",
-                href: "#",
-              },
-              {
-                title: "Enterprise",
-                href: "#",
-              },
-            ],
-          },
-        ]}
+        links={baseLinks}
         navBackground={
           darkMode === "dark" ? "bg-backgrounddark" : "bg-backgroundlight"
         }
-        bodyBackground="bg-white"
+        bodyBackground="bg-forgroundlight"
         darkMode={darkMode}
         isAuthenticated={isAuthenticated}
         logout={logout}
@@ -210,7 +177,7 @@ const RoundedDrawerNav = ({
             ) : (
               <button
                 onClick={() => navigate("/login")}
-                className="rounded-md bg-indigo-500 px-3 py-1.5 text-sm text-white transition-colors hover:bg-indigo-600"
+                className="rounded-md bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primarydark"
               >
                 Login
               </button>
@@ -272,7 +239,7 @@ const DesktopLinks = ({
           >
             {activeSublinks.map((l) => (
               <a
-                className="block text-2xl font-semibold text-neutral-50 transition-colors hover:text-neutral-400"
+                className="block text-2xl font-semibold text-foregroundlight dark:text-foregrounddark transition-colors hover:text-neutral-400"
                 href={l.href}
                 key={l.title}
               >
