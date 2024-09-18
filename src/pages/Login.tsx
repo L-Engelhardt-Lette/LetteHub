@@ -98,7 +98,7 @@ const Login: React.FC = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className={`bg-blue-500 text-white py-2 px-4 rounded-lg w-full ${
+          className={`bg-primary text-primarycontent py-2 px-4 rounded-lg w-full ${
             !isValid || isSubmitting ? "opacity-50 cursor-not-allowed" : ""
           }`}
           disabled={!isValid || isSubmitting}
@@ -108,7 +108,7 @@ const Login: React.FC = () => {
 
         <p className="mt-4">
           Don't have an account?{" "}
-          <Link to="/register" className="text-blue-500">
+          <Link to="/register" className="text-secondarylight">
             Register
           </Link>
         </p>

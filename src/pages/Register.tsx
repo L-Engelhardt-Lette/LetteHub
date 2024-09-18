@@ -93,7 +93,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-backgroundlight dark:bg-backgrounddark">
       <form
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
         onSubmit={handleSubmit(onSubmit)}
@@ -107,8 +107,7 @@ const Register: React.FC = () => {
             <input
               {...register("username")}
               type="text"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your username"
+              className="mt-1 p-2 block w-full border-2 border-gray-300 rounded-md"
             />
             {errors.username && (
               <p className="text-red-500 text-sm mt-1">
@@ -125,8 +124,7 @@ const Register: React.FC = () => {
             <input
               {...register("email")}
               type="email"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your email"
+              className="mt-1 p-2 block w-full border-2 border-gray-300 rounded-md"
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">
@@ -143,8 +141,7 @@ const Register: React.FC = () => {
             <input
               {...register("password")}
               type="password"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your password"
+              className="mt-1 p-2 block w-full border-2 border-gray-300 rounded-md"
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
@@ -178,8 +175,7 @@ const Register: React.FC = () => {
             <input
               {...register("passwordConfirmation")}
               type="password"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Confirm your password"
+              className="mt-1 p-2 block w-full border-2 border-gray-300 rounded-md"
             />
             {errors.passwordConfirmation && (
               <p className="text-red-500 text-sm mt-1">
@@ -192,7 +188,7 @@ const Register: React.FC = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className={`bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg w-full hover:bg-blue-600 transition-colors duration-300 ${
+          className={`bg-primary text-primarycontent font-semibold py-2 px-4 rounded-lg w-full hover:bg-blue-600 transition-colors duration-300 ${
             isSubmitting ? "opacity-50 cursor-not-allowed" : ""
           }`}
           disabled={isSubmitting}
