@@ -1,17 +1,14 @@
-import { Dispatch, SetStateAction } from "react";
+// DarkModeToggle.tsx
+import { useDarkMode } from "../../../context/DarkModeContext";
 import { motion } from "framer-motion";
 import { BsFillCloudyFill, BsStarFill } from "react-icons/bs";
 
-const DarkModeToggle = ({
-  mode,
-  setMode,
-}: {
-  mode: "light" | "dark";
-  setMode: Dispatch<SetStateAction<"dark" | "light">>;
-}) => {
+const DarkModeToggle = () => {
+  const { mode, toggleMode } = useDarkMode(); // Use context to get mode and toggleMode
+
   return (
     <button
-      onClick={() => setMode(mode === "dark" ? "light" : "dark")}
+      onClick={toggleMode}
       className={`p-1 w-14 rounded-full flex shadow-sm relative bg-gradient-to-b ${
         mode === "light"
           ? "justify-end from-blue-500 to-sky-300"

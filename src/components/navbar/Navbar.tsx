@@ -1,66 +1,37 @@
-import React, {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useMemo,
-  useState,
-} from "react";
+// Navbar.tsx
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiMenu } from "react-icons/fi";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useNavigate } from "react-router-dom";
 import DarkModeToggle from "../button/switch/DarkmodeSwitch";
-import { useAuth } from "../../context/AuthContext"; // Import useAuth for authentication
+import { useAuth } from "../../context/AuthContext";
+import { useDarkMode } from "../../context/DarkModeContext"; // Import the dark mode context
 
 export const Navbar = () => {
-  // State for dark mode
-  const [darkMode, setDarkMode] = useState<"dark" | "light">("light");
-
   // Use authentication context
   const { isAuthenticated, logout } = useAuth();
 
   // Navigation hook
   const navigate = useNavigate();
 
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    const newMode = darkMode === "dark" ? "light" : "dark";
-    setDarkMode(newMode);
-    if (newMode === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
+  // Use dark mode context
+  const { mode: darkMode } = useDarkMode(); // Get dark mode state from context
 
-  {
-    /* Links */
-  }
+  // Links
   const baseLinks = [
     {
       title: "Home",
       sublinks: [
-        {
-          title: "Projekt Erklärung",
-          href: "#",
-        },
+        { title: "Projekt Erklärung", href: "#" },
         { title: "Team Management", href: "#" },
       ],
     },
-    {
-      title: "About",
-      sublinks: [],
-    },
+    { title: "About", sublinks: [] },
     {
       title: "Impressum",
       sublinks: [
-        {
-          title: "Impressums Page",
-          href: "#",
-        },
-        {
-          title: "Datenschutz",
-          href: "#",
-        },
+        { title: "Impressums Page", href: "#" },
+        { title: "Datenschutz", href: "#" },
       ],
     },
     {
@@ -76,10 +47,7 @@ export const Navbar = () => {
     baseLinks.push({
       title: "Dashboard",
       sublinks: [
-        {
-          title: "Project Select",
-          href: "#",
-        },
+        { title: "Project Select", href: "#" },
         { title: "Team Management", href: "#" },
       ],
     });
@@ -88,21 +56,22 @@ export const Navbar = () => {
   return (
     <div
       className={`${
-        darkMode === "dark" ? "bg-backgrounddark" : "bg-backgroundlight"
-      } text-foregroundlight`}
+        darkMode === "dark"
+          ? "bg-backgrounddark text-foregrounddark"
+          : "bg-backgroundlight text-foregroundlight"
+      }`}
     >
       <RoundedDrawerNav
         links={baseLinks}
         navBackground={
           darkMode === "dark" ? "bg-backgrounddark" : "bg-backgroundlight"
         }
-        bodyBackground="bg-forgroundlight"
-        darkMode={darkMode}
+        bodyBackground="bg-foregroundlight dark:bg-foregrounddark"
         isAuthenticated={isAuthenticated}
         logout={logout}
         navigate={navigate}
-        setDarkMode={setDarkMode}
-      ></RoundedDrawerNav>
+        darkMode={"dark"}
+      />
     </div>
   );
 };
@@ -117,21 +86,18 @@ const RoundedDrawerNav = ({
   navBackground,
   bodyBackground,
   links,
-  darkMode,
   isAuthenticated,
   logout,
   navigate,
-  setDarkMode,
 }: {
   navBackground: string;
   bodyBackground: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
   links: LinkType[];
   darkMode: "dark" | "light";
   isAuthenticated: boolean;
   logout: () => void;
   navigate: (path: string) => void;
-  setDarkMode: Dispatch<SetStateAction<"dark" | "light">>;
 }) => {
   const [hovered, setHovered] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -161,7 +127,7 @@ const RoundedDrawerNav = ({
           </div>
           <div className="flex items-center space-x-4">
             {/* Dark Mode Toggle */}
-            <DarkModeToggle mode={darkMode} setMode={setDarkMode} />
+            <DarkModeToggle />
 
             {/* Show Login or Logout button */}
             {isAuthenticated ? (
@@ -170,14 +136,14 @@ const RoundedDrawerNav = ({
                   logout();
                   navigate("/login");
                 }}
-                className="rounded-md bg-red-500 px-3 py-1.5 text-sm text-white transition-colors hover:bg-red-600"
+                className="rounded-md bg-delete px-3 py-1.5 text-sm text-foregrounddark transition-colors hover:bg-primarydark"
               >
                 Logout
               </button>
             ) : (
               <button
                 onClick={() => navigate("/login")}
-                className="rounded-md bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primarydark"
+                className="rounded-md bg-primary px-3 py-1.5 text-sm text-primarycontent transition-colors hover:bg-primarydark"
               >
                 Login
               </button>
@@ -185,7 +151,7 @@ const RoundedDrawerNav = ({
           </div>
           <button
             onClick={() => setMobileNavOpen((pv) => !pv)}
-            className="mt-0.5 block text-2xl text-neutral-50 md:hidden"
+            className="mt-0.5 block text-2xl text-copy dark:text-foregrounddark md:hidden"
           >
             <FiMenu />
           </button>
@@ -239,7 +205,7 @@ const DesktopLinks = ({
           >
             {activeSublinks.map((l) => (
               <a
-                className="block text-2xl font-semibold text-foregroundlight dark:text-foregrounddark transition-colors hover:text-neutral-400"
+                className="block text-2xl font-semibold text-copy dark:text-foregrounddark transition-colors hover:text-copylight dark:hover:text-primarycontent"
                 href={l.href}
                 key={l.title}
               >
@@ -272,12 +238,12 @@ const MobileLinks = ({ links, open }: { links: LinkType[]; open: boolean }) => {
           {links.map((l) => {
             return (
               <div key={l.title} className="space-y-1.5">
-                <span className="text-md block font-semibold text-neutral-50">
+                <span className="text-md block font-semibold text-copy dark:text-foregrounddark">
                   {l.title}
                 </span>
                 {l.sublinks.map((sl) => (
                   <a
-                    className="text-md block text-neutral-300"
+                    className="text-md block text-copylight dark:text-primarycontent transition-colors hover:text-copylighter dark:hover:text-primarylight"
                     href={sl.href}
                     key={sl.title}
                   >
@@ -304,7 +270,7 @@ const TopLink = ({
 }) => (
   <span
     onMouseEnter={() => setHovered(title)}
-    className="cursor-pointer text-neutral-50 transition-colors hover:text-neutral-400"
+    className="cursor-pointer text-copy dark:text-foregrounddark transition-colors hover:text-copylight dark:hover:text-primarycontent"
   >
     {children}
   </span>

@@ -7,6 +7,7 @@ import Loader from "./components/loader/Loader";
 import NotFound from "./pages/NotFound";
 import Impressum from "./pages/Impressum";
 import Navbar from "./components/navbar/Navbar";
+import { DarkModeProvider } from "./context/DarkModeContext";
 
 // Lazy load pages
 const ConetentContainer = lazy(() => import("./pages/ConetentContainer"));
@@ -17,25 +18,27 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <Suspense fallback={<Loader />}>
-        <Navbar />
-        {/* Layout */}
-        <Routes>
-          {/* Public Routes */}
+      <DarkModeProvider>
+        <Suspense fallback={<Loader />}>
+          <Navbar />
+          {/* Layout */}
+          <Routes>
+            {/* Public Routes */}
 
-          <Route path="/" element={<ConetentContainer />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/impressum" element={<Impressum />} />
+            <Route path="/" element={<ConetentContainer />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/impressum" element={<Impressum />} />
 
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
 
-          <Route path="/*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+            <Route path="/*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </DarkModeProvider>
     </AuthProvider>
   );
 };
