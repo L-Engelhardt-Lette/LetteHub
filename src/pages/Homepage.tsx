@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 
 const TextParallaxContentExample = lazy(
   () => import("../components/home/TextParallaxContentExample")
@@ -7,9 +7,7 @@ const TextParallaxContentExample = lazy(
 const Homepage = () => {
   return (
     <div className="bg-backgroundlight dark:bg-backgrounddark">
-      <Suspense fallback={<div>Loading...</div>}>
-        <TextParallaxContentExample />
-      </Suspense>
+      <TextParallaxContentExample />
     </div>
   );
 };

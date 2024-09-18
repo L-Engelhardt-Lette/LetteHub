@@ -22,11 +22,12 @@ export const Navbar = () => {
     {
       title: "Home",
       sublinks: [
+        { title: "Home", href: "#" },
         { title: "Projekt Erklärung", href: "#" },
         { title: "Team Management", href: "#" },
       ],
     },
-    { title: "About", sublinks: [] },
+    { title: "About", sublinks: [{ title: "About", href: "#" }] },
     {
       title: "Impressum",
       sublinks: [
