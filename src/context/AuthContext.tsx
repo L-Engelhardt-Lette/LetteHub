@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+// Define the shape of the AuthContext
 interface AuthContextType {
   user: any;
   token: string | null;
@@ -11,8 +12,10 @@ interface AuthContextType {
   isAuthenticated: boolean;
 }
 
+// Create the AuthContext with an initial value of undefined
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Custom hook to use the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -21,6 +24,7 @@ export const useAuth = () => {
   return context;
 };
 
+// AuthProvider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -28,39 +32,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [token, setToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const isAuthenticated = !!token;
+  // Dynamically check if user is authenticated
+  const isAuthenticated = Boolean(token);
 
-  // Use Vite environment variable
+  // Base URL for API
   const API_BASE_URL =
     import.meta.env.VITE_API_SERVER_URL || "http://localhost:8080";
 
+  // Login function
   const login = async (
     username: string,
     password: string
   ): Promise<boolean> => {
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
-        // Ensure endpoint matches
         username,
         password,
       });
 
       const { token, user } = response.data;
 
-      // Set user and token
+      // Set user and token in state
       setToken(token);
       setUser(user);
 
       // Save to localStorage
       localStorage.setItem("authToken", token);
       localStorage.setItem("authUser", JSON.stringify(user));
-
-      //TODO: TOKEN LOGIN (needs remove )
-      const authToken = localStorage.getItem("authToken");
-      const authUser = localStorage.getItem("authUser");
-
-      console.log("Logged authToken ", authToken);
-      console.log("Logged authUser ", authUser);
 
       toast.success("Login successful!");
       return true;
@@ -79,9 +77,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Logout function
   const logout = () => {
+    // Clear user and token from state
     setUser(null);
     setToken(null);
+
+    // Remove from localStorage
     localStorage.removeItem("authToken");
     localStorage.removeItem("authUser");
 
@@ -89,6 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     navigate("/login");
   };
 
+  // Synchronize auth state with localStorage on mount
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
     const storedUser = localStorage.getItem("authUser");

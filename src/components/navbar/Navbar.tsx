@@ -1,6 +1,5 @@
-// Navbar.tsx
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // Integrated animations
 import { FiMenu } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import DarkModeToggle from "../button/switch/DarkmodeSwitch";
@@ -10,12 +9,8 @@ import { useDarkMode } from "../../context/DarkModeContext"; // Import the dark 
 export const Navbar = () => {
   // Use authentication context
   const { isAuthenticated, logout } = useAuth();
-
-  // Navigation hook
   const navigate = useNavigate();
-
-  // Use dark mode context
-  const { mode: darkMode } = useDarkMode(); // Get dark mode state from context
+  const { mode: darkMode } = useDarkMode();
 
   // Links
   const baseLinks = [
@@ -48,7 +43,7 @@ export const Navbar = () => {
     baseLinks.push({
       title: "Dashboard",
       sublinks: [
-        { title: "Project Select", href: "#" },
+        { title: "Project Select", href: "/project-select" },
         { title: "Team Management", href: "#" },
       ],
     });
@@ -106,7 +101,6 @@ const RoundedDrawerNav = ({
   const activeSublinks = useMemo(() => {
     if (!hovered) return [];
     const link = links.find((l) => l.title === hovered);
-
     return link ? link.sublinks : [];
   }, [hovered]);
 
@@ -124,18 +118,18 @@ const RoundedDrawerNav = ({
               setHovered={setHovered}
               hovered={hovered}
               activeSublinks={activeSublinks}
+              navigate={navigate}
+              setMobileNavOpen={setMobileNavOpen} // Pass setMobileNavOpen here
             />
           </div>
           <div className="flex items-center space-x-4">
-            {/* Dark Mode Toggle */}
             <DarkModeToggle />
-
-            {/* Show Login or Logout button */}
             {isAuthenticated ? (
               <button
                 onClick={() => {
                   logout();
                   navigate("/login");
+                  setMobileNavOpen(false); // Close the mobile menu
                 }}
                 className="rounded-md bg-delete px-3 py-1.5 text-sm text-foregrounddark transition-colors hover:bg-primarydark"
               >
@@ -143,7 +137,10 @@ const RoundedDrawerNav = ({
               </button>
             ) : (
               <button
-                onClick={() => navigate("/login")}
+                onClick={() => {
+                  navigate("/login");
+                  setMobileNavOpen(false); // Close the mobile menu
+                }}
                 className="rounded-md bg-primary px-3 py-1.5 text-sm text-primarycontent transition-colors hover:bg-primarydark"
               >
                 Login
@@ -151,13 +148,19 @@ const RoundedDrawerNav = ({
             )}
           </div>
           <button
-            onClick={() => setMobileNavOpen((pv) => !pv)}
+            onClick={() => setMobileNavOpen((prev) => !prev)}
             className="mt-0.5 block text-2xl text-copy dark:text-foregrounddark md:hidden"
           >
             <FiMenu />
           </button>
         </div>
-        <MobileLinks links={links} open={mobileNavOpen} />
+        <MobileLinks
+          links={links}
+          open={mobileNavOpen}
+          navigate={navigate}
+          setMobileNavOpen={setMobileNavOpen}
+        />{" "}
+        {/* Pass setMobileNavOpen here */}
       </nav>
       <motion.main layout className={`${navBackground} px-2 pb-2`}>
         <div className={`${bodyBackground} rounded-3xl`}>{children}</div>
@@ -167,7 +170,7 @@ const RoundedDrawerNav = ({
 };
 
 const Logo = () => {
-  return <img src="../../../public/Logo.svg" alt="" className="w-8" />;
+  return <img src="../../../public/Logo.svg" alt="Logo" className="w-8" />;
 };
 
 const DesktopLinks = ({
@@ -175,11 +178,15 @@ const DesktopLinks = ({
   setHovered,
   hovered,
   activeSublinks,
+  navigate,
+  setMobileNavOpen,
 }: {
   links: LinkType[];
   setHovered: Dispatch<SetStateAction<string | null>>;
   hovered: string | null;
   activeSublinks: LinkType["sublinks"];
+  navigate: (path: string) => void;
+  setMobileNavOpen: Dispatch<SetStateAction<boolean>>; // Add this prop to close the nav
 }) => {
   return (
     <div className="ml-9 mt-0.5 hidden md:block">
@@ -190,28 +197,25 @@ const DesktopLinks = ({
           </TopLink>
         ))}
       </div>
-      <AnimatePresence mode="popLayout">
+      <AnimatePresence>
         {hovered && (
           <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="space-y-4 py-6"
           >
             {activeSublinks.map((l) => (
-              <a
-                className="block text-2xl font-semibold text-copy dark:text-foregrounddark transition-colors hover:text-copylight dark:hover:text-primarycontent"
-                href={l.href}
+              <span
+                className="block text-2xl font-semibold text-copy dark:text-foregrounddark transition-colors hover:text-copylight dark:hover:text-primarycontent cursor-pointer"
                 key={l.title}
+                onClick={() => {
+                  navigate(l.href); // Use navigate
+                  setMobileNavOpen(false); // Close the mobile menu
+                }}
               >
                 {l.title}
-              </a>
+              </span>
             ))}
           </motion.div>
         )}
@@ -220,20 +224,24 @@ const DesktopLinks = ({
   );
 };
 
-const MobileLinks = ({ links, open }: { links: LinkType[]; open: boolean }) => {
+const MobileLinks = ({
+  links,
+  open,
+  navigate,
+  setMobileNavOpen,
+}: {
+  links: LinkType[];
+  open: boolean;
+  navigate: (path: string) => void;
+  setMobileNavOpen: Dispatch<SetStateAction<boolean>>; // Add this prop to close the nav
+}) => {
   return (
-    <AnimatePresence mode="popLayout">
+    <AnimatePresence>
       {open && (
         <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           className="grid grid-cols-2 gap-6 py-6 md:hidden"
         >
           {links.map((l) => {
@@ -243,13 +251,16 @@ const MobileLinks = ({ links, open }: { links: LinkType[]; open: boolean }) => {
                   {l.title}
                 </span>
                 {l.sublinks.map((sl) => (
-                  <a
-                    className="text-md block text-copylight dark:text-primarycontent transition-colors hover:text-copylighter dark:hover:text-primarylight"
-                    href={sl.href}
+                  <span
+                    className="text-md block text-copylight dark:text-primarycontent transition-colors hover:text-copylighter dark:hover:text-primarylight cursor-pointer"
                     key={sl.title}
+                    onClick={() => {
+                      navigate(sl.href);
+                      setMobileNavOpen(false);
+                    }}
                   >
                     {sl.title}
-                  </a>
+                  </span>
                 ))}
               </div>
             );

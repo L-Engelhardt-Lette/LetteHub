@@ -1,7 +1,6 @@
 // src/TestLudwig.tsx
 
-import React from 'react';
-import '../scss/pages/TestLudwig.scss';
+import React from "react";
 
 const TestLudwig: React.FC = () => {
   return (
@@ -9,6 +8,6 @@ const TestLudwig: React.FC = () => {
       <h1>Test Ludwig</h1>
     </div>
   );
-}
+};
 
 export default TestLudwig;

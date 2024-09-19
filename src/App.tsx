@@ -10,11 +10,10 @@ import Navbar from "./components/navbar/Navbar";
 import { DarkModeProvider } from "./context/DarkModeContext";
 
 // Lazy load pages
-
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Homepage = lazy(() => import("./pages/Homepage"));
+const ProjectSelect = lazy(() => import("./pages/project/ProjectSelect"));
 
 const App: React.FC = () => {
   return (
@@ -32,7 +31,8 @@ const App: React.FC = () => {
 
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/project-select" element={<ProjectSelect />} />{" "}
+              {/* Corrected path */}
             </Route>
 
             <Route path="/*" element={<NotFound />} />

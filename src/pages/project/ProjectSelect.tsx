@@ -10,15 +10,18 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiTrash2, FiEye, FiPlusCircle } from "react-icons/fi";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
+import Loader from "../../components/loader/Loader";
+import SpringModal from "../../components/project/ProjectCreateModal";
 
 // Lazy load CreateProjectModal
 const CreateProjectModal = lazy(
-  () => import("../components/Project/CreateProjectModal")
+  () => import("../../components/project/CreateProjectModal")
 );
 
 // Define the Project type
 type Project = {
-  id: string; // Ensure this is the correct field for project ID
+  id: string;
   name: string;
   description: string;
   startDate: string;
@@ -26,18 +29,22 @@ type Project = {
   participants: string[];
 };
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_SERVER_URL || "http://localhost:8080";
+
 // Custom Hook for Project Management
 const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { token, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   // Fetch projects from the API
   const fetchProjects = useCallback(async () => {
+    if (!token) return;
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:3001/api/projects", {
+      const response = await axios.get(`${API_BASE_URL}/api/project`, {
         headers: {
           Authorization: `Bearer ${token}`, // Include token in Authorization header
         },
@@ -49,18 +56,19 @@ const useProjects = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [token]);
 
   // Delete a project by ID
   const deleteProject = async (id: string | undefined) => {
-    if (!id) {
-      console.error("Error: Project ID is undefined");
+    if (!id || !token) {
+      console.error(
+        "Error: Project ID is undefined or user is not authenticated"
+      );
       return;
     }
 
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:3001/api/projects/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/projects/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Include token in Authorization header
         },
@@ -82,10 +90,14 @@ const useProjects = () => {
     endDate: string,
     closeModal: () => void
   ) => {
+    if (!token) {
+      console.error("Error: User is not authenticated");
+      return;
+    }
+
     try {
-      const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:3001/api/projects",
+        `${API_BASE_URL}/api/projects`,
         { name, description, startDate, endDate },
         {
           headers: {
@@ -103,13 +115,12 @@ const useProjects = () => {
 
   // Check authentication and fetch projects
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!isAuthenticated) {
       navigate("/login");
     } else {
       fetchProjects();
     }
-  }, [fetchProjects, navigate]);
+  }, [isAuthenticated, fetchProjects, navigate]);
 
   return { projects, createProject, deleteProject, loading };
 };
@@ -123,6 +134,13 @@ const ProjectSelect: React.FC = () => {
   // Open and close modal handlers
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  // Determine grid column count based on project count
+  const gridCols = useMemo(() => {
+    if (projects.length === 1) return "grid-cols-1";
+    if (projects.length === 2) return "grid-cols-2";
+    return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+  }, [projects.length]);
 
   // Empty state component
   const emptyState = useMemo(
@@ -181,11 +199,16 @@ const ProjectSelect: React.FC = () => {
 
   // Loading state
   if (loading) {
-    return <div>Loading projects...</div>;
+    return (
+      <>
+        <Loader />
+        <div>Loading projects...</div>;
+      </>
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-8 bg-gray-100">
+    <div className="min-h-screen flex flex-col items-center px-4 py-8 bg-backgroundlight dark:bg-backgrounddark">
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -199,7 +222,10 @@ const ProjectSelect: React.FC = () => {
           : "Create your first project"}
       </motion.h1>
       <div className="grid-container flex-grow flex justify-center items-start w-full">
-        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={`grid gap-5 ${gridCols}`}>
+          {/* Render an empty div as a placeholder when there are no projects */}
+          {projects.length === 0 && <div className="w-72 h-72"></div>}
+
           {projects.length === 0 ? emptyState : projectCards}
 
           {projects.length > 0 && (
@@ -218,7 +244,7 @@ const ProjectSelect: React.FC = () => {
           )}
         </div>
       </div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <CreateProjectModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
@@ -230,8 +256,9 @@ const ProjectSelect: React.FC = () => {
               endDate,
               handleCloseModal
             )
-          } // Pass handleCloseModal to close modal after creation
+          }
         />
+        <SpringModal isOpen={isModalOpen} setIsOpen={handleCloseModal} />
       </Suspense>
     </div>
   );

@@ -4,8 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
-
-  // If the user is not authenticated, redirect to the login page
+  console.log("ProtectedRoute isAuthenticated:", isAuthenticated);
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 
