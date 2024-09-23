@@ -1,38 +1,41 @@
-import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { format } from "date-fns";
 import { FiArrowLeft, FiArrowRight, FiEdit } from "react-icons/fi";
 import { DateObj, useDayzed } from "dayzed";
 
-export const FlipCalendarExample = () => {
-  return (
-    <div className="grid place-content-center bg-indigo-50 px-4 py-24 md:flex-row">
-      <FlipCalendar />
-    </div>
-  );
-};
-
-const FlipCalendar = () => {
+const FlipCalendar = ({
+  selectedDate,
+  onDateSelected,
+}: {
+  selectedDate: Date;
+  onDateSelected: (selectedDate: Date) => void;
+}) => {
   const [index, setIndex] = useState(0);
-  const [date, setDate] = useState(new Date());
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(true); // Set the initial visibility to true
 
-  const handleSelectDate = (selectedDate: { date: Date }) => {
-    setDate(selectedDate.date);
+  const handleSelectDate = (selectedDateObj: { date: Date }) => {
+    onDateSelected(selectedDateObj.date);
     setIndex((pv) => pv + 1);
+    // Do not close the date picker automatically here.
   };
 
   return (
     <div className="relative flex flex-col items-center text-indigo-950">
+      {/* Calendar display that shows the selected date */}
       <CalendarDisplay
         index={index}
-        date={date}
+        date={selectedDate}
         visible={visible}
         setVisible={setVisible}
       />
+      {/* The date picker will always be initially visible */}
       <AnimatePresence>
         {visible && (
-          <DatePicker selected={date} onDateSelected={handleSelectDate} />
+          <DatePicker
+            selected={selectedDate}
+            onDateSelected={handleSelectDate}
+          />
         )}
       </AnimatePresence>
     </div>
@@ -44,7 +47,12 @@ const CalendarDisplay = ({
   date,
   visible,
   setVisible,
-}: CalendarDisplayProps) => {
+}: {
+  index: number;
+  date: Date;
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
+}) => {
   return (
     <div className="w-fit overflow-hidden rounded-xl border-2 border-indigo-500 bg-indigo-500">
       <div className="flex items-center justify-between px-1.5 py-0.5">
@@ -52,10 +60,11 @@ const CalendarDisplay = ({
           {format(date, "LLLL")}
         </span>
         <button
-          onClick={() => setVisible((pv) => !pv)}
+          onClick={() => setVisible(!visible)} // Toggle visibility
           className="text-white transition-colors hover:text-indigo-200"
         >
-          {visible ? <FiArrowLeft /> : <FiEdit />}
+          {visible ? <FiArrowLeft /> : <FiEdit />}{" "}
+          {/* Edit to open, ArrowLeft to close */}
         </button>
       </div>
       <div className="relative z-0 h-36 w-52 shrink-0">
@@ -109,9 +118,17 @@ const CalendarDisplay = ({
   );
 };
 
-const DatePicker = (props: DatePickerProps) => {
-  let { calendars, getBackProps, getForwardProps, getDateProps } =
-    useDayzed(props);
+const DatePicker = ({
+  selected,
+  onDateSelected,
+}: {
+  selected: Date;
+  onDateSelected: (selectedDateObj: DateObj) => void;
+}) => {
+  const { calendars, getBackProps, getForwardProps, getDateProps } = useDayzed({
+    selected,
+    onDateSelected,
+  });
 
   const calendar = calendars[0];
 
@@ -170,21 +187,6 @@ const DatePicker = (props: DatePickerProps) => {
     </motion.div>
   );
 };
-
-interface CalendarDisplayProps {
-  index: number;
-  date: Date;
-  visible: boolean;
-  setVisible: Dispatch<SetStateAction<boolean>>;
-}
-
-interface DatePickerProps {
-  selected: Date;
-  onDateSelected: (
-    selectedDate: DateObj,
-    event: SyntheticEvent<Element, Event>
-  ) => void;
-}
 
 const MONTH_NAMES = [
   "Jan",

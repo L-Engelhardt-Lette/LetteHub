@@ -170,7 +170,7 @@ const RoundedDrawerNav = ({
 };
 
 const Logo = () => {
-  return <img src="../../../public/Logo.svg" alt="Logo" className="w-8" />;
+  return <img src="/Logo.svg" alt="Logo" className="w-8" />;
 };
 
 const DesktopLinks = ({
