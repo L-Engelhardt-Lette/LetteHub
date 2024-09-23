@@ -6,7 +6,7 @@ const NotFound: React.FC = () => {
       {/* Background Image */}
       <img
         className="absolute w-96 object-cover"
-        src="../../public/Logo.svg"
+        src="/Logo.svg"
         alt="Background"
       />
       {/* Content Overlay */}
